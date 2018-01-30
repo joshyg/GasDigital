@@ -12,7 +12,6 @@ console.log('JG: BASE_URL = ', BASE_URL);
 const Api = axios.create({
     baseURL: BASE_URL,
     headers,
-    timeout: 10000,
     transformRequest: [ data => { if (data) return qs.stringify(data) } ]
 });
 
