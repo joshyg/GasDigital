@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, StyleSheet, View, Dimensions, TouchableOpacity, Image, StatusBar, NetInfo } from 'react-native';
+import {BackHandler, Text, StyleSheet, View, Dimensions, TouchableOpacity, Image, StatusBar, NetInfo } from 'react-native';
 import _ from 'lodash/fp';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
@@ -27,6 +27,14 @@ class App extends React.Component {
         } else {
           Orientation.unlockAllOrientations();
         }
+
+        BackHandler.addEventListener('hardwareBackPress', () => {
+          if ( !this.props.routes || this.props.routes.length <= 2 ) {
+            return true;
+          }
+          this.props.navigation.goBack();
+          return false;
+        });
     }
 
     componentWillReceiveProps(nextProps) { 
@@ -59,6 +67,7 @@ class App extends React.Component {
 
     componentWillUnmount() {
       NetInfo.removeEventListener('connectionChange', this.props.updateConnectionInfo);
+      BackHandler.removeEventListener('hardwareBackPress');
     }
 
     updateConnection = (connection) => {
@@ -94,7 +103,8 @@ function mapStateToProps(state) {
     guest: state.auth.guest,
     reduxRehydrated: state.storage.loaded,
     offlineEpisodes: state.data.offlineEpisodes,
-    videoMode: state.player.videoMode
+    videoMode: state.player.videoMode,
+    routes: state.navigation.routes,
   };
 }
 
