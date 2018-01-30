@@ -44,8 +44,8 @@ export function getRecentEpisodes(user_id, channel_id) {
     };
 }
 
-export function getEpisodes(cat, user_id, page=1, perpage=EPISODES_PER_PAGE) {
-    const request = DataApi.GetData('api.php', { cat, user_id, page, perpage })
+export function getEpisodes(cat, user_id, page=1, perpage=EPISODES_PER_PAGE, prefetch=false) {
+    const request = DataApi.GetData('api.php', { cat, user_id, page, perpage, prefetch })
     return {
         type: 'DATA_GET_EPISODES',
         payload: request,

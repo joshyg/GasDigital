@@ -180,6 +180,7 @@ class Episode extends React.Component {
       } else {
         this.props.setPlayerValue('isPlaying', true);
       }
+      this.props.navigateTo("player_view")
     }
 
     playVideo = () => {

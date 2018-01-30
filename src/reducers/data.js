@@ -85,7 +85,7 @@ export default reducer = (state = initialState, action) => {
           let episode = returnedEpisodes[i];
           if ( ! state.episodes[episode.id] ) {
             episodes[episode.id] = episode;
-            if ( i <= 10 ) {
+            if ( action.payload.req_data.prefetch && i <= 10 ) {
               Image.prefetch(episode.thumbnailUrl)
               .then(_=>{})
               .catch(err=>{console.log('JG: error prefetching: ', err)});

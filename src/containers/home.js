@@ -11,6 +11,7 @@ import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import { setPlayerValue } from '../actions/player';
+import { ENABLE_PREFETCH } from '../constants';
 
 class Home extends React.Component {
     constructor(props) {
@@ -45,6 +46,9 @@ class Home extends React.Component {
     }
 
     prefetchEpisodes(props) {
+      if ( ! ENABLE_PREFETCH ) {
+        return;
+      }
       for ( ch in props.channels ) {
         let channel = props.channels[ch];
         channel = channel.link.split('cat=')[1];
