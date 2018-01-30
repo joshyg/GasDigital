@@ -20,6 +20,7 @@ class Home extends React.Component {
         pageDict: {}
       }
       this.goToSeries = this.goToSeries.bind(this);
+      this.prefetchEpisodes = _.throttle(2000,this.prefetchEpisodes);
     }
 
     componentWillMount(){
@@ -30,6 +31,13 @@ class Home extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+      // be cautious not to delay the active series fetch with prefetching
+      if ( ! nextProps.isGettingEpisodes ) {
+        if ( !nextProps.routes || nextProps.routes.length <= 2 ||
+             nextProps.routes[nextProps.routes.length-1].routeName != "series" ) {
+          this.prefetchEpisodes(this.props);
+        }
+      }
     }
 
     componentDidMount() {
@@ -42,10 +50,10 @@ class Home extends React.Component {
         channel = channel.link.split('cat=')[1];
         if ( ! this.props.channelEpisodeIds[channel] ||
                this.props.channelEpisodeIds[channel].length == 0 ) {
-          this.setTimeout( () => {
+            props.setValue('isGettingEpisodes', true);
             this.props.getEpisodes(channel,this.props.user_id)
             this.props.getBonusContent(channel);
-          }, ch*500 );
+            break;
         }
       }
     }
@@ -60,15 +68,6 @@ class Home extends React.Component {
       }
     }
 
-    onEndReached() {
-      let channel = this.state.channel;
-      let pageNum = this.state.pageDict[channel]+1;
-      let channelPage = {}
-      channelPage[channel] = pageNum;
-      this.setState({pageDict: { ...this.state.pageDict, ...channelPage}});
-      this.props.setValue('isGettingEpisodes', true);
-      this.props.getEpisodes(channel,this.props.user_id,pageNum);
-    }
 
     goToEpisode(item) {
       console.log('JG: going to episode', item );
@@ -120,6 +119,7 @@ function mapStateToProps(state) {
       channels: state.data.channels,
       channelEpisodeIds: state.data.channelEpisodeIds,
       isGettingEpisodes: state.data.isGettingEpisodes,
+      routes: state.navigation.routes,
     };
 }
 
