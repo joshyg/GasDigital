@@ -143,7 +143,6 @@ export default reducer = (state = initialState, action) => {
         };
 
     case NAVIGATE_RESET_TO:
-        console.log('JG: NAVIGATE_RESET_TO')
         if ( nextState.routes.length <= 1 ) {
             return AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName:action.payload}), nextState );
         }

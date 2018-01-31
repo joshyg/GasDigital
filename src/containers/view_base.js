@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import {Text, StyleSheet, View, Dimensions, Platform, Image, StatusBar, TouchableOpacity } from 'react-native';
+import {BackHandler, Text, StyleSheet, View, Dimensions, Platform, Image, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { navigateTo, resetTo, back } from '../actions/navigation';
@@ -21,7 +21,16 @@ class Base extends React.Component {
 
     }
 
+    backHandler = () => {
+      this.props.navigation.goBack();
+      if ( !this.props.routes || this.props.routes.length <= 2 ) {
+        return false;
+      }
+      return true;
+    }
+
     componentWillMount() {
+      BackHandler.addEventListener('hardwareBackPress', this.backHandler);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -41,6 +50,7 @@ class Base extends React.Component {
 
 
     componentWillUnmount() {
+      BackHandler.removeEventListener('hardwareBackPress',this.backHandler);
     }
 
     landscapeVideo = () => {
@@ -134,7 +144,8 @@ function mapStateToProps(state) {
       currentTrack: state.player.currentTrack,
       user_id: state.auth.user_id,
       guest: state.auth.guest,
-      connection: state.data.connection
+      connection: state.data.connection,
+      routes: state.navigation.routes,
     };
 }
 
