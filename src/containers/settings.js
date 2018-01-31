@@ -9,6 +9,9 @@ import { navigateTo } from '../actions/navigation';
 import { logOut } from '../actions/auth';
 import Base from './view_base'
 import Svg from '../components/svg';
+var Fabric = require('react-native-fabric');
+var { Crashlytics } = Fabric;
+
 class Settings extends React.Component {
     constructor(props) {
         super(props);
@@ -17,6 +20,11 @@ class Settings extends React.Component {
 
     componentWillReceiveProps(nextProps){
 
+    }
+
+    forceCrash = () => {
+      console.log('Forcing crash!');
+      Crashlytics.crash();
     }
 
 
@@ -32,7 +40,8 @@ class Settings extends React.Component {
                 */}
               <TouchableOpacity 
                 style={styles.menuItemLast} 
-                onPress={()=>{this.props.navigateTo('about')}}>
+                onPress={()=>{this.props.navigateTo('about')}}
+                onLongPress={this.forceCrash}>
                   <Text style={styles.title}>About Us</Text>
               </TouchableOpacity>
               <TouchableOpacity 
