@@ -22,10 +22,10 @@ class Base extends React.Component {
     }
 
     backHandler = () => {
-      this.props.navigation.goBack();
       if ( !this.props.routes || this.props.routes.length <= 2 ) {
         return false;
       }
+      this.props.navigation.goBack();
       return true;
     }
 
