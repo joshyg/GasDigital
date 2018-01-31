@@ -956,7 +956,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = Y4TUCN8HW9;
+						DevelopmentTeam = 9TA3FX5AJW;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -1685,7 +1685,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = Y4TUCN8HW9;
+				DEVELOPMENT_TEAM = 9TA3FX5AJW;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1709,7 +1709,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.joshyg.GasDigital;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gasdigital.gdn;
 				PRODUCT_NAME = GasDigitalRN;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1724,7 +1724,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y4TUCN8HW9;
+				DEVELOPMENT_TEAM = 9TA3FX5AJW;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1748,7 +1748,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.joshyg.GasDigital;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gasdigital.gdn;
 				PRODUCT_NAME = GasDigitalRN;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2032,7 +2032,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y4TUCN8HW9;
+				DEVELOPMENT_TEAM = 9TA3FX5AJW;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2056,7 +2056,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.joshyg.GasDigital;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gasdigital.gdn;
 				PRODUCT_NAME = GasDigitalRN;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
