@@ -63,7 +63,6 @@ class PlayerControlsContainer extends Component {
             series_id: episode.show_id,
             audioUrl: episode.audioUrl
         }
-        console.log('JG: setting track to ', track);
         this.props.setPlayerValue('isPlayingVideo', false);
         this.props.setPlayerValue('videoMode', false);
 
@@ -92,7 +91,6 @@ class PlayerControlsContainer extends Component {
             series_id: episode.show_id,
             audioUrl: episode.audioUrl
         }
-        console.log('JG: setting track to ', track);
         this.props.setPlayerValue('isPlayingVideo', false);
         this.props.setPlayerValue('videoMode', false);
 
@@ -125,6 +123,9 @@ class PlayerControlsContainer extends Component {
     }
 
     formatTime(time) {
+        if ( ! time ) {
+          time = 0;
+        }
         let mins = Math.floor(time / 60).toString();
         let secs = Math.floor(time % 60).toString();
 
