@@ -11,11 +11,11 @@ import Base from './view_base'
 import Svg from '../components/svg';
 var Fabric = require('react-native-fabric');
 var { Crashlytics } = Fabric;
+import { DEBUG_CRASH } from '../constants';
 
 class Settings extends React.Component {
     constructor(props) {
         super(props);
-
     }
 
     componentWillReceiveProps(nextProps){
@@ -23,8 +23,10 @@ class Settings extends React.Component {
     }
 
     forceCrash = () => {
-      console.log('Forcing crash!');
-      Crashlytics.crash();
+      if ( DEBUG_CRASH ) {
+        console.log('Forcing crash!');
+        Crashlytics.crash();
+      }
     }
 
 

@@ -34,6 +34,7 @@ export const BASE_URL = 'http://rss.gasdigitalnetwork.com/';
 //export const BASE_URL = 'https://staging.gasdigitalnetwork.com/';
 export const ENABLE_DOWNLOAD_VIDEO = false;
 export const DEBUG_PREMIUM = false;
+export const DEBUG_CRASH = false;
 export const EPISODES_PER_PAGE = 30;
 export const ENABLE_PREFETCH = false;
 export const APP_VERSION = 2.0;
