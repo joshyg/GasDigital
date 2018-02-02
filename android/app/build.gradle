@@ -155,9 +155,9 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
             // prod key
-            // buildConfigField "String", "CODEPUSH_KEY", '"UFyEtjjOOj2xqS86teNikElMGJOB5d8f48f6-e73d-4f56-b8d3-003c9f9b1f09"'
+             buildConfigField "String", "CODEPUSH_KEY", '"UFyEtjjOOj2xqS86teNikElMGJOB5d8f48f6-e73d-4f56-b8d3-003c9f9b1f09"'
             // staging key
-            buildConfigField "String", "CODEPUSH_KEY", '"AexsSgZ3eCO2Df0XDKTkZKRmgCEN5d8f48f6-e73d-4f56-b8d3-003c9f9b1f09"'
+            // buildConfigField "String", "CODEPUSH_KEY", '"AexsSgZ3eCO2Df0XDKTkZKRmgCEN5d8f48f6-e73d-4f56-b8d3-003c9f9b1f09"'
         }
         /*
         releaseStaging {
