@@ -1,4 +1,4 @@
-package com.gasdigitalrn;
+package com.appocta.gdn;
 
 import android.app.Application;
 

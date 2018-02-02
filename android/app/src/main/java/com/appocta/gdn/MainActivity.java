@@ -1,4 +1,4 @@
-package com.gasdigitalrn;
+package com.appocta.gdn;
 
 import com.facebook.react.ReactActivity;
 import android.content.Intent; // <--- import
