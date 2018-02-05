@@ -161,14 +161,15 @@ class Episode extends React.Component {
     playAudioTrack = () => {
       this.props.setPlayerValue('queue',[]);
       this.props.setPlayerValue('queueIndex', 0);
+      let episode = this.props.episode || {};
       let track = {
-        uri: this.props.episode.dataUrl,
-        download_uri: this.props.episode.downloadUrl,
-        image: this.props.episode.thumbnailUrl,
-        name: this.props.episode.name,
-        episode_id: this.props.episode.id,
+        uri: episode.dataUrl,
+        download_uri: episode.downloadUrl,
+        image: episode.thumbnailUrl,
+        name: episode.name,
+        episode_id: episode.id,
         series_id: this.props.series.id,
-        audioUrl: this.props.episode.audioUrl
+        audioUrl: episode.audioUrl
       }
       console.log('JG: setting track to ', track);
       this.props.setPlayerValue('isPlayingVideo', false);
@@ -176,7 +177,7 @@ class Episode extends React.Component {
       this.setState({videoMode:false, isPlayingVideo: false});
       this.props.setPlayerValue('currentTrack', track);
       if ( ! track.audioUrl ) {
-        this.props.fetchAndPlayAudio(this.props.series.id, this.props.episode.id);
+        this.props.fetchAndPlayAudio(this.props.series.id, episode.id);
       } else {
         this.props.setPlayerValue('isPlaying', true);
       }
@@ -276,6 +277,7 @@ class Episode extends React.Component {
 
     getVideoUri = () => {
       let returnVal;
+      let episode = this.props.episode || {};
       if ( this.state.videoUrl != '' ) {
         return this.state.videoUrl;
       }
@@ -286,7 +288,7 @@ class Episode extends React.Component {
            offlineEpisode.videoUrl ) {
         returnVal = 'file://'+offlineEpisode.videoUrl;
       } else {
-        returnVal =  this.props.episode.dataUrl;
+        returnVal =  episode.dataUrl;
       }
       console.log("JG: url = ", returnVal);
       this.setState({videoUrl:returnVal});

@@ -154,6 +154,9 @@ class Series extends React.Component {
     }
 
     playTrack() {
+      if ( ! this.props.episode ) {
+        return;
+      }
       let track = {
         uri: this.props.episode.dataUrl,
         image: this.props.episode.thumbnailUrl,

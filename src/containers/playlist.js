@@ -40,6 +40,9 @@ class Playlist extends React.Component {
 
       let episode = this.props.playlist[0];
       console.log("EJ::",episode)
+      if ( ! episode ) {
+        return;
+      }
       let track = {
         uri: episode.dataUrl,
         download_uri: episode.downloadUrl,

@@ -54,6 +54,9 @@ class PlayerControlsContainer extends Component {
 
         this.props.setPlayerValue('queueIndex', this.props.queueIndex + 1);
         let episode = this.props.queue[this.props.queueIndex + 1];
+        if ( ! episode ) {
+          return;
+        }
         let track = {
             uri: episode.dataUrl,
             download_uri: episode.downloadUrl,
@@ -82,6 +85,9 @@ class PlayerControlsContainer extends Component {
 
         this.props.setPlayerValue('queueIndex', this.props.queueIndex - 1);
         let episode = this.props.queue[this.props.queueIndex - 1];
+        if ( ! episode ) {
+          return;
+        }
         let track = {
             uri: episode.dataUrl,
             download_uri: episode.downloadUrl,

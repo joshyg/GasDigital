@@ -239,7 +239,7 @@ class Player extends React.Component {
             
 
             this.props.setPlayerValue('queueIndex', this.props.queueIndex + 1);
-            let episode = this.props.queue[this.props.queueIndex + 1];
+            let episode = this.props.queue[this.props.queueIndex + 1] || {};
             let track = {
                 uri: episode.dataUrl,
                 download_uri: episode.downloadUrl,

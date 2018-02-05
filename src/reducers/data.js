@@ -5,6 +5,7 @@ const initialState = {
     channelsById: {}, 
     lastChannelFetchTime: {},
     episodes: {},
+    episode: {},
     channelEpisodeIds: {}, 
     channelBonusEpisodeIds: {}, 
     recentEpisodeIds: [],

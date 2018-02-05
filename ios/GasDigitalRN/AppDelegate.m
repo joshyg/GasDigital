@@ -54,6 +54,7 @@ RCT_EXPORT_MODULE();
   
     #ifdef DEBUG
         jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+        NSLog(@"jsCodeLocation = %@",jsCodeLocation);
     #else
         jsCodeLocation = [CodePush bundleURL];
     #endif
