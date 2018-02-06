@@ -60,7 +60,7 @@ class Login extends React.Component {
             <View style={styles.inputContainer}>
               <Image style={{height: 80, marginTop }} resizeMode={'contain'} source={require('../../assets/images/logo.png')}/>
               <Text>{"\n"}</Text>
-              <TextInput style={styles.textInput} onChangeText={x => this.setState({email:x})} underlineColorAndroid={'transparent'} placeholder={'email'} type="TextInput"/>
+              <TextInput style={styles.textInput} onChangeText={x => this.setState({email:x})} autoCapitalize={'none'} underlineColorAndroid={'transparent'} placeholder={'email'} type="TextInput"/>
               <Text>{"\n"}</Text>
               <TextInput style={styles.textInput} onChangeText={x => this.setState({password:x})} underlineColorAndroid={'transparent'} placeholder={'password'} type="TextInput" secureTextEntry={true}/>
               <Text>{"\n"}</Text>
