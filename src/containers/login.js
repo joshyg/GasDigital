@@ -3,17 +3,20 @@ import {TextInput, Text, StyleSheet, View, Dimensions, Platform, Image, Touchabl
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { resetTo } from '../actions/navigation';
-import { logIn, logInAsGuest } from '../actions/auth';
+import { logIn, logInAsGuest, setAuthValue } from '../actions/auth';
 import Base  from './view_base';
 import { colors } from '../constants';
 import Orientation from 'react-native-orientation';
 import { getChannels, getRecentVideos } from '../actions/data';
 
+const { height, width } = Dimensions.get('window');
+ 
+
 class Login extends React.Component {
     constructor(props) {
       super(props);
       this.state = { 
-        username: '',
+        email: '',
         password: ''
       }
     }
@@ -37,10 +40,14 @@ class Login extends React.Component {
       if( ( nextProps.user_id && nextProps.user_id != 'logged_out' ) || nextProps.guest){
           this.props.resetTo('homescreen');
       }
+      if ( ! this.props.loginError && nextProps.loginError ) {
+        Alert.alert("Login Error", "Invalid Email/Password");
+        this.props.setAuthValue("loginError", false);
+      }
     }
 
     logIn = () => {
-      this.props.logIn(this.state.username,this.state.password);
+      this.props.logIn(this.state.email,this.state.password);
     }   
 
     logInAsGuest = () => {
@@ -48,11 +55,12 @@ class Login extends React.Component {
     }   
 
     render() {
+        let marginTop = width < 350 ? 0 : 50;
         return (
             <View style={styles.inputContainer}>
-              <Image style={{height: 80, marginTop: 50}} resizeMode={'contain'} source={require('../../assets/images/logo.png')}/>
+              <Image style={{height: 80, marginTop }} resizeMode={'contain'} source={require('../../assets/images/logo.png')}/>
               <Text>{"\n"}</Text>
-              <TextInput style={styles.textInput} onChangeText={x => this.setState({username:x})} underlineColorAndroid={'transparent'} placeholder={'username'} type="TextInput"/>
+              <TextInput style={styles.textInput} onChangeText={x => this.setState({email:x})} underlineColorAndroid={'transparent'} placeholder={'email'} type="TextInput"/>
               <Text>{"\n"}</Text>
               <TextInput style={styles.textInput} onChangeText={x => this.setState({password:x})} underlineColorAndroid={'transparent'} placeholder={'password'} type="TextInput" secureTextEntry={true}/>
               <Text>{"\n"}</Text>
@@ -73,6 +81,7 @@ function mapStateToProps(state) {
         error: state.auth.errorMessage,
         user_id: state.auth.user_id,
         reduxRehydrated: state.storage.loaded,
+        loginError: state.auth.loginError,
         guest: state.auth.guest
     };
 }
@@ -84,17 +93,16 @@ function mapDispatchToProps(dispatch) {
         logInAsGuest,
         getChannels,
         getRecentVideos,
+        setAuthValue,
     }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
- const { height, width } = Dimensions.get('window');
- 
- let buttonWidth = 288;
- if (width <  350){
-     buttonWidth = 268;
- }
+let buttonWidth = 288;
+if (width <  350){
+    buttonWidth = 268;
+}
  
 const styles = StyleSheet.create({
    button: {
@@ -122,7 +130,7 @@ const styles = StyleSheet.create({
        alignItems: 'center',
        backgroundColor: 'transparent',
        width: width,
-       top: 90,
+       top: width < 350 ? 70 : 90,
        position: 'absolute'
    },
    textInput: {

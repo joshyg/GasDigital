@@ -23,3 +23,13 @@ export function logOut(token) {
         type: 'AUTH_LOG_OUT'
     };
 }
+
+export function setAuthValue(key,value) {
+  let payload = {};
+  payload[key] = value;
+  return {
+    type: 'AUTH_SET_VALUE',
+    payload
+  };
+}
+

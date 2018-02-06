@@ -17,7 +17,6 @@ export default reducer = (state = initialState, action) => {
     case 'PLAYER_SET_VALUE':
         return { ...state, ...action.payload };
 
-
     case 'PLAYER_SET_TIMER':
         let episodeProgress = _.cloneDeep(state.episodeProgress) || {};    
         if(action.payload && action.payload.episode_id){
