@@ -19,7 +19,7 @@
 
         <activity
             android:name="com.appocta.gdn.SplashActivity"
-            android:label="GasDigitalRN"
+            android:label="Gas Digital"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
