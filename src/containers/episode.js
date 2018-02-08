@@ -162,13 +162,14 @@ class Episode extends React.Component {
       this.props.setPlayerValue('queue',[]);
       this.props.setPlayerValue('queueIndex', 0);
       let episode = this.props.episode || {};
+      let series_id = this.props.series ? this.props.series.id : episode.show_id;
       let track = {
         uri: episode.dataUrl,
         download_uri: episode.downloadUrl,
         image: episode.thumbnailUrl,
         name: episode.name,
         episode_id: episode.id,
-        series_id: this.props.series.id,
+        series_id: series_id,
         audioUrl: episode.audioUrl
       }
       console.log('JG: setting track to ', track);
@@ -176,10 +177,12 @@ class Episode extends React.Component {
       this.props.setPlayerValue('videoMode', false);
       this.setState({videoMode:false, isPlayingVideo: false});
       this.props.setPlayerValue('currentTrack', track);
-      if ( ! track.audioUrl ) {
-        this.props.fetchAndPlayAudio(this.props.series.id, episode.id);
-      } else {
+      if ( ! track.audioUrl && series_id ) {
+        this.props.fetchAndPlayAudio(series_id, episode.id);
+      } else if ( track.audioUrl ) {
         this.props.setPlayerValue('isPlaying', true);
+      } else {
+        return;
       }
       this.props.navigateTo("player_view")
     }
