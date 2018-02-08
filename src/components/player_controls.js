@@ -87,7 +87,13 @@ export default function PlayerControlsComponent(props) {
 
 const { height, width } = Dimensions.get('window');
 
-let controlMarginTop = Platform.OS === 'android' ? 5 : 30;
+let controlMarginTop = 30;
+if ( Platform.OS === 'android' ) {
+  controlMarginTop = 5;
+} else if ( height < 600 ) { //iPhone5
+  controlMarginTop = 0;
+}
+
 
 const styles = StyleSheet.create({
     progress: {
