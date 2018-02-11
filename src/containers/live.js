@@ -14,7 +14,8 @@ class Live extends React.Component {
       super(props);
       this.state = {
         uri:'',
-        next_show: {}
+        next_show: {},
+        next_show_start_time: ''
       }
     }
 
@@ -29,7 +30,7 @@ class Live extends React.Component {
     setNextShow(props) {
       const weekdays = [
         'Sunday',
-        'Monay',
+        'Monday',
         'Tuesday',
         'Wednesday',
         'Thursday',
@@ -42,15 +43,16 @@ class Live extends React.Component {
       date.set("America/New_York");
       showDate.set("America/New_York");
       let next_show = this.state.next_show;
+      let next_show_start_time = this.state.next_show_start_time;
       for ( let i=0; i < 7; i ++ ) {
-        showDate.add(i*24*60*60*1000);
         let currentDay = showDate.day();
         const day = weekdays[currentDay];
+        console.log("JG: checking ", day );
         for ( let show of props.schedule ) {
-          console.log('JG: show.day/day = ', show.day, day );
           if ( show.day != day ) {
             continue;
           }
+          console.log('JG: show.day/day = ', show.day, day );
           const start_hour = parseInt(show.start_time.split(':')[0]);
           const start_min = parseInt(show.start_time.split(':')[1]);
           let show_starts = moment(new Date(
@@ -60,24 +62,26 @@ class Live extends React.Component {
             start_hour, 
             start_min)
           );
-          console.log('JG: show_starts = ', show_starts, " date = ", date );
           if ( show_starts > date ) {
-            if ( ! next_show.start_time || show_starts < next_show.start_time ) {
+            if ( ! next_show.start_time || show_starts < next_show_start_time ) {
+              console.log('JG: setting next show to ', show, ' show_starts = ', show_starts, " date = ", date );
               next_show = show; 
+              next_show_start_time = show_starts;
             }
           }
         }
+        showDate.add(24*60*60*1000);
         if ( next_show.start_time ) {
           break;
         }
       }
       console.log('JG: setting next show to ', next_show);
-      this.setState({next_show});
+      this.setState({next_show,next_show_start_time});
     }
     setUri(props) {
       const weekdays = [
         'Sunday',
-        'Monay',
+        'Monday',
         'Tuesday',
         'Wednesday',
         'Thursday',
@@ -162,7 +166,7 @@ class Live extends React.Component {
         <View style={{alignItems:'center'}}>
           <Text>No Live Show Right Now</Text>
           { this.state.next_show.show_name && (
-          <Text>Next up is {this.state.next_show.show_name} at {this.state.next_show.start_time} {this.state.next_show.day}</Text>
+          <Text>Next up is {this.state.next_show.show_name} at {this.state.next_show.start_time} {this.state.next_show.day} ET</Text>
           )}
         </View>
       );
