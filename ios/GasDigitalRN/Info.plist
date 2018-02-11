@@ -69,6 +69,13 @@
                <key>NSExceptionAllowsInsecureHTTPLoads</key>
                <true/>
            </dict>
+           <key>rss.gasdigitalnetwork.com</key>
+           <dict>
+                   <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                   <true/>
+                   <key>NSIncludesSubdomains</key>
+                   <true/>
+           </dict>
        </dict>
    </dict>
 </dict>

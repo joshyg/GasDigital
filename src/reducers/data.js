@@ -2,6 +2,7 @@ import _ from 'lodash/fp';
 import { offlineDownloadStatus } from '../constants';
 const initialState = { 
     channels: [], 
+    schedule: [], 
     channelsById: {}, 
     lastChannelFetchTime: {},
     episodes: {},
@@ -12,6 +13,7 @@ const initialState = {
     playlist: [],
     searchResults: [],
     isGettingEpisodes: false,
+    isGettingSchedule: false,
     offlineEpisodes: {},
     liveShowMessage: '',
     page: 1
@@ -53,6 +55,7 @@ export default reducer = (state = initialState, action) => {
         if ( payloadError(action.payload) ) {
           return { ...state };
         }
+        console.log('JG: GET_CHANNELS, payload = ', action.payload);
         channels = action.payload.resp_data.data;
         for ( ch in channels ) {
           Image.prefetch(channels[ch].thumb)
@@ -64,6 +67,14 @@ export default reducer = (state = initialState, action) => {
           channelsById[channels[ch].id] = channels[ch];
         }
         return { ...state, channelsById, channels };
+
+    case 'DATA_GET_SCHEDULE':
+        if ( payloadError(action.payload) ) {
+          return { ...state, isGettingSchedule:false };
+        }
+        let schedule = action.payload.resp_data.data;
+        console.log('JG: GET_SCHEDULE schedule = ', schedule );
+        return { ...state, schedule, isGettingSchedule: false };
 
     case 'DATA_GET_EPISODES':
         if ( payloadError(action.payload) ){

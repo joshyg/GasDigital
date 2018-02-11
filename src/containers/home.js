@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { resetTo, navigateTo } from '../actions/navigation';
 import ListItemSeries from './list_item_series';
 import Base from './view_base';
-import { getBonusContent, getRecentVideos, getChannels, getEpisodes, setValue } from '../actions/data';
+import { getSchedule, getBonusContent, getRecentVideos, getChannels, getEpisodes, setValue } from '../actions/data';
 import _ from 'lodash/fp';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 import ReactMixin from 'react-mixin';
@@ -25,6 +25,7 @@ class Home extends React.Component {
     }
 
     componentWillMount(){
+      this.props.getSchedule();
       this.props.getChannels(this.props.user_id);
       this.props.getRecentVideos(this.props.user_id,20);
       this.prefetchEpisodes(this.props);
@@ -89,6 +90,9 @@ class Home extends React.Component {
       let channels = _.cloneDeep(this.props.channels);
       let recentImage = resolveAssetSource(require('../../assets/images/recent-icon.png'));
       // let recentImage = null
+      if ( ! channels ) {
+        channels = [];
+      }
       channels.unshift({
         id: 'all_recent',
         all_recent:true,
@@ -137,6 +141,7 @@ function mapDispatchToProps(dispatch) {
         setValue,
         setPlayerValue,
         getBonusContent,
+        getSchedule,
     }, dispatch);
 }
 

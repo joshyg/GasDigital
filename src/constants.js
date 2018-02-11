@@ -30,8 +30,8 @@ export const offlineDownloadStatus = {
     downloaded: 'downloaded',
 };
 
-//export const BASE_URL = 'http://rss.gasdigitalnetwork.com/';
-export const BASE_URL = 'https://gasdigitalnetwork.com/';
+export const BASE_URL = 'http://rss.gasdigitalnetwork.com/';
+//export const BASE_URL = 'https://gasdigitalnetwork.com/';
 export const ENABLE_DOWNLOAD_VIDEO = false;
 export const DEBUG_PREMIUM = false;
 export const DEBUG_CRASH = false;

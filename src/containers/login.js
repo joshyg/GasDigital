@@ -7,7 +7,7 @@ import { logIn, logInAsGuest, setAuthValue } from '../actions/auth';
 import Base  from './view_base';
 import { colors } from '../constants';
 import Orientation from 'react-native-orientation';
-import { getChannels, getRecentVideos } from '../actions/data';
+import { getSchedule, getChannels, getRecentVideos } from '../actions/data';
 
 const { height, width } = Dimensions.get('window');
  
@@ -27,6 +27,7 @@ class Login extends React.Component {
       } else {
         // prefetch data/images
         this.props.getChannels();
+        this.props.getSchedule();
         this.props.getRecentVideos(0,10);
       }
     }
@@ -94,6 +95,7 @@ function mapDispatchToProps(dispatch) {
         getChannels,
         getRecentVideos,
         setAuthValue,
+        getSchedule,
     }, dispatch);
 }
 

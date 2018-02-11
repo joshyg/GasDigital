@@ -10,6 +10,14 @@ export function getChannels(user_id=0) {
     };
 }
 
+export function getSchedule() {
+    const request = DataApi.GetData('web.php', { fun: 'schedule'})
+    return {
+        type: 'DATA_GET_SCHEDULE',
+        payload: request,
+    };
+}
+
 export function getRecentVideos(user_id=0,perpage=100) {
     const request = DataApi.GetData('web.php', { fun: 'recent_video', user_id, perpage })
     return {
