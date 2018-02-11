@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, Easing, Text, StyleSheet, ScrollView, TouchableOpacity, View,Dimensions, FlatList, Alert, Platform, Image, StatusBar } from 'react-native';
+import { Animated, Easing, DeviceEventEmitter, Text, StyleSheet, ScrollView, TouchableOpacity, View,Dimensions, FlatList, Alert, Platform, Image, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { resetTo, navigateTo } from '../actions/navigation';
@@ -20,6 +20,8 @@ import { ENABLE_DOWNLOAD_VIDEO, DEBUG_PREMIUM, offlineDownloadStatus, colors } f
 import Orientation from 'react-native-orientation';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
+import Chromecast from 'react-native-google-cast';
+import SvgIcon from '../components/svg_icons';
 
 class Episode extends React.Component {
     constructor(props) {
@@ -39,16 +41,74 @@ class Episode extends React.Component {
       inPlaylist: false,
       orientation: '',
       videoUrl: '',
-      spinValue: new Animated.Value(0)
+      spinValue: new Animated.Value(0),
+      chromecast_device:null
     }
 
     componentWillMount(){
       this.updateProgress();
+      this.scanForChromecast();
     }
 
     componentWillUnmount(){
       this.props.setPlayerValue('isPlayingVideo', false);
       this.props.setPlayerValue('videoMode', false);
+    }
+
+    async scanForChromecast() {
+
+      DeviceEventEmitter.addListener(Chromecast.DEVICE_AVAILABLE, async (existance) => {
+        console.log('JG: device available: ', existance);
+        let devices = await Chromecast.getDevices();
+        console.log('JG: chromecast devices = ', devices);
+        // FIXME: add modal
+        if ( devices.length > 0 ) {
+          this.setState({chromecast_device:devices[0]});
+        }
+
+      });
+      // To know if the connection attempt was successful
+      DeviceEventEmitter.addListener(Chromecast.DEVICE_CONNECTED, () => { console.log('JG: device connected!'); });
+
+      // If chromecast started to stream the media succesfully, it will send this event
+      DeviceEventEmitter.addListener(Chromecast.MEDIA_LOADED, () => { 'JG: media loaded!' });
+
+
+      // Init Chromecast SDK and starts looking for devices (uses DEFAULT APP ID)
+      Chromecast.startScan();
+      
+      // Init Chromecast SDK and starts looking for devices using registered APP ID
+      //Chromecast.startScan(APP_ID);
+      
+      // Does what the method says. It saves resources, use it when leaving your current view
+      //Chromecast.stopScan();
+      
+      // Returns a boolean with the result
+      //Chromecast.isConnected();
+      
+      // Return an array of devices' names and ids
+      let devices = await Chromecast.getDevices();
+      console.log('JG: chromecast devices = ', devices);
+      
+      // Gets the device id, and connects to it. If it is successful, will send a broadcast
+      //Chromecast.connectToDevice(DEVICE_ID);
+      
+      // Closes the connection to the current Chromecast
+      Chromecast.disconnect();
+      
+      // Streams the media to the connected chromecast. Time parameter let you choose
+      // in which time frame the media should start streaming
+      //Chromecast.castMedia(MEDIA_URL, MEDIA_TITLE, MEDIA_IMAGE, TIME_IN_SECONDS);
+      
+      // Move the streaming media to the selected time frame
+      //Chromecast.seekCast(TIME_IN_SECONDS);
+      
+      // Toggle Chromecast between pause or play state
+      //Chromecast.togglePauseCast();
+      
+      // Get the current streaming time frame. It can be use to sync the chromecast to
+      // your visual media controllers
+      //Chromecast.getStreamPosition();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -194,6 +254,17 @@ class Episode extends React.Component {
       this.setState({videoMode:true, isPlayingVideo: true});
     }
 
+    async toggleChromeCast() {
+      console.log('JG: in this.toggleChromeCast');
+      if ( this.state.chromecast_device && this.props.episode) {
+        const episode = this.props.episode;
+        await Chromecast.connectToDevice(this.state.chromecast_device.id);
+        let videoUri = this.getVideoUri();
+        console.log('JG: attempting to cast ', videoUri);
+        Chromecast.castMedia(videoUri, episode.name, episode.thumbnailUrl, this.props.episodeVideoProgress[episode.id] || 0);
+      }
+    }
+
 
     addToPlaylist = () => {
       this.props.addToPlaylist(this.props.episode);
@@ -332,7 +403,19 @@ class Episode extends React.Component {
 
       return (
         <Animated.View style={[{ height:videoHeight, width: videoWidth }]}>
+          <TouchableOpacity 
+              onPress={() => {this.toggleChromeCast()}}
+              style={{marginLeft: width - 30, marginTop: 0, position:"absolute", zIndex:1}}
+          >
+            <SvgIcon
+              type="chromecast"
+              scale={1}
+              height={35}
+              width={55}
+              fill={colors.white}/>
+          </TouchableOpacity>
           <Video source={{uri:this.getVideoUri()}}   // Can be a URL or a local file.
+            style={{zIndex:0}}
             ref={(ref) => {
               this.player = ref
             }}                                      // Store reference

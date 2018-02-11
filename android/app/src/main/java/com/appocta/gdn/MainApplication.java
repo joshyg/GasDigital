@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
+import com.googlecast.GoogleCastPackage;
 import com.smixx.fabric.FabricPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.github.yamill.orientation.OrientationPackage;
@@ -39,6 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new GoogleCastPackage(),
             new FabricPackage(),
             // works for single deployment:
             // new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
