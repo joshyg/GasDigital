@@ -47,12 +47,10 @@ class Live extends React.Component {
       for ( let i=0; i < 7; i ++ ) {
         let currentDay = showDate.day();
         const day = weekdays[currentDay];
-        console.log("JG: checking ", day );
         for ( let show of props.schedule ) {
           if ( show.day != day ) {
             continue;
           }
-          console.log('JG: show.day/day = ', show.day, day );
           const start_hour = parseInt(show.start_time.split(':')[0]);
           const start_min = parseInt(show.start_time.split(':')[1]);
           let show_starts = moment(new Date(
@@ -64,7 +62,7 @@ class Live extends React.Component {
           );
           if ( show_starts > date ) {
             if ( ! next_show.start_time || show_starts < next_show_start_time ) {
-              console.log('JG: setting next show to ', show, ' show_starts = ', show_starts, " date = ", date );
+              //console.log('JG: setting next show to ', show, ' show_starts = ', show_starts, " date = ", date );
               next_show = show; 
               next_show_start_time = show_starts;
             }
@@ -75,7 +73,7 @@ class Live extends React.Component {
           break;
         }
       }
-      console.log('JG: setting next show to ', next_show);
+      //console.log('JG: setting next show to ', next_show);
       this.setState({next_show,next_show_start_time});
     }
     setUri(props) {
@@ -90,7 +88,6 @@ class Live extends React.Component {
       ];
       let date = new moment();
       // convert all dates to easrn time
-      date.set("America/New_York");
       const currentYear = date.year();
       const currentMonth = date.month();
       const currentDay = date.day();
@@ -102,13 +99,13 @@ class Live extends React.Component {
           continue;
         }
 
-        const start_hour = parseInt(show.start_time.split(':')[0]);
-        const start_min = parseInt(show.start_time.split(':')[1]);
-        let show_starts = moment(new Date(currentYear,currentMonth,currentDate, start_hour, start_min));
+        const start_hour = parseInt(show.start_time.split(':')[0]) + ( date.utcOffset() + 300 ) / 60;
+        const start_min = parseInt(show.start_time.split(':')[1]) + ( date.utcOffset() + 300 ) % 60;
+        let show_starts = moment(new Date(currentYear,currentMonth,currentDate, start_hour , start_min));
 
-        const end_hour = parseInt(show.end_time.split(':')[0]);
-        const end_min = parseInt(show.end_time.split(':')[1]);
-        let show_ends = moment(new Date(currentYear,currentMonth,currentDate, end_hour, end_min));
+        const end_hour = parseInt(show.end_time.split(':')[0]) + ( date.utcOffset() + 300 ) / 60;
+        const end_min = parseInt(show.end_time.split(':')[1]) + ( date.utcOffset() + 300 ) % 60;
+        let show_ends = moment(new Date(currentYear,currentMonth,currentDate, end_hour - 3, end_min));
 
         if ( show.day == today && show_ends < show_starts ) {
             show_ends.add(1000*60*60*24);
@@ -119,7 +116,9 @@ class Live extends React.Component {
           show_starts.add(-1000*60*60*24);
         }
 
+        console.log('JG: ', show, ' is today show_starts, show_ends, date = ', show_starts, show_ends, date );
         if ( show_starts <= date && show_ends >= date ) {
+          console.log('JG: show ', show, ' is now' );
           if ( this.props.channelsById[show.show_id] ) {
             console.log('JG: setting uri to show show ', show, " date = ", date, " currentDay = ", currentDay, " show_starts = ", show_starts );
             this.setState({uri:this.props.channelsById[show.show_id].hd_live_url});
