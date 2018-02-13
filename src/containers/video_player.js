@@ -12,9 +12,14 @@ import {
     Easing,
     Image,
     View,
-    Text
+    Text,
+    Dimensions,
+    TouchableOpacity
 } from 'react-native';
 import _ from 'lodash';
+import SvgIcon from '../components/svg_icons';
+import { colors } from '../constants.js';
+const { height, width } = Dimensions.get('window');
 
 export default class VideoPlayer extends Component {
 
@@ -1061,38 +1066,70 @@ export default class VideoPlayer extends Component {
      * Provide all of our options and render the whole component.
      */
     render() {
+        let statusBarHeight = Platform.OS == 'android' ? 25 : 0;
+        const videoHeight = this.props.spinValue.interpolate({
+          inputRange: [-1, 0, 1],
+          outputRange: [width - statusBarHeight, height/3, width - statusBarHeight]
+        });
+        const videoWidth = this.props.spinValue.interpolate({
+          inputRange: [-1, 0, 1],
+          outputRange: [height, width, height]
+        });
+
+        let clockwiseRotatedVideoMargin = height > 700 ? -160 : -145;
+        let counterClockwiseRotatedVideoMargin = height > 700 ? -160 : -145;
+        const videoLeftMargin = this.props.spinValue.interpolate({
+          inputRange: [-1, 0, 1],
+          outputRange: [counterClockwiseRotatedVideoMargin, 0, clockwiseRotatedVideoMargin]
+        });
+
         return (
-            <TouchableWithoutFeedback
-                onPress={ this.events.onScreenTouch }
-                style={[ styles.player.container, this.styles.containerStyle ]}
-            >
-                <View style={[ styles.player.container, this.styles.containerStyle ]}>
-                    <Video
-                        { ...this.props }
-                        ref={ videoPlayer => this.player.ref = videoPlayer }
+             <Animated.View style={[{ height:videoHeight, width: videoWidth }]}>
+                 <TouchableOpacity 
+                   onPress={() => {this.toggleChromeCast()}}
+                   style={{
+                     marginLeft: width - 30,
+                     marginTop: 0,
+                     position:"absolute", 
+                     zIndex:1}}>
+                     <SvgIcon
+                      type="chromecast"
+                      scale={1}
+                      height={35}
+                      width={55}
+                      fill={colors.white}/>
+                 </TouchableOpacity>
+                 <TouchableWithoutFeedback
+                     onPress={ this.events.onScreenTouch }
+                     style={[ styles.player.container, this.styles.containerStyle ]}>
+                     <View style={[ styles.player.container, this.styles.containerStyle ]}>
+                         <Video
+                             { ...this.props }
+                             ref={ videoPlayer => this.player.ref = videoPlayer }
 
-                        resizeMode={ this.state.resizeMode }
-                        volume={ this.state.volume }
-                        paused={ this.state.paused }
-                        muted={ this.state.muted }
-                        rate={ this.state.rate }
+                             resizeMode={ this.state.resizeMode }
+                             volume={ this.state.volume }
+                             paused={ this.state.paused }
+                             muted={ this.state.muted }
+                             rate={ this.state.rate }
 
-                        onLoadStart={ this.events.onLoadStart }
-                        onProgress={ this.events.onProgress }
-                        onError={ this.events.onError }
-                        onLoad={ this.events.onLoad }
-                        onEnd={ this.events.onEnd }
+                             onLoadStart={ this.events.onLoadStart }
+                             onProgress={ this.events.onProgress }
+                             onError={ this.events.onError }
+                             onLoad={ this.events.onLoad }
+                             onEnd={ this.events.onEnd }
 
-                        style={[ styles.player.video, this.styles.videoStyle ]}
+                             style={[ styles.player.video, this.styles.videoStyle ]}
 
-                        source={ this.props.source }
-                    />
-                    { this.renderError() }
-                    { this.renderTopControls() }
-                    { this.renderLoader() }
-                    { this.renderBottomControls() }
-                </View>
-            </TouchableWithoutFeedback>
+                             source={ this.props.source }
+                         />
+                         { this.renderError() }
+                         { this.renderTopControls() }
+                         { this.renderLoader() }
+                         { this.renderBottomControls() }
+                     </View>
+                 </TouchableWithoutFeedback>
+            </Animated.View>
         );
     }
 }

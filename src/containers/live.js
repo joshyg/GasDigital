@@ -39,7 +39,7 @@ class Live extends React.Component {
       ];
       let date = new moment();
       let showDate = new moment();
-      // convert all dates to easrn time
+      // convert all dates to eastern time
       date.set("America/New_York");
       showDate.set("America/New_York");
       let next_show = this.state.next_show;
@@ -51,8 +51,10 @@ class Live extends React.Component {
           if ( show.day != day ) {
             continue;
           }
-          const start_hour = parseInt(show.start_time.split(':')[0]);
-          const start_min = parseInt(show.start_time.split(':')[1]);
+
+          const start_hour = parseInt(show.start_time.split(':')[0]) + ( date.utcOffset() + 300 ) / 60;
+          const start_min = parseInt(show.start_time.split(':')[1]) + ( date.utcOffset() + 300 ) % 60;
+
           let show_starts = moment(new Date(
             showDate.year(),
             showDate.month(),
@@ -62,7 +64,6 @@ class Live extends React.Component {
           );
           if ( show_starts > date ) {
             if ( ! next_show.start_time || show_starts < next_show_start_time ) {
-              //console.log('JG: setting next show to ', show, ' show_starts = ', show_starts, " date = ", date );
               next_show = show; 
               next_show_start_time = show_starts;
             }
@@ -87,7 +88,7 @@ class Live extends React.Component {
         'Saturday'
       ];
       let date = new moment();
-      // convert all dates to easrn time
+      // convert all dates to eastern time
       const currentYear = date.year();
       const currentMonth = date.month();
       const currentDay = date.day();
@@ -105,7 +106,7 @@ class Live extends React.Component {
 
         const end_hour = parseInt(show.end_time.split(':')[0]) + ( date.utcOffset() + 300 ) / 60;
         const end_min = parseInt(show.end_time.split(':')[1]) + ( date.utcOffset() + 300 ) % 60;
-        let show_ends = moment(new Date(currentYear,currentMonth,currentDate, end_hour - 3, end_min));
+        let show_ends = moment(new Date(currentYear,currentMonth,currentDate, end_hour, end_min));
 
         if ( show.day == today && show_ends < show_starts ) {
             show_ends.add(1000*60*60*24);

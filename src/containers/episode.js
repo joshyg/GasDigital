@@ -21,7 +21,6 @@ import Orientation from 'react-native-orientation';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import Chromecast from 'react-native-google-cast';
-import SvgIcon from '../components/svg_icons';
 
 class Episode extends React.Component {
     constructor(props) {
@@ -384,36 +383,7 @@ class Episode extends React.Component {
     }
     
     renderVideo() {
-      let statusBarHeight = Platform.OS == 'android' ? 25 : 0;
-      const videoHeight = this.state.spinValue.interpolate({
-        inputRange: [-1, 0, 1],
-        outputRange: [width - statusBarHeight, height/3, width - statusBarHeight]
-      });
-      const videoWidth = this.state.spinValue.interpolate({
-        inputRange: [-1, 0, 1],
-        outputRange: [height, width, height]
-      });
-
-      let clockwiseRotatedVideoMargin = height > 700 ? -160 : -145;
-      let counterClockwiseRotatedVideoMargin = height > 700 ? -160 : -145;
-      const videoLeftMargin = this.state.spinValue.interpolate({
-        inputRange: [-1, 0, 1],
-        outputRange: [counterClockwiseRotatedVideoMargin, 0, clockwiseRotatedVideoMargin]
-      });
-
       return (
-        <Animated.View style={[{ height:videoHeight, width: videoWidth }]}>
-          <TouchableOpacity 
-              onPress={() => {this.toggleChromeCast()}}
-              style={{marginLeft: width - 30, marginTop: 0, position:"absolute", zIndex:1}}
-          >
-            <SvgIcon
-              type="chromecast"
-              scale={1}
-              height={35}
-              width={55}
-              fill={colors.white}/>
-          </TouchableOpacity>
           <Video source={{uri:this.getVideoUri()}}   // Can be a URL or a local file.
             style={{zIndex:0}}
             ref={(ref) => {
@@ -436,8 +406,8 @@ class Episode extends React.Component {
             disableFullscreen={true}
             disableBack={true}
             disableVolume={true}
+            spinValue={this.state.spinValue}
           />
-        </Animated.View>
       );
     }
 
