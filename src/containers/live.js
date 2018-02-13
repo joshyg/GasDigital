@@ -1,5 +1,19 @@
 import React from 'react';
-import {Text, StyleSheet, ScrollView, TouchableOpacity, View,Dimensions, FlatList, Alert, Platform, Image, StatusBar } from 'react-native';
+import {
+        Text, 
+        StyleSheet, 
+        ScrollView, 
+        TouchableOpacity, 
+        View,
+        Dimensions, 
+        FlatList, 
+        Alert, 
+        Platform, 
+        Image, 
+        Animated,
+        Easing,
+        StatusBar 
+} from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { resetTo, navigateTo } from '../actions/navigation';
@@ -8,6 +22,8 @@ import Base from './view_base';
 import { getSchedule, setValue } from '../actions/data';
 import Video from 'react-native-video-controls';
 moment = require('moment-timezone');
+import Orientation from 'react-native-orientation';
+import { DEBUG_LIVE_VIEW } from '../constants';
 
 class Live extends React.Component {
     constructor(props) {
@@ -15,7 +31,9 @@ class Live extends React.Component {
       this.state = {
         uri:'',
         next_show: {},
-        next_show_start_time: ''
+        next_show_start_time: '',
+        orientation: '',
+        spinValue: new Animated.Value(0),
       }
     }
 
@@ -24,7 +42,37 @@ class Live extends React.Component {
       this.props.setValue('gettingSchedule', true);
       this.setUri(this.props);
       this.setNextShow(this.props);
+    }
 
+    orientationDidChange = (orientation) => {
+      console.log('JG: episode setting orientation to ', orientation);
+      this.setState({orientation});
+      let toValue;
+      let shouldRotate=false;
+      if ( orientation.includes('PORTRAIT') ) {
+        toValue = 0;
+        shouldRotate = true
+      } else if ( orientation == 'LANDSCAPE-RIGHT' ) {
+        toValue = 1;
+        shouldRotate = true
+      } else if ( orientation == 'LANDSCAPE-LEFT' ) {
+        toValue = -1;
+        shouldRotate = true
+      } else if ( orientation == 'LANDSCAPE' ) {
+        // android doesnt support specific orientation
+        toValue = 1;
+        shouldRotate = true
+      }
+      if ( shouldRotate ) {
+        Animated.timing(
+          this.state.spinValue,
+          {
+            toValue: toValue,
+            duration: 500,
+            easing: Easing.ease
+          }
+        ).start()
+      }
     }
 
     setNextShow(props) {
@@ -78,6 +126,15 @@ class Live extends React.Component {
       this.setState({next_show,next_show_start_time});
     }
     setUri(props) {
+      if ( DEBUG_LIVE_VIEW ) {
+        console.log('JG: first recent episode = ', props.recentEpisodeIds[0]);
+        let show = props.episodes[props.recentEpisodeIds[0]];
+        this.setState({
+          uri:show.dataUrl,
+          show: show
+        });
+        return;
+      }
       const weekdays = [
         'Sunday',
         'Monday',
@@ -122,7 +179,13 @@ class Live extends React.Component {
           console.log('JG: show ', show, ' is now' );
           if ( this.props.channelsById[show.show_id] ) {
             console.log('JG: setting uri to show show ', show, " date = ", date, " currentDay = ", currentDay, " show_starts = ", show_starts );
-            this.setState({uri:this.props.channelsById[show.show_id].hd_live_url});
+            this.setState({
+              uri:this.props.channelsById[show.show_id].hd_live_url,
+              show: {
+                name: show.title,
+                thumbnailUrl: show.thumb
+              }
+            });
             return;
           }
         }
@@ -137,6 +200,19 @@ class Live extends React.Component {
     }
 
     componentDidMount() {
+      if ( Platform.OS == "ios" ) {
+        Orientation.getSpecificOrientation((err, orientation) => {
+          console.log(`Current Device Orientation: ${orientation}`);
+          this.setState({orientation});
+        });
+        Orientation.addSpecificOrientationListener(this.orientationDidChange);
+      } else {
+        Orientation.getOrientation((err, orientation) => {
+          console.log(`Current Device Orientation: ${orientation}`);
+          this.setState({orientation});
+        });
+      }
+      Orientation.addOrientationListener(this.orientationDidChange);
 
     }
 
@@ -150,13 +226,18 @@ class Live extends React.Component {
           volume={1}                            // 0 is muted, 1 is normal.
           muted={false}
           paused={false}
-          resizeMode="cover"
+          onTogglePlayback={this.onTogglePlayback}
           playInBackground={false}                // Audio continues to play when app entering background.
-          playWhenInactive={true}                // [iOS] Video continues to play when control or notification center are shown.
+          playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
           progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
-          onEnd={this.onEndVideo}                      // Callback when playback finishes
-          onError={this.onVideoError}               // Callback when video cannot be loaded
-          style={styles.video}
+          //onProgress={this.onProgress}
+          resizeMode='contain'
+          disableFullscreen={true}
+          disableBack={true}
+          disableVolume={true}
+          spinValue={this.state.spinValue}
+          episode={this.getEpisodeInfo}
+          live={true}
         />
       );
     }
@@ -187,7 +268,9 @@ function mapStateToProps(state) {
       user_id: state.auth.user_id,
       isGettingSchedule: state.data.isGettingSchedule,
       schedule: state.data.schedule,
+      recentEpisodeIds: state.data.recentEpisodeIds,
       channelsById: state.data.channelsById,
+      episodes: state.data.episodes
     };
 }
 

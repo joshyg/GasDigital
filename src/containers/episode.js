@@ -305,11 +305,6 @@ class Episode extends React.Component {
       return this.props.episode && this.props.episode.mediaType == 1;
     }
 
-    getOrientation = () => {
-      console.log('JG: getting orientation, ', this.state.orientation.toLowerCase());
-      return this.state.orientation.toLowerCase();
-    }
-
     onTogglePlayback = (paused) => {
       this.setState({isPlayingVideo:!paused});
     }
