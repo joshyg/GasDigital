@@ -14,12 +14,14 @@ import {
     View,
     Text,
     Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    DeviceEventEmitter,
 } from 'react-native';
 import _ from 'lodash';
 import SvgIcon from '../components/svg_icons';
 import { colors } from '../constants.js';
 const { height, width } = Dimensions.get('window');
+import Chromecast from 'react-native-google-cast';
 
 export default class VideoPlayer extends Component {
 
@@ -55,6 +57,7 @@ export default class VideoPlayer extends Component {
             currentTime: 0,
             error: false,
             duration: 0,
+            chromecast_device:null,
         };
 
         /**
@@ -636,6 +639,86 @@ export default class VideoPlayer extends Component {
     componentWillMount() {
         this.initSeekPanResponder();
         this.initVolumePanResponder();
+        this.scanForChromecast();
+    }
+
+    async scanForChromecast() {
+
+      DeviceEventEmitter.addListener(Chromecast.DEVICE_AVAILABLE, async (existance) => {
+        console.log('JG: device available: ', existance);
+        let devices = await Chromecast.getDevices();
+        console.log('JG: chromecast devices = ', devices);
+        // FIXME: add modal
+        if ( devices.length > 0 ) {
+          this.setState({chromecast_device:devices[0]});
+        }
+
+      });
+      // To know if the connection attempt was successful
+      DeviceEventEmitter.addListener(Chromecast.DEVICE_CONNECTED, () => { 
+        console.log('JG: device connected!'); 
+        let videoUri = this.props.source && this.props.source.uri;
+        console.log('JG: attempting to cast ', videoUri );
+        const episode = this.props.episode;
+        if ( videoUri ) {
+          Chromecast.castMedia(
+            videoUri, 
+            episode.name, 
+            episode.thumbnailUrl, 
+            !this.props.live && this.props.episodeVideoProgress[episode.id] || 0);
+        }
+      });
+
+      // If chromecast started to stream the media succesfully, it will send this event
+      DeviceEventEmitter.addListener(Chromecast.MEDIA_LOADED, () => { 'JG: media loaded!' });
+
+
+      // Init Chromecast SDK and starts looking for devices (uses DEFAULT APP ID)
+      Chromecast.startScan();
+      
+      // Init Chromecast SDK and starts looking for devices using registered APP ID
+      //Chromecast.startScan(APP_ID);
+      
+      // Does what the method says. It saves resources, use it when leaving your current view
+      //Chromecast.stopScan();
+      
+      // Returns a boolean with the result
+      //Chromecast.isConnected();
+      
+      // Return an array of devices' names and ids
+      let devices = await Chromecast.getDevices();
+      console.log('JG: chromecast devices = ', devices);
+      
+      // Gets the device id, and connects to it. If it is successful, will send a broadcast
+      //Chromecast.connectToDevice(DEVICE_ID);
+      
+      // Closes the connection to the current Chromecast
+      Chromecast.disconnect();
+      
+      // Streams the media to the connected chromecast. Time parameter let you choose
+      // in which time frame the media should start streaming
+      //Chromecast.castMedia(MEDIA_URL, MEDIA_TITLE, MEDIA_IMAGE, TIME_IN_SECONDS);
+      
+      // Move the streaming media to the selected time frame
+      //Chromecast.seekCast(TIME_IN_SECONDS);
+      
+      // Toggle Chromecast between pause or play state
+      //Chromecast.togglePauseCast();
+      
+      // Get the current streaming time frame. It can be use to sync the chromecast to
+      // your visual media controllers
+      //Chromecast.getStreamPosition();
+    }
+
+    async toggleChromeCast() {
+      console.log('JG: in this.toggleChromeCast');
+      const isConnected = await Chromecast.isConnected();
+      if ( isConnected ) {
+        console.log('JG: togglePauseCast');
+        Chromecast.togglePauseCast();
+      } else if ( this.state.chromecast_device && this.props.episode) {
+        let connection = await Chromecast.connectToDevice(this.state.chromecast_device.id);
+      }
     }
 
     /**
@@ -823,6 +906,7 @@ export default class VideoPlayer extends Component {
         const backControl = !this.props.disableBack ? this.renderBack() : this.renderNullControl();
         const volumeControl = !this.props.disableVolume ? this.renderVolume() : this.renderNullControl();
         const fullscreenControl = !this.props.disableFullscreen ? this.renderFullscreen() : this.renderNullControl();
+        const chromeCastControl = this.renderChromeCast();
 
         return(
             <Animated.View style={[
@@ -841,6 +925,7 @@ export default class VideoPlayer extends Component {
                         <View style={ styles.controls.pullRight }>
                             { volumeControl }
                             { fullscreenControl }
+                            { chromeCastControl }
                         </View>
                     </View>
                 </ImageBackground>
@@ -900,6 +985,21 @@ export default class VideoPlayer extends Component {
         return this.renderControl(
             <Image source={ source } />,
             this.methods.toggleFullscreen,
+            styles.controls.fullscreen
+        );
+    }
+
+    renderChromeCast() {
+        return this.renderControl(
+            <View>
+              <SvgIcon
+               type="chromecast"
+               scale={1}
+               height={35}
+               width={55}
+               fill={colors.white}/>
+            </View>,
+            this.toggleChromeCast.bind(this),
             styles.controls.fullscreen
         );
     }
@@ -1085,20 +1185,6 @@ export default class VideoPlayer extends Component {
 
         return (
              <Animated.View style={[{ height:videoHeight, width: videoWidth }]}>
-                 <TouchableOpacity 
-                   onPress={() => {this.toggleChromeCast()}}
-                   style={{
-                     marginLeft: width - 30,
-                     marginTop: 0,
-                     position:"absolute", 
-                     zIndex:1}}>
-                     <SvgIcon
-                      type="chromecast"
-                      scale={1}
-                      height={35}
-                      width={55}
-                      fill={colors.white}/>
-                 </TouchableOpacity>
                  <TouchableWithoutFeedback
                      onPress={ this.events.onScreenTouch }
                      style={[ styles.player.container, this.styles.containerStyle ]}>
