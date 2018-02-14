@@ -54,7 +54,8 @@ class Base extends React.Component {
     }
 
     landscapeVideo = () => {
-      return this.props.videoMode && this.state.orientation != "PORTRAIT" &&
+      return ( this.props.videoMode || this.props.liveMode ) && 
+        this.state.orientation != "PORTRAIT" &&
         this.state.orientation != "PORTRAITUPSIDEDOWN";
     }
 
@@ -141,6 +142,7 @@ class Base extends React.Component {
 function mapStateToProps(state) {
     return {
       videoMode: state.player.videoMode,
+      liveMode: state.player.liveMode,
       currentTrack: state.player.currentTrack,
       user_id: state.auth.user_id,
       guest: state.auth.guest,

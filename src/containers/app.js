@@ -22,7 +22,7 @@ class App extends React.Component {
     componentWillMount() {
         NetInfo.getConnectionInfo().then(this.updateConnection);
         NetInfo.addEventListener('connectionChange', this.updateConnection);
-        if ( ! this.props.videoMode ) {
+        if ( ! this.props.videoMode && ! this.props.liveMode ) {
           Orientation.lockToPortrait();
         } else {
           Orientation.unlockAllOrientations();
@@ -46,10 +46,15 @@ class App extends React.Component {
             if ( this.props.navigation.state.routeName !== 'episode' ) {
               this.props.setPlayerValue('videoMode', false);
             }
+            if ( this.props.navigation.state.routeName !== 'live' ) {
+              this.props.setPlayerValue('liveMode', false);
+            }
         }
-        if ( ! this.props.videoMode && nextProps.videoMode ) {
+        if ( ! this.props.videoMode && ! this.props.liveMode &&
+             ( nextProps.videoMode || nextProps.liveMode ) ) {
           Orientation.unlockAllOrientations();
-        } else if ( this.props.videoMode && ! nextProps.videoMode ) {
+        } else if ( ( this.props.videoMode || this.props.liveMode ) && 
+                    ! nextProps.videoMode && ! nextProps.liveMode ) {
           Orientation.lockToPortrait();
         }
     }
@@ -59,7 +64,6 @@ class App extends React.Component {
             if(this.loggedIn()){
                 this.props.resetTo('homescreen');
             }else{
-                console.log("JG: reset to login");
                 this.props.resetTo('login');
             }
         },500)
@@ -104,6 +108,7 @@ function mapStateToProps(state) {
     reduxRehydrated: state.storage.loaded,
     offlineEpisodes: state.data.offlineEpisodes,
     videoMode: state.player.videoMode,
+    liveMode: state.player.liveMode,
     routes: state.navigation.routes,
   };
 }

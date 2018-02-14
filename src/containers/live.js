@@ -20,7 +20,8 @@ import { resetTo, navigateTo } from '../actions/navigation';
 import ListItemSeries from './list_item_series';
 import Base from './view_base';
 import { getSchedule, setValue } from '../actions/data';
-import Video from 'react-native-video-controls';
+import { setPlayerValue } from '../actions/player';
+import Video from './video_player';
 moment = require('moment-timezone');
 import Orientation from 'react-native-orientation';
 import { DEBUG_LIVE_VIEW } from '../constants';
@@ -44,6 +45,10 @@ class Live extends React.Component {
       this.setNextShow(this.props);
     }
 
+    componentWillUnmount() {
+      this.props.setPlayerValue('liveMode', false);
+    }
+
     orientationDidChange = (orientation) => {
       console.log('JG: episode setting orientation to ', orientation);
       this.setState({orientation});
@@ -64,6 +69,7 @@ class Live extends React.Component {
         shouldRotate = true
       }
       if ( shouldRotate ) {
+        console.log('JG: rotating to ', toValue );
         Animated.timing(
           this.state.spinValue,
           {
@@ -133,6 +139,7 @@ class Live extends React.Component {
           uri:show.dataUrl,
           show: show
         });
+        this.props.setPlayerValue('liveMode', true);
         return;
       }
       const weekdays = [
@@ -186,6 +193,7 @@ class Live extends React.Component {
                 thumbnailUrl: show.thumb
               }
             });
+            this.props.setPlayerValue('liveMode', true);
             return;
           }
         }
@@ -226,7 +234,6 @@ class Live extends React.Component {
           volume={1}                            // 0 is muted, 1 is normal.
           muted={false}
           paused={false}
-          onTogglePlayback={this.onTogglePlayback}
           playInBackground={false}                // Audio continues to play when app entering background.
           playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
           progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
@@ -279,7 +286,8 @@ function mapDispatchToProps(dispatch) {
         resetTo,
         navigateTo,
         getSchedule, 
-        setValue
+        setValue,
+        setPlayerValue,
     }, dispatch);
 }
 

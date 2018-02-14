@@ -1183,6 +1183,9 @@ export default class VideoPlayer extends Component {
           outputRange: [counterClockwiseRotatedVideoMargin, 0, clockwiseRotatedVideoMargin]
         });
 
+        console.log('JG: rendering video, width/height = ', videoWidth, videoHeight );
+        
+
         return (
              <Animated.View style={[{ height:videoHeight, width: videoWidth }]}>
                  <TouchableWithoutFeedback
