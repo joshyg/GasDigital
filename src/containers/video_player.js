@@ -411,7 +411,7 @@ export default class VideoPlayer extends Component {
     _toggleFullscreen() {
         let state = this.state;
         state.isFullscreen = ! state.isFullscreen;
-        state.resizeMode = state.isFullscreen === true ? 'cover' : 'contain';
+        state.resizeMode = state.isFullscreen === true ? 'contain' : 'contain';
 
         this.setState( state );
     }
@@ -1166,21 +1166,15 @@ export default class VideoPlayer extends Component {
      * Provide all of our options and render the whole component.
      */
     render() {
+        let screenHeight = this.state.isFullscreen ? height : height/3;
         let statusBarHeight = Platform.OS == 'android' ? 25 : 0;
         const videoHeight = this.props.spinValue.interpolate({
           inputRange: [-1, 0, 1],
-          outputRange: [width - statusBarHeight, height/3, width - statusBarHeight]
+          outputRange: [width - statusBarHeight, screenHeight, width - statusBarHeight]
         });
         const videoWidth = this.props.spinValue.interpolate({
           inputRange: [-1, 0, 1],
           outputRange: [height, width, height]
-        });
-
-        let clockwiseRotatedVideoMargin = height > 700 ? -160 : -145;
-        let counterClockwiseRotatedVideoMargin = height > 700 ? -160 : -145;
-        const videoLeftMargin = this.props.spinValue.interpolate({
-          inputRange: [-1, 0, 1],
-          outputRange: [counterClockwiseRotatedVideoMargin, 0, clockwiseRotatedVideoMargin]
         });
 
         console.log('JG: rendering video, width/height = ', videoWidth, videoHeight );

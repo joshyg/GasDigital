@@ -330,7 +330,7 @@ class Episode extends React.Component {
             onBuffer={this.onBuffer}                // Callback when remote video is buffering
             //onProgress={this.onProgress}
             resizeMode='contain'
-            disableFullscreen={true}
+            disableFullscreen={false}
             disableBack={true}
             disableVolume={true}
             spinValue={this.state.spinValue}
