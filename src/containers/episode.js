@@ -308,6 +308,10 @@ class Episode extends React.Component {
     onTogglePlayback = (paused) => {
       this.setState({isPlayingVideo:!paused});
     }
+
+    onToggleFullscreen = (isFullscreen) => {
+      this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
+    }
     
     renderVideo() {
       return (
@@ -330,13 +334,14 @@ class Episode extends React.Component {
             onBuffer={this.onBuffer}                // Callback when remote video is buffering
             //onProgress={this.onProgress}
             resizeMode='contain'
-            disableFullscreen={false}
+            disableFullscreenControls={false}
             disableBack={true}
             disableVolume={true}
             spinValue={this.state.spinValue}
             episode={this.props.episode}
             episodeVideoProgress={this.props.episodeVideoProgress}
             live={false}
+            onToggleFullscreen={this.onToggleFullscreen}
           />
       );
     }

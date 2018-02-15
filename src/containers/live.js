@@ -47,6 +47,7 @@ class Live extends React.Component {
 
     componentWillUnmount() {
       this.props.setPlayerValue('liveMode', false);
+      this.props.setPlayerValue('isFullscreenVideo', false);
     }
 
     orientationDidChange = (orientation) => {
@@ -133,13 +134,14 @@ class Live extends React.Component {
     }
     setUri(props) {
       if ( DEBUG_LIVE_VIEW ) {
-        console.log('JG: first recent episode = ', props.recentEpisodeIds[0]);
-        let show = props.episodes[props.recentEpisodeIds[0]];
+        console.log('JG: first recent episode = ', props.recentEpisodeIds[1]);
+        let show = props.episodes[props.recentEpisodeIds[1]];
         this.setState({
           uri:show.dataUrl,
           show: show
         });
         this.props.setPlayerValue('liveMode', true);
+        this.props.setPlayerValue('isFullscreenVideo', true);
         return;
       }
       const weekdays = [
@@ -194,6 +196,7 @@ class Live extends React.Component {
               }
             });
             this.props.setPlayerValue('liveMode', true);
+            this.props.setPlayerValue('isFullscreenVideo', true);
             return;
           }
         }
@@ -224,6 +227,10 @@ class Live extends React.Component {
 
     }
 
+    onToggleFullscreen = (isFullscreen) => {
+      this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
+    }
+    
     renderVideo() {
       return (
         <Video source={{uri:this.state.uri}}   // Can be a URL or a local file.
@@ -239,12 +246,14 @@ class Live extends React.Component {
           progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
           //onProgress={this.onProgress}
           resizeMode='contain'
-          disableFullscreen={true}
+          disableFullscreenControls={false}
+          isFullscreen={true}
           disableBack={true}
           disableVolume={true}
           spinValue={this.state.spinValue}
           episode={this.getEpisodeInfo}
           live={true}
+          onToggleFullscreen={this.onToggleFullscreen}
         />
       );
     }

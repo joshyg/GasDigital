@@ -76,7 +76,7 @@ class Base extends React.Component {
 
     showMenu() {
       return this.props.navigation.state.routeName !== 'player_view' &&
-             !this.landscapeVideo(); 
+             !this.landscapeVideo() && ! this.props.isFullscreenVideo; 
     }
 
     renderOfflineHeader = () => {
@@ -93,7 +93,7 @@ class Base extends React.Component {
     }
 
     renderHeader = () => {
-      if ( ! this.landscapeVideo() ) {
+      if ( ! this.landscapeVideo() && ! this.props.isFullscreenVideo ) {
         return (
           <View style={[styles.header]} >
             {!this.props.hideBackButton ? 
@@ -148,6 +148,7 @@ function mapStateToProps(state) {
       guest: state.auth.guest,
       connection: state.data.connection,
       routes: state.navigation.routes,
+      isFullscreenVideo: state.player.isFullscreenVideo,
     };
 }
 

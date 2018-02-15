@@ -41,7 +41,7 @@ export default class VideoPlayer extends Component {
             rate: this.props.rate || 1,
             // Controls
 
-            isFullscreen: this.props.resizeMode === 'cover' || false,
+            isFullscreen: this.props.resizeMode === 'cover' || this.props.isFullscreen || false,
             showTimeRemaining: true,
             volumeTrackWidth: 0,
             lastScreenPress: 0,
@@ -414,6 +414,9 @@ export default class VideoPlayer extends Component {
         state.resizeMode = state.isFullscreen === true ? 'contain' : 'contain';
 
         this.setState( state );
+        if ( this.props.onToggleFullscreen ) {
+          this.props.onToggleFullscreen(state.isFullscreen);
+        }
     }
 
     /**
@@ -905,7 +908,7 @@ export default class VideoPlayer extends Component {
 
         const backControl = !this.props.disableBack ? this.renderBack() : this.renderNullControl();
         const volumeControl = !this.props.disableVolume ? this.renderVolume() : this.renderNullControl();
-        const fullscreenControl = !this.props.disableFullscreen ? this.renderFullscreen() : this.renderNullControl();
+        const fullscreenControl = !this.props.disableFullscreenControls ? this.renderFullscreen() : this.renderNullControl();
         const chromeCastControl = this.renderChromeCast();
 
         return(
@@ -1176,9 +1179,6 @@ export default class VideoPlayer extends Component {
           inputRange: [-1, 0, 1],
           outputRange: [height, width, height]
         });
-
-        console.log('JG: rendering video, width/height = ', videoWidth, videoHeight );
-        
 
         return (
              <Animated.View style={[{ height:videoHeight, width: videoWidth }]}>

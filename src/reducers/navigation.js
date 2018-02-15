@@ -110,9 +110,12 @@ export default reducer = (state = initialState, action) => {
 
     case NavigationActions.BACK:
         // dont allow user to nav down to first screen, which is app.js
-        if ( state.routes.length <= 2 ) {
+        if ( state.routes.length <= 1 ) {
             return AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName:'homescreen'}), state );
-        }
+        } else if ( state.routes.length == 2 ) {
+          tempState = AppNavigator.router.getStateForAction(NavigationActions.back({key: state.routes[1].key}),nextState);
+          return AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName:'homescreen'}), tempState );
+        }  
         return AppNavigator.router.getStateForAction(action, state);
 
     case CLEAR_NAV_DATA:

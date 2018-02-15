@@ -35,6 +35,7 @@ class App extends React.Component {
           this.props.navigation.goBack();
           return false;
         });
+        this.props.setPlayerValue('isFullscreenVideo', false );
     }
 
     componentWillReceiveProps(nextProps) { 
@@ -49,6 +50,10 @@ class App extends React.Component {
             if ( this.props.navigation.state.routeName !== 'live' ) {
               this.props.setPlayerValue('liveMode', false);
             }
+        }
+        if ( nextProps.navigation.state.routeName !== 'live'  && 
+             nextProps.navigation.state.routeName !== 'episode' ) {
+            this.props.setPlayerValue('isFullscreenVideo', false );
         }
         if ( ! this.props.videoMode && ! this.props.liveMode &&
              ( nextProps.videoMode || nextProps.liveMode ) ) {
