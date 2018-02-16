@@ -10,6 +10,7 @@ import PlayerFooter from './player_footer';
 const { height, width } = Dimensions.get('window');
 import { colors, fonts } from '../constants';
 import Orientation from 'react-native-orientation';
+import Modal from './modal.js';
 
 //FIXME: this component will be used to instantiate top/bottom menu
 class Base extends React.Component {
@@ -134,6 +135,7 @@ class Base extends React.Component {
                 navigateTo={this.props.navigateTo}
                 />
             )}
+            <Modal navigation={this.props.navigation}/>
           </View>
         );
     }
