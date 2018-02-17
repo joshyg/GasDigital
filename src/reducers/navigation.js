@@ -1,12 +1,4 @@
 import _ from 'lodash/fp';
-import {
-    NAVIGATE_TO,
-    NAVIGATION_BACK,
-    SET_ACTIVE_MENU_ITEM,
-    NAVIGATE_RESET_TO,
-    CLEAR_NAV_DATA,
-    SET_NAV_DATA,
-} from '../actions/navigation';
 
 import { NavigationActions, StackNavigator } from 'react-navigation';
 
@@ -118,18 +110,18 @@ export default reducer = (state = initialState, action) => {
         }  
         return AppNavigator.router.getStateForAction(action, state);
 
-    case CLEAR_NAV_DATA:
+    case 'CLEAR_NAV_DATA':
         return { ...nextState,
             data: null
         }
 
-    case SET_NAV_DATA:
+    case 'SET_NAV_DATA':
         return { ...nextState,
             data: action.payload
         }
 
-    case NAVIGATE_TO:
-        // prevent a view from being loaded multiple times in the case of a person tapping very fast
+    case 'NAVIGATE_TO':
+        // prevent a view from being loaded multiple times in the case 'of a person tapping very fast
         let topRoute = state.routes[state.routes.length-1];
         if ( topRoute.routeName === action.payload.scene && topRoute.params.item_id === action.payload.data.item_id ) {
             return nextState;
@@ -140,12 +132,12 @@ export default reducer = (state = initialState, action) => {
                 data: action.payload.data
             });
 
-    case SET_ACTIVE_MENU_ITEM:
+    case 'SET_ACTIVE_MENU_ITEM':
         return { ...nextState,
             activeMenuItem: action.payload
         };
 
-    case NAVIGATE_RESET_TO:
+    case 'NAVIGATE_RESET_TO':
         if ( nextState.routes.length <= 1 ) {
             return AppNavigator.router.getStateForAction( NavigationActions.navigate({routeName:action.payload}), nextState );
         }
