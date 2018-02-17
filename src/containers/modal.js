@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, Dimensions, StyleSheet, Modal, Text } from "react-native";
+import { FlatList, TouchableOpacity, View, Dimensions, StyleSheet, Modal, Text } from "react-native";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fonts, colors } from "../constants";
@@ -16,11 +16,11 @@ class ModalComponent extends React.Component {
     //this.props.setValue('showModal', true );
   } 
   
-  renderChomecastControls() {
+  renderChomecastControls = () => {
       return ( <Text style={[styles.text]}>Chromecast Controls</Text> );
   }
 
-  renderChomecastMenu() {
+  renderChromecastMenu = () => {
     let data = this.props.chromecast_devices || [];
     return (
         <FlatList
@@ -37,6 +37,7 @@ class ModalComponent extends React.Component {
 
   renderModal() {
     const { modalType } = this.props;
+    console.log('JG: rendering modal ', modalType );
     if ( ! modalType || ! this.renderFunctions[modalType] ) {
       return null;
     }
@@ -71,7 +72,10 @@ class ModalComponent extends React.Component {
 
 function mapStateToProps(state) {
     return {
-      showModal: state.data.showModal
+      chromecast_devices: state.data.chromecast_devices,
+      showModal: state.data.showModal,
+      modalType: state.data.modalType,
+      modalData: state.data.modalData
     };
 }
 

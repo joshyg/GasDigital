@@ -657,8 +657,8 @@ class VideoPlayer extends Component {
         // FIXME: add modal
         if ( devices.length > 0 ) {
           this.setState({chromecast_device:devices[0]});
-          this.props.setValue({chromecast_devices:devices});
         }
+        this.props.setValue('chromecast_devices', devices);
 
       });
       // To know if the connection attempt was successful
@@ -694,6 +694,7 @@ class VideoPlayer extends Component {
       
       // Return an array of devices' names and ids
       let devices = await Chromecast.getDevices();
+      this.props.setValue('chromecast_devices', devices);
       console.log('JG: chromecast devices = ', devices);
       
       // Gets the device id, and connects to it. If it is successful, will send a broadcast
@@ -723,7 +724,7 @@ class VideoPlayer extends Component {
       if ( isConnected ) {
         this.props.showModal('chromecastControls');
         //Chromecast.togglePauseCast();
-      } else if ( this.state.chromecast_device && this.props.episode) {
+      } else {
         this.props.showModal('chromecastMenu');
         //let connection = await Chromecast.connectToDevice(this.state.chromecast_device.id);
       }
@@ -916,9 +917,9 @@ class VideoPlayer extends Component {
         const fullscreenControl = !this.props.disableFullscreenControls ? this.renderFullscreen() : this.renderNullControl();
          
         const chromeCastControl = 
-          this.state.chromecast_devices &&
-          this.state.chromecast_devices.length &&
-          this.renderChromeCast();
+          this.props.chromecast_devices &&
+          this.props.chromecast_devices.length &&
+          this.renderChromeCast() || null;
 
         return(
             <Animated.View style={[
@@ -1228,6 +1229,7 @@ class VideoPlayer extends Component {
 
 function mapStateToProps(state) {
     return {
+      chromecast_devices: state.data.chromecast_devices
     };
 }
 
