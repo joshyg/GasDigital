@@ -7,7 +7,8 @@ const initialState = {
   queue: [],
   queueIndex: 0,
   episodeProgress: {},
-  episodeVideoProgress: {}
+  episodeVideoProgress: {},
+  videoTimer: {}
 };
 
 
@@ -31,7 +32,7 @@ export default reducer = (state = initialState, action) => {
         }
         return {...state, 
           episodeVideoProgress: { ...state.episodeVideoProgress, ...episodeVideoProgress },
-          videoTimer: { ...action.payload }
+          videoTimer: { ...state.videoTimer, ...action.payload }
         };
 
     case 'PLAYER_TOGGLE_PLAYBACK':

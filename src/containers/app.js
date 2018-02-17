@@ -16,6 +16,7 @@ const { height, width } = Dimensions.get('window');
 import { setValue } from '../actions/data';
 import { setPlayerValue } from '../actions/player';
 import Orientation from 'react-native-orientation';
+import Chromecast from './chromecast';
 
 
 class App extends React.Component {
@@ -101,6 +102,7 @@ class App extends React.Component {
         return (
             <View style={styles.container}>
                 { this.loggedIn() && <Player navigation={this.props.navigation}/> }
+                { this.loggedIn() && <Chromecast navigation={this.props.navigation}/> }
             </View>
         );
     }

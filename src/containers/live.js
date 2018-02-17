@@ -19,7 +19,7 @@ import { bindActionCreators } from 'redux';
 import { resetTo, navigateTo } from '../actions/navigation';
 import ListItemSeries from './list_item_series';
 import Base from './view_base';
-import { getSchedule, setValue } from '../actions/data';
+import { showModal, getSchedule, setValue } from '../actions/data';
 import { setPlayerValue } from '../actions/player';
 import Video from './video_player';
 moment = require('moment-timezone');
@@ -269,6 +269,8 @@ class Live extends React.Component {
           episode={this.getEpisodeInfo}
           live={true}
           onToggleFullscreen={this.onToggleFullscreen}
+          showModal={this.props.showModal}
+          chromecast_devices={this.props.chromecast_devices}
         />
       );
     }
@@ -301,7 +303,8 @@ function mapStateToProps(state) {
       schedule: state.data.schedule,
       recentEpisodeIds: state.data.recentEpisodeIds,
       channelsById: state.data.channelsById,
-      episodes: state.data.episodes
+      episodes: state.data.episodes,
+      chromecast_devices: state.data.chromecast_devices,
     };
 }
 
@@ -310,6 +313,7 @@ function mapDispatchToProps(dispatch) {
         resetTo,
         navigateTo,
         getSchedule, 
+        showModal,
         setValue,
         setPlayerValue,
     }, dispatch);

@@ -26,11 +26,8 @@ class ModalComponent extends React.Component {
     // disable any audio tracks
     this.props.setPlayerValue('isPlaying', false);
     this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.setValue('showModal', false);
     this.props.navigateTo("player_view");
-  }
-  
-  renderChomecastControls = () => {
-      return ( <Text style={[styles.text]}>Chromecast Controls</Text> );
   }
 
   renderChromecastMenuItem  = ({item}) => {

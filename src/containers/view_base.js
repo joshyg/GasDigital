@@ -67,12 +67,15 @@ class Base extends React.Component {
     }
 
     showPlayer() {
-      if ( this.props.currentTrack &&
+      console.log('JG: showPlayer: chromecastMode = ', this.props.chromecastMode, 
+                  ' videMode = ', this.props.videoMode );
+      if ( this.props.currentTrack && ! this.props.chromecastMode &&
            Object.keys(this.props.currentTrack).length == 0 ) {
         return false;
       }
       return this.props.navigation.state.routeName !== 'player_view' &&
-             ! this.props.videoMode && !! this.props.currentTrack;
+             ! this.props.videoMode && 
+             ( !! this.props.currentTrack || this.props.chromecastMode ) ;
     }
 
     showMenu() {
@@ -151,6 +154,7 @@ function mapStateToProps(state) {
       connection: state.data.connection,
       routes: state.navigation.routes,
       isFullscreenVideo: state.player.isFullscreenVideo,
+      chromecastMode: state.player.chromecastMode
     };
 }
 

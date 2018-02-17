@@ -13,6 +13,7 @@ import {
   getOfflineEpisode,
   deleteOfflineEpisode,
   displayOfflineEpisodeDownloading,
+  showModal,
 } from '../actions/data';
 import Base from './view_base';
 import Video from './video_player';
@@ -174,6 +175,7 @@ class Episode extends React.Component {
       console.log('JG: setting track to ', track);
       this.props.setPlayerValue('isPlayingVideo', false);
       this.props.setPlayerValue('videoMode', false);
+      this.props.setPlayerValue('chromecastMode', false);
       this.props.setPlayerValue('currentTrack', track);
       if ( ! track.audioUrl && series_id ) {
         this.props.fetchAndPlayAudio(series_id, episode.id);
@@ -278,10 +280,10 @@ class Episode extends React.Component {
 
     updateProgress()  {
       this.setInterval( () => {
-        if(this.props.isPlayingVideo){
+        if(this.props.isPlayingVideo && this.player){
           let data = {};
+          data = this.player.getTime();
           data.episode_id = this.props.episode.id;
-          data.currentTime = this.player && this.player.state.currentTime;
           this.props.setVideoTimerValue(data)
         }
       }, 8000);
@@ -354,6 +356,8 @@ class Episode extends React.Component {
             episodeVideoProgress={this.props.episodeVideoProgress}
             live={false}
             onToggleFullscreen={this.onToggleFullscreen}
+            showModal={this.props.showModal}
+            chromecast_devices={this.props.chromecast_devices}
           />
       );
     }
@@ -535,6 +539,7 @@ function mapStateToProps(state) {
       currentTrack: state.player.currentTrack,
       episodeVideoProgress: state.player.episodeVideoProgress,
       videoMode: state.player.videoMode,
+      chromecast_devices: state.data.chromecast_devices,
     };
 }
 
@@ -553,6 +558,7 @@ function mapDispatchToProps(dispatch) {
         deleteOfflineEpisode,
         displayOfflineEpisodeDownloading,
         setVideoTimerValue,
+        showModal,
     }, dispatch);
 }
 

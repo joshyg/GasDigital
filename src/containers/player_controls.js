@@ -14,7 +14,8 @@ import {
     setPlayerValue,
     setPlayerRate,
     setPlayback,
-    fetchAndPlayAudio
+    fetchAndPlayAudio,
+    setVideoTimerValue,
 } from '../actions/player';
 import PlayerControlsComponent from '../components/player_controls';
 import Chromecast from 'react-native-google-cast';
@@ -45,6 +46,7 @@ class PlayerControlsContainer extends Component {
     }
     onPlayPressChromecast = () => {
       Chromecast.togglePauseCast();
+      this.props.setPlayerValue( 'isPlayingChromecast', ! this.props.isPlayingChromecast );
     }
 
     onPlayPress = () => {
@@ -132,8 +134,8 @@ class PlayerControlsContainer extends Component {
         this.props.setPlayerValue('newTime', val);
       } else if ( ! this.props.liveMode ) {
         console.log('JG: set videoTimerValue to ', val);
-        this.props.setVideoTimerValue(val);
-        Chromecast.seekCast(val.currentTime);
+        this.props.setVideoTimerValue({ currentTime: val });
+        Chromecast.seekCast(val);
       }
     }
 
@@ -193,15 +195,22 @@ class PlayerControlsContainer extends Component {
     componentWillUnmount(){
     }
 
+    isPlaying = () => {
+      if ( ! this.props.chromecastMode ) {
+        return this.props.isPlaying;
+      } 
+      return this.props.isPlayingChromecast;
+    }
+
     render() {
         return (
             <PlayerControlsComponent
                 navigation={this.props.navigation}
-                isLoading={!this.props.track.id}
+                isLoading={!this.props.track || !this.props.track.id}
                 progressTime={this.getProgress()}
                 timer={this.props.timer}
                 track={this.props.track}
-                isPlaying={this.props.isPlaying}
+                isPlaying={this.isPlaying()}
                 hasPrevious={this.hasPrevious()}
                 hasNext={this.hasNext()}
                 onPlayPress={this.onPlayPress}
@@ -223,7 +232,9 @@ class PlayerControlsContainer extends Component {
 function mapStateToProps(state) {
     return {
         timer: state.player.timer,
+        videoTimer: state.player.videoTimer,
         isPlaying: state.player.isPlaying,
+        isPlayingChromecast: state.player.isPlayingChromecast,
         isSliderEnabled: !state.player.isSettingTime,
         playerRate: state.player.playerRate,
         episode: state.data.episode,
@@ -244,6 +255,7 @@ function mapDispatchToProps(dispatch) {
         setPlayerRate,
         setPlayerValue,
         fetchAndPlayAudio,
+        setVideoTimerValue,
     }, dispatch);
 }
 

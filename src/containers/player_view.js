@@ -33,9 +33,9 @@ class PlayerView extends Component {
       if ( ! this.props.chromecastMode ) {
         return this.props.currentTrack;
       } else if ( ! this.props.liveMode ) {
-        return this.props.currentLiveVideo;
+        return this.props.currentVideo;
       }
-      return this.props.currentVideo;
+      return this.props.currentLiveVideo;
     }
 
     render() {
@@ -44,7 +44,7 @@ class PlayerView extends Component {
           <View style={styles.container}>
             <Image 
               style={styles.thumbnail}
-              source={{uri: this.props.currentTrack.image}}
+              source={{uri: this.track().image}}
             />
             <PlayerControls
               chromecastMode={this.props.chromecastMode}
