@@ -140,6 +140,13 @@ class Live extends React.Component {
           uri:show.dataUrl,
           show: show
         });
+        let video = {
+          uri: uri,
+          image: show.thumb,
+          name: show.title,
+        }
+        this.props.setPlayerValue('currentLiveVideo', video);
+        this.props.setPlayerValue('isPlaying', false);
         this.props.setPlayerValue('liveMode', true);
         this.props.setPlayerValue('isFullscreenVideo', true);
         return;
@@ -188,13 +195,21 @@ class Live extends React.Component {
           console.log('JG: show ', show, ' is now' );
           if ( this.props.channelsById[show.show_id] ) {
             console.log('JG: setting uri to show show ', show, " date = ", date, " currentDay = ", currentDay, " show_starts = ", show_starts );
+            let uri = this.props.channelsById[show.show_id].hd_live_url;
             this.setState({
-              uri:this.props.channelsById[show.show_id].hd_live_url,
+              uri:uri,
               show: {
                 name: show.title,
                 thumbnailUrl: show.thumb
               }
             });
+            let video = {
+              uri: uri,
+              image: show.thumb,
+              name: show.title,
+            }
+            this.props.setPlayerValue('currentLiveVideo', video);
+            this.props.setPlayerValue('isPlaying', false);
             this.props.setPlayerValue('liveMode', true);
             this.props.setPlayerValue('isFullscreenVideo', true);
             return;

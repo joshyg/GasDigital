@@ -1,9 +1,13 @@
 import React from 'react';
-import { FlatList, TouchableOpacity, View, Dimensions, StyleSheet, Modal, Text } from "react-native";
+import { FlatList, TouchableHighlight, TouchableOpacity, View, Dimensions, StyleSheet, Modal, Text } from "react-native";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fonts, colors } from "../constants";
 import { setValue } from '../actions/data';
+import { setPlayerValue } from '../actions/player';
+import Chromecast from 'react-native-google-cast';
+import { navigateTo } from '../actions/navigation';
+
 const { height, width } = Dimensions.get('window');
 
 class ModalComponent extends React.Component {
@@ -15,18 +19,39 @@ class ModalComponent extends React.Component {
   componentWillMount() {
     //this.props.setValue('showModal', true );
   } 
+
+
+  connectToChromecastDevice = async (itemId) => {
+    let connection = await Chromecast.connectToDevice(itemId);
+    // disable any audio tracks
+    this.props.setPlayerValue('isPlaying', false);
+    this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.navigateTo("player_view");
+  }
   
   renderChomecastControls = () => {
       return ( <Text style={[styles.text]}>Chromecast Controls</Text> );
   }
 
+  renderChromecastMenuItem  = ({item}) => {
+    console.log('JG: rendering cc menu item ', item );
+    return (
+      <TouchableOpacity onPress={() => { this.connectToChromecastDevice(item.id) }}>
+        <Text style={styles.text}>{item.name}</Text>
+      </TouchableOpacity>
+    );
+  }
+
   renderChromecastMenu = () => {
     let data = this.props.chromecast_devices || [];
     return (
-        <FlatList
-          data={data}
-          renderItem={({item}) => <Text>{item.name}</Text>}
-        />
+        <View>
+          <Text style={styles.text}>SELECT A DEVICE</Text>
+          <FlatList
+            data={data}
+            renderItem={this.renderChromecastMenuItem}
+          />
+        </View>
     );
   }
 
@@ -36,15 +61,16 @@ class ModalComponent extends React.Component {
   }
 
   renderModal() {
-    const { modalType } = this.props;
+    const { showModal, modalType } = this.props;
     console.log('JG: rendering modal ', modalType );
-    if ( ! modalType || ! this.renderFunctions[modalType] ) {
+    if ( ! showModal || ! modalType || ! this.renderFunctions[modalType] ) {
       return null;
     }
     return this.renderFunctions[modalType]();
   }
 
   render() {
+    console.log('JG: rendering modal, type = ', this.props.modalType );
     return (
        <Modal
            animationType="fade"
@@ -81,7 +107,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-      setValue 
+      setValue,
+      setPlayerValue,
+      navigateTo
     }, dispatch);
 }
 

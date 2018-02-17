@@ -34,8 +34,6 @@ class Episode extends React.Component {
     state = {
       newFavoriteStatus: null,
       newOfflineStatus: null,
-      videoMode: false,
-      isPlayingVideo: false,
       inPlaylist: false,
       orientation: '',
       videoUrl: '',
@@ -176,7 +174,6 @@ class Episode extends React.Component {
       console.log('JG: setting track to ', track);
       this.props.setPlayerValue('isPlayingVideo', false);
       this.props.setPlayerValue('videoMode', false);
-      this.setState({videoMode:false, isPlayingVideo: false});
       this.props.setPlayerValue('currentTrack', track);
       if ( ! track.audioUrl && series_id ) {
         this.props.fetchAndPlayAudio(series_id, episode.id);
@@ -189,10 +186,23 @@ class Episode extends React.Component {
     }
 
     playVideo = () => {
+      let episode = this.props.episode || {};
+      let series_id = this.props.series ? this.props.series.id : episode.show_id;
+      let video = {
+        uri: episode.dataUrl,
+        download_uri: episode.downloadUrl,
+        image: episode.thumbnailUrl,
+        name: episode.name,
+        episode_id: episode.id,
+        series_id: series_id,
+        audioUrl: episode.audioUrl
+      }
+      console.log('JG: in playVideo, playing video ', video);
       this.props.setPlayerValue('isPlaying', false);
+      this.props.setPlayerValue('chromecastMode', false);
       this.props.setPlayerValue('isPlayingVideo', true);
       this.props.setPlayerValue('videoMode', true);
-      this.setState({videoMode:true, isPlayingVideo: true});
+      this.props.setPlayerValue('currentVideo', video);
     }
 
 
@@ -245,7 +255,8 @@ class Episode extends React.Component {
     }
 
     onEndVideo = () => {
-      this.setState({videoMode:false, isPlayingVideo:false});
+      this.props.setPlayerValue('isPlayingVideo', false);
+      this.props.setPlayerValue('videoMode', false);
     }
 
     onBuffer = (meta) => {
@@ -306,7 +317,7 @@ class Episode extends React.Component {
     }
 
     onTogglePlayback = (paused) => {
-      this.setState({isPlayingVideo:!paused});
+      this.props.setPlayerValue('isPlayingVideo', !paused);
     }
 
     onToggleFullscreen = (isFullscreen) => {
@@ -314,6 +325,7 @@ class Episode extends React.Component {
     }
     
     renderVideo() {
+      console.log('JG: rendering video');
       return (
           <Video source={{uri:this.getVideoUri()}}   // Can be a URL or a local file.
             style={{zIndex:0}}
@@ -323,7 +335,7 @@ class Episode extends React.Component {
             rate={1}                              // 0 is paused, 1 is normal.
             volume={1}                            // 0 is muted, 1 is normal.
             muted={false}
-            paused={!this.state.isPlayingVideo}                          // Pauses playback entirely.
+            paused={!this.props.isPlayingVideo}                          // Pauses playback entirely.
             onTogglePlayback={this.onTogglePlayback}
             playInBackground={false}                // Audio continues to play when app entering background.
             playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
@@ -493,13 +505,13 @@ class Episode extends React.Component {
         return (
             <Base navigation={this.props.navigation}>
               <ScrollView  contentContainerStyle={styles.container}>
-                { this.state.videoMode ? this.renderVideo() : 
+                { this.props.videoMode ? this.renderVideo() : 
                 (<Image 
                   style={styles.thumbnail}
                   source={{uri: this.props.episode && this.props.episode.thumbnailUrl}}
                 />)
                 }
-                {( this.state.orientation.includes('PORTRAIT') || ! this.state.videoMode ) && this.renderDetails()}
+                {( this.state.orientation.includes('PORTRAIT') || ! this.props.videoMode ) && this.renderDetails()}
               </ScrollView>
             </Base>
         );
@@ -522,6 +534,7 @@ function mapStateToProps(state) {
       isPlayingVideo: state.player.isPlayingVideo,
       currentTrack: state.player.currentTrack,
       episodeVideoProgress: state.player.episodeVideoProgress,
+      videoMode: state.player.videoMode,
     };
 }
 

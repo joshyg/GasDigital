@@ -22,9 +22,10 @@ import {
 import _ from 'lodash';
 import SvgIcon from '../components/svg_icons';
 import { colors } from '../constants.js';
-const { height, width } = Dimensions.get('window');
 import { showModal, setValue } from '../actions/data';
 import Chromecast from 'react-native-google-cast';
+
+const { height, width } = Dimensions.get('window');
 
 class VideoPlayer extends Component {
 

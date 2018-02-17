@@ -16,8 +16,8 @@ import {
     setPlayback,
     fetchAndPlayAudio
 } from '../actions/player';
-
 import PlayerControlsComponent from '../components/player_controls';
+import Chromecast from 'react-native-google-cast';
 
 class PlayerControlsContainer extends Component {
     constructor(props) {
@@ -36,19 +36,30 @@ class PlayerControlsContainer extends Component {
         
     }
 
-    onPlayPress = () => {
-      if ( ! this.props.currentTrack ) {
-        return;
-      }
+    onPlayPressAudio = () => {
       if ( ! this.props.currentTrack.audioUrl ) {
         this.props.fetchAndPlayAudio(this.props.currentTrack.series_id, this.props.currentTrack.episode_id);
       } else {
         this.props.togglePlayback();
       }
     }
+    onPlayPressChromecast = () => {
+      Chromecast.togglePauseCast();
+    }
+
+    onPlayPress = () => {
+      if ( ! this.props.track ) {
+        return;
+      }
+      if ( ! this.props.chromecastMode ) {
+        this.onPlayPressAudio();
+      } else {
+        this.onPlayPressChromecast();
+      }
+    }
 
     onNextPress = () => {
-        if(!this.hasNext){
+        if(this.props.chromecastMode || !this.hasNext()){
             return;
         }
 
@@ -79,7 +90,7 @@ class PlayerControlsContainer extends Component {
 
 
     playPrevious = () => {
-        if(!this.hasPrevious){
+        if(this.props.chromecastMode || !this.hasPrevious()){
             return;
         }
 
@@ -117,15 +128,27 @@ class PlayerControlsContainer extends Component {
     }
     
     setCurrentTime = (val) => {
+      if ( ! this.props.chromecastMode ) {
         this.props.setPlayerValue('newTime', val);
+      } else if ( ! this.props.liveMode ) {
+        console.log('JG: set videoTimerValue to ', val);
+        this.props.setVideoTimerValue(val);
+        Chromecast.seekCast(val.currentTime);
+      }
     }
 
     seekForwardFifteen = () => {
-        this.setCurrentTime(Math.min(this.props.timer.currentTime + 15, this.props.timer.playableDuration));
+        let timer = this.props.chromecastMode ? this.props.videoTimer : this.props.timer;
+        if ( ! timer.playableDuration ) {
+          this.setCurrentTime(timer.currentTime + 15);
+        } else {
+          this.setCurrentTime(Math.min(timer.currentTime + 15, timer.playableDuration));
+        }
     }
 
     seekBackFifteen = () => {
-        this.setCurrentTime(Math.max(0, this.props.timer.currentTime - 15));
+        let timer = this.props.chromecastMode ? this.props.videoTimer : this.props.timer;
+        this.setCurrentTime(Math.max(0, timer.currentTime - 15));
     }
 
     formatTime(time) {
@@ -190,6 +213,8 @@ class PlayerControlsContainer extends Component {
                 changeRate={this.changeRate.bind(this)}
                 seekForwardFifteen={this.seekForwardFifteen}
                 seekBackFifteen={this.seekBackFifteen}
+                chromecastMode={this.props.chromecastMode}
+                liveMode={this.props.liveMode}
             />
         );
     }

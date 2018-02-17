@@ -29,6 +29,15 @@ class PlayerView extends Component {
 
     }
 
+    track = () => {
+      if ( ! this.props.chromecastMode ) {
+        return this.props.currentTrack;
+      } else if ( ! this.props.liveMode ) {
+        return this.props.currentLiveVideo;
+      }
+      return this.props.currentVideo;
+    }
+
     render() {
       return (
         <Base navigation={this.props.navigation}>
@@ -38,7 +47,9 @@ class PlayerView extends Component {
               source={{uri: this.props.currentTrack.image}}
             />
             <PlayerControls
-              track={this.props.currentTrack}
+              chromecastMode={this.props.chromecastMode}
+              liveMode={this.props.liveMode}
+              track={this.track()}
               navigation={this.props.navigation}
               isSettingTime={this.isSettingTime}
             />
@@ -52,6 +63,10 @@ class PlayerView extends Component {
 function mapStateToProps(state) {
     return {
         currentTrack: state.player.currentTrack,
+        currentVideo: state.player.currentVideo,
+        currentLiveVideo: state.player.currentLiveVideo,
+        chromecastMode: state.player.chromecastMode,
+        liveMode: state.player.liveMode,
     };
 }
 

@@ -30,7 +30,9 @@ export default reducer = (state = initialState, action) => {
           episodeVideoProgress[action.payload.episode_id] = action.payload.currentTime;
         }
         return {...state, 
-          episodeVideoProgress: { ...state.episodeVideoProgress, ...episodeVideoProgress } };
+          episodeVideoProgress: { ...state.episodeVideoProgress, ...episodeVideoProgress },
+          videoTimer: { ...action.payload }
+        };
 
     case 'PLAYER_TOGGLE_PLAYBACK':
         isPlaying = !state.isPlaying;
