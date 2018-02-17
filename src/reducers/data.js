@@ -370,6 +370,14 @@ export default reducer = (state = initialState, action) => {
         }
         return {...state, offlineEpisodes: { ...state.offlineEpisodes, ...newOfflineEpisodes }};
 
+    case 'DATA_SHOW_MODAL':
+        return {
+          ...state, 
+          showModal: true,
+          modalData: action.payload.data,
+          modalType: action.payload.type
+        };
+
     case 'AUTH_LOG_OUT':
         return { ...initialState, connection: state.connection };
     case 'persist/REHYDRATE':

@@ -184,6 +184,13 @@ export function getAudio(channel_id,episode_id) {
     };
 }  
 
+export function showModal(type='',data=null) {
+    return {
+        type: 'DATA_SHOW_MODAL',
+        payload: { type, data }
+    };
+}
+
 export function setValue(key,value) {
   let payload = {};
   payload[key] = value;

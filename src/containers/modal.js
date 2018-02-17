@@ -16,6 +16,33 @@ class ModalComponent extends React.Component {
     //this.props.setValue('showModal', true );
   } 
   
+  renderChomecastControls() {
+      return ( <Text style={[styles.text]}>Chromecast Controls</Text> );
+  }
+
+  renderChomecastMenu() {
+    let data = this.props.chromecast_devices || [];
+    return (
+        <FlatList
+          data={data}
+          renderItem={({item}) => <Text>{item.name}</Text>}
+        />
+    );
+  }
+
+  renderFunctions = {
+    'chromecastControls': this.renderChromecastControls,
+    'chromecastMenu': this.renderChromecastMenu,
+  }
+
+  renderModal() {
+    const { modalType } = this.props;
+    if ( ! modalType || ! this.renderFunctions[modalType] ) {
+      return null;
+    }
+    return this.renderFunctions[modalType]();
+  }
+
   render() {
     return (
        <Modal
@@ -33,8 +60,8 @@ class ModalComponent extends React.Component {
                 </View>                  
              </TouchableOpacity>
              <View style={styles.container}>
-                 <Text style={[styles.text]}>Hello Modal</Text>
-             </View>        
+               { this.renderModal() }
+             </View>
            </View>
          </View>      
        </Modal>
@@ -75,7 +102,7 @@ const styles = StyleSheet.create({
     height: containerWidth / 2,
     marginHorizontal: marginHorizontal,
     width: containerWidth,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
     alignItems: 'center',  
     justifyContent: 'center',
   },

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Video from 'react-native-video';
 import {
     TouchableWithoutFeedback,
@@ -21,9 +23,10 @@ import _ from 'lodash';
 import SvgIcon from '../components/svg_icons';
 import { colors } from '../constants.js';
 const { height, width } = Dimensions.get('window');
+import { showModal, setValue } from '../actions/data';
 import Chromecast from 'react-native-google-cast';
 
-export default class VideoPlayer extends Component {
+class VideoPlayer extends Component {
 
     constructor( props ) {
         super( props );
@@ -654,6 +657,7 @@ export default class VideoPlayer extends Component {
         // FIXME: add modal
         if ( devices.length > 0 ) {
           this.setState({chromecast_device:devices[0]});
+          this.props.setValue({chromecast_devices:devices});
         }
 
       });
@@ -717,10 +721,11 @@ export default class VideoPlayer extends Component {
       console.log('JG: in this.toggleChromeCast');
       const isConnected = await Chromecast.isConnected();
       if ( isConnected ) {
-        console.log('JG: togglePauseCast');
-        Chromecast.togglePauseCast();
+        this.props.showModal('chromecastControls');
+        //Chromecast.togglePauseCast();
       } else if ( this.state.chromecast_device && this.props.episode) {
-        let connection = await Chromecast.connectToDevice(this.state.chromecast_device.id);
+        this.props.showModal('chromecastMenu');
+        //let connection = await Chromecast.connectToDevice(this.state.chromecast_device.id);
       }
     }
 
@@ -909,7 +914,11 @@ export default class VideoPlayer extends Component {
         const backControl = !this.props.disableBack ? this.renderBack() : this.renderNullControl();
         const volumeControl = !this.props.disableVolume ? this.renderVolume() : this.renderNullControl();
         const fullscreenControl = !this.props.disableFullscreenControls ? this.renderFullscreen() : this.renderNullControl();
-        const chromeCastControl = this.renderChromeCast();
+         
+        const chromeCastControl = 
+          this.state.chromecast_devices &&
+          this.state.chromecast_devices.length &&
+          this.renderChromeCast();
 
         return(
             <Animated.View style={[
@@ -1217,6 +1226,20 @@ export default class VideoPlayer extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+      setValue,
+      showModal,
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoPlayer);
+
 /**
  * This object houses our styles. There's player
  * specific styles and control specific ones.
@@ -1418,3 +1441,6 @@ const styles = {
         },
     })
 };
+
+
+
