@@ -40,10 +40,14 @@ class ModalComponent extends React.Component {
   }
 
   renderChromecastMenu = () => {
-    let data = this.props.chromecast_devices || [];
+    let data = this.props.chromecast_devices.map( (x) => {
+      x.key = x.id;
+      return x;
+     }) || [];
     return (
         <View>
-          <Text style={styles.text}>SELECT A DEVICE</Text>
+          <Text style={styles.headerText}>SELECT A DEVICE</Text>
+          <Text>{"\n"}</Text>
           <FlatList
             data={data}
             renderItem={this.renderChromecastMenuItem}
@@ -142,10 +146,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     opacity: .8,
   },
-  text:{
+  headerText:{
     color: colors.black,
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  text:{
+    color: colors.black,
+    fontSize: 16,
   },
 
 });

@@ -51,13 +51,13 @@ export default function PlayerControlsComponent(props) {
                         />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={props.seekBackFifteen}>
+                { ! props.liveMode && <TouchableOpacity onPress={props.seekBackFifteen}>
                         <Image
                             style={styles.jump}
                             resizeMode={'contain'}
                             source={skipBackFifteenButton}
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> }
     
                     <TouchableOpacity onPress={props.onPlayPress}>
                         <Image
@@ -66,13 +66,13 @@ export default function PlayerControlsComponent(props) {
                         />
                     </TouchableOpacity>
                     
-                    <TouchableOpacity onPress={props.seekForwardFifteen}>
+                  { !props.liveMode && <TouchableOpacity onPress={props.seekForwardFifteen}>
                         <Image
                             style={styles.jump}
                             resizeMode={'contain'}
                             source={skipForwardFifteenButton}
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> }
 
                     <TouchableOpacity disabled={!props.hasNext} onPress={props.onNextPress}>
                         <Image

@@ -51,7 +51,6 @@ class Live extends React.Component {
     }
 
     orientationDidChange = (orientation) => {
-      console.log('JG: episode setting orientation to ', orientation);
       this.setState({orientation});
       let toValue;
       let shouldRotate=false;
@@ -141,10 +140,11 @@ class Live extends React.Component {
           show: show
         });
         let video = {
-          uri: uri,
-          image: show.thumb,
-          name: show.title,
+          uri: show.dataUrl,
+          image: show.thumbnailUrl,
+          name: show.name,
         }
+        console.log('JG: setting show ', show , ' to currentLiveVideo ', video );
         this.props.setPlayerValue('currentLiveVideo', video);
         this.props.setPlayerValue('isPlaying', false);
         this.props.setPlayerValue('liveMode', true);
