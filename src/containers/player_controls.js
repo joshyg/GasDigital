@@ -134,7 +134,7 @@ class PlayerControlsContainer extends Component {
         this.props.setPlayerValue('newTime', val);
       } else if ( ! this.props.liveMode ) {
         console.log('JG: set videoTimerValue to ', val);
-        this.props.setVideoTimerValue({ currentTime: val });
+        this.props.setVideoTimerValue({ currentTime: val, episode_id: this.props.currentVideo.episode_id  });
         Chromecast.seekCast(val);
       }
     }
@@ -167,7 +167,9 @@ class PlayerControlsContainer extends Component {
     }
 
     getProgress = () => {
-        const { currentTime, playableDuration } = this.props.timer;
+        const { currentTime, playableDuration } = this.props.chromecastMode ?
+        this.props.videoTimer :
+        this.props.timer;
         return `${this.formatTime(currentTime)} / ${this.formatTime(playableDuration)}`;
     }
     
@@ -209,6 +211,7 @@ class PlayerControlsContainer extends Component {
                 isLoading={!this.props.track || !this.props.track.id}
                 progressTime={this.getProgress()}
                 timer={this.props.timer}
+                videoTimer={this.props.videoTimer}
                 track={this.props.track}
                 isPlaying={this.isPlaying()}
                 hasPrevious={this.hasPrevious()}
@@ -239,8 +242,11 @@ function mapStateToProps(state) {
         playerRate: state.player.playerRate,
         episode: state.data.episode,
         currentTrack: state.player.currentTrack,
+        currentVideo: state.player.currentVideo,
         queue: state.player.queue,
         queueIndex: state.player.queueIndex,
+        chromecastMode: state.player.chromecastMode,
+        liveMode: state.player.liveMode,
     };
 }
 

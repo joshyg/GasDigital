@@ -4,6 +4,8 @@ import _ from 'lodash/fp';
 import ProgressSlider from './progress_slider';
 import { colors, fonts } from '../constants';
 
+
+
 export default function PlayerControlsComponent(props) {
     const { height, width } = Dimensions.get('window');
     const { track } = props;
@@ -20,7 +22,9 @@ export default function PlayerControlsComponent(props) {
         <View>
             <ProgressSlider
                 isPlaying={props.isPlaying}
-                timer={props.timer}
+                timer={props.chromecastMode && ! props.liveMode ? 
+                       props.videoTimer : props.timer}
+                liveMode={props.liveMode}
                 setCurrentTime={props.setCurrentTime}
                 isSettingTime={()=>{}}
                 isEnabled={props.isSliderEnabled}

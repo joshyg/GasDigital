@@ -14,7 +14,7 @@ export default class ProgressSlider extends Component {
 
         const touchTarget = (props.isFooter || !props.canSet) ? 0 : 60;
 
-        if (!props.timer.playableDuration) { // don't render the slider if no track - important
+        if (props.liveMode || !props.timer.playableDuration) { // don't render the slider if no track - important
             return null;
         }
 

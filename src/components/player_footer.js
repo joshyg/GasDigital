@@ -15,14 +15,20 @@ const playerClicked = function(props) {
 }
 
 export default function Player (props) {
+    const isPlaying = 
+      !props.chromecastMode && props.isPlaying || 
+      props.chromecastMode && props.isPlayingChromecast;
+
     const body = (
         <View style={styles.container}>
           <TouchableOpacity onPress={() => {props.navigateTo("player_view")}} style={styles.container}>
             {
                 props.track && props.timer.currentTime !== 0 && (
                     <ProgressSlider
-                        isPlaying={props.isPlaying}
-                        timer={props.timer}
+                        isPlaying={isPlaying}
+                        timer={props.chromecastMode && ! props.liveMode ? 
+                          props.videoTimer : props.timer}
+                        liveMode={props.liveMode}
                         setCurrentTime={props.setCurrentTime}
                         isSettingTime={props.isSettingTime}
                         isEnabled={props.isSliderEnabled}
@@ -41,7 +47,7 @@ export default function Player (props) {
             {
                 props.track && (
                     <TouchableOpacity onPress={props.togglePlayback}>
-                        <Image style={{height: 35, width: 35}} source={props.isPlaying ? require('../../assets/icons/pause_footer.png') : require('../../assets/icons/play_footer.png')}/>
+                        <Image style={{height: 35, width: 35}} source={isPlaying ? require('../../assets/icons/pause_footer.png') : require('../../assets/icons/play_footer.png')}/>
                     </TouchableOpacity>
                 )
             }

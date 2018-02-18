@@ -21,6 +21,7 @@ import { ENABLE_DOWNLOAD_VIDEO, DEBUG_PREMIUM, offlineDownloadStatus, colors } f
 import Orientation from 'react-native-orientation';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
+import Chromecast from 'react-native-google-cast';
 
 class Episode extends React.Component {
     constructor(props) {
@@ -177,6 +178,10 @@ class Episode extends React.Component {
       this.props.setPlayerValue('videoMode', false);
       this.props.setPlayerValue('chromecastMode', false);
       this.props.setPlayerValue('currentTrack', track);
+      if ( this.props.isPlayingChromecast ) {
+        Chromecast.togglePauseCast();
+        this.props.setPlayerValue( 'isPlayingChromecast', false );
+      }
       if ( ! track.audioUrl && series_id ) {
         this.props.fetchAndPlayAudio(series_id, episode.id);
       } else if ( track.audioUrl ) {
@@ -536,6 +541,7 @@ function mapStateToProps(state) {
       recentEpisodeIds: state.data.recentEpisodeIds,
       isPlaying: state.player.isPlaying,
       isPlayingVideo: state.player.isPlayingVideo,
+      isPlayingChromecast: state.player.isPlayingChromecast,
       currentTrack: state.player.currentTrack,
       episodeVideoProgress: state.player.episodeVideoProgress,
       videoMode: state.player.videoMode,

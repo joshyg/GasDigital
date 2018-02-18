@@ -5,10 +5,11 @@ import { bindActionCreators } from 'redux';
 import { navigateTo } from '../actions/navigation';
 import {
     togglePlayback,
-    setPlayerValue
+    setPlayerValue,
+    setVideoTimerValue,
 } from '../actions/player';
-
 import PlayerFooterComponent from '../components/player_footer';
+import Chromecast from 'react-native-google-cast';
 
 class PlayerFooterContainer extends Component {
     constructor(props) {
@@ -23,11 +24,16 @@ class PlayerFooterContainer extends Component {
     }
 
     togglePlayback() {
-        if (!this.props.track) {
+        if (!this.props.currentTrack && ! this.props.currentVideo) {
             return;
         }
+        if ( ! this.props.chromecastMode && !!this.props.currentTrack ) {
+          this.props.togglePlayback();
+        } else if ( this.props.chromecastMode && this.props.currentVideo ) {
+          Chromecast.togglePauseCast();
+          this.props.setPlayerValue( 'isPlayingChromecast', ! this.props.isPlayingChromecast );
+        }
 
-        this.props.togglePlayback();
     }
 
     getProgress() {
@@ -35,11 +41,26 @@ class PlayerFooterContainer extends Component {
     }
 
     setCurrentTime(val) {
-      this.props.setPlayerValue('newTime', val);
+      if ( ! this.props.chromecastMode ) {
+        this.props.setPlayerValue('newTime', val);
+      } else if ( ! this.props.liveMode ) {
+        this.props.setVideoTimerValue({ currentTime: val, episode_id: this.props.currentVideo.episode_id  });
+        Chromecast.seekCast(val);
+      }
     }
 
     isSettingTime = () => {
       this.props.setPlayerValue('isSettingTime', false)
+    }
+
+    track = () => {
+      if ( ! this.props.chromecastMode ) {
+        return this.props.currentTrack;
+      } else if ( ! this.props.liveMode ) {
+        return this.props.currentVideo;
+      }
+      return this.props.currentLiveVideo;
+
     }
 
     render() {
@@ -48,9 +69,10 @@ class PlayerFooterContainer extends Component {
                 navigateTo={this.props.navigateTo}
                 progress={this.getProgress()}
                 timer={this.props.timer}
-                track={this.props.track}
+                videoTimer={this.props.videoTimer}
+                track={this.track()}
                 isPlaying={this.props.isPlaying}
-                isPlayingAd={this.props.isPlayingAd}
+                isPlayingChromecast={this.props.isPlayingChromecast}
                 togglePlayback={this.togglePlayback}
                 setCurrentTime={this.setCurrentTime}
                 isSettingTime={this.isSettingTime}
@@ -58,6 +80,8 @@ class PlayerFooterContainer extends Component {
                 showNowPlaying={() => { 
                     this.props.navigateTo('nowPlaying')} 
                 }
+                chromecastMode={this.props.chromecastMode}
+                liveMode={this.props.liveMode}
             />
         );
     }
@@ -66,9 +90,16 @@ class PlayerFooterContainer extends Component {
 function mapStateToProps(state) {
     return {
         isPlaying: state.player.isPlaying,
+        isPlayingChromecast: state.player.isPlayingChromecast,
         track: state.player.currentTrack,
         timer: state.player.timer,
         isSliderEnabled: !state.player.isSettingTime,
+        videoTimer: state.player.videoTimer,
+        currentTrack: state.player.currentTrack,
+        currentVideo: state.player.currentVideo,
+        currentLiveVideo: state.player.currentLiveVideo,
+        chromecastMode: state.player.chromecastMode,
+        liveMode: state.player.liveMode,
     };
 }
 
@@ -76,7 +107,8 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         togglePlayback,
         navigateTo,
-        setPlayerValue
+        setPlayerValue,
+        setVideoTimerValue,
     }, dispatch);
 }
 

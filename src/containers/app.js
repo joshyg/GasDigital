@@ -51,6 +51,7 @@ class App extends React.Component {
             if ( this.props.navigation.state.routeName !== 'live' ) {
               this.props.setPlayerValue('liveMode', false);
             }
+            this.props.setPlayerValue('chromecastMode', false);
         }
         if ( nextProps.navigation.state.routeName !== 'live'  && 
              nextProps.navigation.state.routeName !== 'episode' ) {
