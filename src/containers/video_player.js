@@ -651,7 +651,6 @@ export default class VideoPlayer extends Component {
     }
 
     async toggleChromeCast() {
-      console.log('JG: in this.toggleChromeCast');
       this.props.showModal('chromecastMenu');
     }
 

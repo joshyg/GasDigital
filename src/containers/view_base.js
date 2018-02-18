@@ -67,8 +67,6 @@ class Base extends React.Component {
     }
 
     showPlayer() {
-      console.log('JG: showPlayer: chromecastMode = ', this.props.chromecastMode, 
-                  ' videMode = ', this.props.videoMode );
       if ( this.props.currentTrack && ! this.props.chromecastMode &&
            Object.keys(this.props.currentTrack).length == 0 ) {
         return false;

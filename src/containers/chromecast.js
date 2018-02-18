@@ -6,11 +6,34 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Chromecast from 'react-native-google-cast';
 import { showModal, setValue } from '../actions/data';
-import { setPlayerValue } from '../actions/player';
+import { setVideoTimerValue, setPlayerValue } from '../actions/player';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
 
 class ChromecastComponent extends Component {
+    constructor(props) {
+      super(props);
+      this.updateProgress = this.updateProgress.bind(this);
+    }
+
     componentWillMount() {
-        this.scanForChromecast();
+      this.scanForChromecast();
+      this.updateProgress();
+    }
+
+    async updateProgress() {
+      this.setInterval( async () => {
+        if(this.props.chromecastMode && 
+           this.props.isPlayingChromecast && 
+           !this.props.liveMode) {
+          let currentTime = await Chromecast.getStreamPosition();
+          let data = {
+            currentTime,
+            episode_id: this.props.currentVideo.episode_id
+          };
+          this.props.setVideoTimerValue(data)
+        }
+      }, 4000);
     }
 
     async scanForChromecast() {
@@ -99,6 +122,8 @@ function mapStateToProps(state) {
       chromecast_devices: state.data.chromecast_devices,
       episodeVideoProgress: state.player.episodeVideoProgress,
       liveMode: state.player.liveMode,
+      chromecastMode: state.player.chromecastMode,
+      isPlayingChromecast: state.player.isPlayingChromecast,
       currentVideo: state.player.currentVideo,
       currentLiveVideo: state.player.currentLiveVideo,
     };
@@ -108,9 +133,11 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
       setValue,
       setPlayerValue,
+      setVideoTimerValue,
       showModal,
     }, dispatch);
 }
 
+ReactMixin.onClass(ChromecastComponent, TimerMixin);
 export default connect(mapStateToProps, mapDispatchToProps)(ChromecastComponent);
 
