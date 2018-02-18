@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.1</string>
+	<string>2.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -78,5 +78,10 @@
            </dict>
        </dict>
    </dict>
+   <key>NSBluetoothPeripheralUsageDescription</key>
+   <string>needs bluetooth access to scan for nearby ChromeCast devices.</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>needs microphone access to listen for ultrasonic tokens when pairing with nearby ChromeCast devices.</string>
+
 </dict>
 </plist>
