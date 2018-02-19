@@ -213,19 +213,20 @@ class Live extends React.Component {
         if ( show_starts <= date && show_ends >= date ) {
           console.log('JG: show ', show, ' is now' );
           if ( this.props.channelsById[show.show_id] ) {
-            console.log('JG: setting uri to show show ', show, " date = ", date, " currentDay = ", currentDay, " show_starts = ", show_starts );
-            let uri = this.props.channelsById[show.show_id].hd_live_url;
+            let channel = this.props.channelsById[show.show_id];
+            console.log('JG: setting uri to show/channel ', show, channel, " date = ", date, " currentDay = ", currentDay, " show_starts = ", show_starts );
+            let uri = channel.hd_live_url;
             this.setState({
               uri:uri,
               show: {
-                name: show.title,
-                thumbnailUrl: show.thumb
+                name: channel.title,
+                thumbnailUrl: channel.thumb
               }
             });
             let video = {
               uri: uri,
-              image: show.thumb,
-              name: show.title,
+              image: channel.thumb,
+              name: channel.title,
             }
             this.props.setPlayerValue('currentLiveVideo', video);
             this.props.setPlayerValue('isPlaying', false);
