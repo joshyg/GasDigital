@@ -72,13 +72,16 @@ class Base extends React.Component {
         return false;
       }
       return this.props.navigation.state.routeName !== 'player_view' &&
+             this.props.navigation.state.routeName !== 'live' &&
              ! this.props.videoMode && 
              ( !! this.props.currentTrack || this.props.chromecastMode ) ;
     }
 
     showMenu() {
       return this.props.navigation.state.routeName !== 'player_view' &&
-             !this.landscapeVideo() && ! this.props.isFullscreenVideo; 
+             !this.landscapeVideo() &&
+             ! ( this.props.isFullscreenVideo && 
+               this.props.navigation.state.routeName === 'episode');
     }
 
     renderOfflineHeader = () => {

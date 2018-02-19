@@ -177,6 +177,7 @@ class Episode extends React.Component {
       this.props.setPlayerValue('isPlayingVideo', false);
       this.props.setPlayerValue('videoMode', false);
       this.props.setPlayerValue('chromecastMode', false);
+      this.props.setPlayerValue('liveMode', false);
       this.props.setPlayerValue('currentTrack', track);
       if ( this.props.isPlayingChromecast ) {
         Chromecast.togglePauseCast();
@@ -207,6 +208,7 @@ class Episode extends React.Component {
       console.log('JG: in playVideo, playing video ', video);
       this.props.setPlayerValue('isPlaying', false);
       this.props.setPlayerValue('chromecastMode', false);
+      this.props.setPlayerValue('liveMode', false);
       this.props.setPlayerValue('isPlayingVideo', true);
       this.props.setPlayerValue('videoMode', true);
       this.props.setPlayerValue('currentVideo', video);
@@ -353,7 +355,7 @@ class Episode extends React.Component {
             onBuffer={this.onBuffer}                // Callback when remote video is buffering
             //onProgress={this.onProgress}
             resizeMode='contain'
-            disableFullscreenControls={false}
+            disableFullscreenControls={this.state.orientation.includes('LANDSCAPE')}
             disableBack={true}
             disableVolume={true}
             spinValue={this.state.spinValue}

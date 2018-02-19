@@ -46,7 +46,9 @@ class Live extends React.Component {
     }
 
     componentWillUnmount() {
-      this.props.setPlayerValue('liveMode', false);
+      if ( ! this.props.chromecastMode ) {
+        this.props.setPlayerValue('liveMode', false);
+      }
       this.props.setPlayerValue('isFullscreenVideo', false);
     }
 
@@ -261,10 +263,11 @@ class Live extends React.Component {
           progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
           //onProgress={this.onProgress}
           resizeMode='contain'
-          disableFullscreenControls={false}
+          disableFullscreenControls={true}
           isFullscreen={true}
           disableBack={true}
           disableVolume={true}
+          disableSeekbar={true}
           spinValue={this.state.spinValue}
           episode={this.getEpisodeInfo}
           live={true}
@@ -305,6 +308,7 @@ function mapStateToProps(state) {
       channelsById: state.data.channelsById,
       episodes: state.data.episodes,
       chromecast_devices: state.data.chromecast_devices,
+      chromecastMode: state.player.chromecastMode,
     };
 }
 

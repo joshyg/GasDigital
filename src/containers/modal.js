@@ -17,7 +17,7 @@ class ModalComponent extends React.Component {
   }
   
   componentWillMount() {
-    //this.props.setValue('showModal', true );
+    this.props.setValue('showModal', false );
   } 
 
 
