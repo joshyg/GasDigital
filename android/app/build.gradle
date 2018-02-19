@@ -122,8 +122,8 @@ android {
         applicationId "com.appocta.gdn"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 12
-        versionName "11.1"
+        versionCode 13
+        versionName "11.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -207,4 +207,10 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+android {
+    dexOptions {
+        preDexLibraries = false
+    }
 }
