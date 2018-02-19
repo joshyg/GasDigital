@@ -22,9 +22,11 @@ import Base from './view_base';
 import { showModal, getSchedule, setValue } from '../actions/data';
 import { setPlayerValue } from '../actions/player';
 import Video from './video_player';
-moment = require('moment-timezone');
 import Orientation from 'react-native-orientation';
 import { DEBUG_LIVE_VIEW } from '../constants';
+import Chromecast from 'react-native-google-cast';
+
+moment = require('moment-timezone');
 
 class Live extends React.Component {
     constructor(props) {
@@ -41,7 +43,7 @@ class Live extends React.Component {
     componentWillMount(){
       this.props.getSchedule();
       this.props.setValue('gettingSchedule', true);
-      this.setUri(this.props);
+      this.setUri(this.props,true);
       this.setNextShow(this.props);
     }
 
@@ -82,6 +84,19 @@ class Live extends React.Component {
         ).start()
       }
     }
+
+    pauseChromecast = async () => {
+      if ( ! this.props.isPlayingChromecast ) {
+        return;
+      }
+      let connected = await Chromecast.isConnected();
+      if ( connected ) {
+         Chromecast.togglePauseCast();
+         this.props.setPlayerValue('isPlayingChromecast', false );
+         this.props.setPlayerValue('chromecastMode', false );
+      }
+    }
+
 
     setNextShow(props) {
       const weekdays = [
@@ -133,9 +148,9 @@ class Live extends React.Component {
       //console.log('JG: setting next show to ', next_show);
       this.setState({next_show,next_show_start_time});
     }
-    setUri(props) {
+
+    setUri(props,pauseChromecast=false) {
       if ( DEBUG_LIVE_VIEW ) {
-        console.log('JG: first recent episode = ', props.recentEpisodeIds[1]);
         let show = props.episodes[props.recentEpisodeIds[1]];
         this.setState({
           uri:show.dataUrl,
@@ -146,11 +161,13 @@ class Live extends React.Component {
           image: show.thumbnailUrl,
           name: show.name,
         }
-        console.log('JG: setting show ', show , ' to currentLiveVideo ', video );
         this.props.setPlayerValue('currentLiveVideo', video);
         this.props.setPlayerValue('isPlaying', false);
         this.props.setPlayerValue('liveMode', true);
         this.props.setPlayerValue('isFullscreenVideo', true);
+        if ( pauseChromecast ) {
+          this.pauseChromecast();
+        }
         return;
       }
       const weekdays = [
@@ -214,6 +231,10 @@ class Live extends React.Component {
             this.props.setPlayerValue('isPlaying', false);
             this.props.setPlayerValue('liveMode', true);
             this.props.setPlayerValue('isFullscreenVideo', true);
+            this.pauseChromecast();
+            if ( pauseChromecast ) {
+              this.pauseChromecast();
+            }
             return;
           }
         }
@@ -257,7 +278,7 @@ class Live extends React.Component {
           rate={1}                              // 0 is paused, 1 is normal.
           volume={1}                            // 0 is muted, 1 is normal.
           muted={false}
-          paused={false}
+          paused={this.props.chromecastMode}
           playInBackground={false}                // Audio continues to play when app entering background.
           playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
           progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
@@ -309,6 +330,7 @@ function mapStateToProps(state) {
       episodes: state.data.episodes,
       chromecast_devices: state.data.chromecast_devices,
       chromecastMode: state.player.chromecastMode,
+      isPlayingChromecast: state.player.isPlayingChromecast,
     };
 }
 

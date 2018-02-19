@@ -42,6 +42,19 @@ class Episode extends React.Component {
       spinValue: new Animated.Value(0),
     }
 
+    pauseChromecast = async () => {
+      if ( ! this.props.isPlayingChromecast ) {
+        return;
+      }
+      let connected = await Chromecast.isConnected();
+      if ( connected ) {
+        Chromecast.togglePauseCast();
+        this.props.setPlayerValue('isPlayingChromecast', false );
+      }
+    }
+
+    
+
     componentWillMount(){
       this.updateProgress();
     }
@@ -160,8 +173,6 @@ class Episode extends React.Component {
 
 
     playAudioTrack = () => {
-      this.props.setPlayerValue('queue',[]);
-      this.props.setPlayerValue('queueIndex', 0);
       let episode = this.props.episode || {};
       let series_id = this.props.series ? this.props.series.id : episode.show_id;
       let track = {
@@ -173,16 +184,13 @@ class Episode extends React.Component {
         series_id: series_id,
         audioUrl: episode.audioUrl
       }
-      console.log('JG: setting track to ', track);
+      this.props.setPlayerValue('queue',[]);
+      this.props.setPlayerValue('queueIndex', 0);
       this.props.setPlayerValue('isPlayingVideo', false);
       this.props.setPlayerValue('videoMode', false);
       this.props.setPlayerValue('chromecastMode', false);
       this.props.setPlayerValue('liveMode', false);
       this.props.setPlayerValue('currentTrack', track);
-      if ( this.props.isPlayingChromecast ) {
-        Chromecast.togglePauseCast();
-        this.props.setPlayerValue( 'isPlayingChromecast', false );
-      }
       if ( ! track.audioUrl && series_id ) {
         this.props.fetchAndPlayAudio(series_id, episode.id);
       } else if ( track.audioUrl ) {
@@ -191,6 +199,7 @@ class Episode extends React.Component {
         return;
       }
       this.props.navigateTo("player_view")
+      this.pauseChromecast();
     }
 
     playVideo = () => {
@@ -205,13 +214,13 @@ class Episode extends React.Component {
         series_id: series_id,
         audioUrl: episode.audioUrl
       }
-      console.log('JG: in playVideo, playing video ', video);
       this.props.setPlayerValue('isPlaying', false);
       this.props.setPlayerValue('chromecastMode', false);
       this.props.setPlayerValue('liveMode', false);
       this.props.setPlayerValue('isPlayingVideo', true);
       this.props.setPlayerValue('videoMode', true);
       this.props.setPlayerValue('currentVideo', video);
+      this.pauseChromecast();
     }
 
 
