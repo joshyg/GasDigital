@@ -177,14 +177,12 @@ class Player extends React.Component {
     setNowPlaying(now) {
         let image = this.props.currentTrack.image;
         let name = this.props.currentTrack.name;
-        if (Platform.OS === "ios") {
-            MusicControl.setNowPlaying({
-                title: name,
-                artwork: image,
-                playbackDuration: this.props.timer.duration,
-                elapsedPlaybackTime: now,
-            });
-        }
+        MusicControl.setNowPlaying({
+            title: name,
+            artwork: image,
+            playbackDuration: this.props.timer.duration,
+            elapsedPlaybackTime: now,
+        });
     }
 
     onLoad = (data) => {
