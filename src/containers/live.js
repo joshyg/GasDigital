@@ -326,7 +326,7 @@ class Live extends React.Component {
 
     renderMessage() {
       return (
-        <View style={{alignItems:'center'}}>
+        <View style={{alignItems:'center', top: 200}}>
           <Text>No Live Show Right Now</Text>
           { this.state.next_show.show_name && (
           <Text>Next up is {this.state.next_show.show_name} at {this.state.next_show.start_time} {this.state.next_show.day} ET</Text>
@@ -335,11 +335,22 @@ class Live extends React.Component {
       );
     }
 
+    renderGuestMessage() {
+      return (
+        <View style={{alignItems:'center', top: 200}}>
+          <Text>Live shows are for premium Users only</Text>
+        </View>
+      );
+    }
+
 
     render() {
         return (
             <Base navigation={this.props.navigation}>
-              { this.state.uri ? this.renderVideo() : this.renderMessage() }
+              { this.state.guest ? 
+                  this.renderGuestMessage() : 
+                  this.state.uri ? 
+                    this.renderVideo() : this.renderMessage() }
             </Base>
         );
     }
@@ -348,6 +359,7 @@ class Live extends React.Component {
 function mapStateToProps(state) {
     return {
       user_id: state.auth.user_id,
+      guest: state.auth.guest,
       isGettingSchedule: state.data.isGettingSchedule,
       schedule: state.data.schedule,
       recentEpisodeIds: state.data.recentEpisodeIds,
