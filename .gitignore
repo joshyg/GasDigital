@@ -54,3 +54,6 @@ buck-out/
 
 # crashlytics
 android/app/src/main/assets/crashlytics-build.properties 
+
+
+ios/Pods/
