@@ -25,6 +25,8 @@ import Video from './video_player';
 import Orientation from 'react-native-orientation';
 import { DEBUG_LIVE_VIEW } from '../constants';
 import Chromecast from 'react-native-google-cast';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
 
 moment = require('moment-timezone');
 
@@ -45,8 +47,17 @@ class Live extends React.Component {
       this.props.setValue('gettingSchedule', true);
       this.setUri(this.props,true);
       this.setNextShow(this.props);
+      this.checkLiveThread();
     }
 
+    checkLiveThread = () => {
+      this.setInterval( () => {
+        if( this.state.uri == '' ) {
+          this.setUri(this.props, true );
+        }
+      }, 10000);
+    }
+  
     componentWillUnmount() {
       if ( ! this.props.chromecastMode ) {
         this.props.setPlayerValue('liveMode', false);
@@ -218,6 +229,7 @@ class Live extends React.Component {
             let uri = channel.hd_live_url;
             this.setState({
               uri:uri,
+              channel: channel,
               show: {
                 name: channel.title,
                 thumbnailUrl: channel.thumb
@@ -241,6 +253,17 @@ class Live extends React.Component {
         }
       }
       this.setState({uri:''});
+    }
+
+    onError = () => {
+      if ( this.state.channel ) {
+        let channel = this.state.channel;
+        if ( channel.sd_live_url && this.state.uri == channel.hd_live_url ) {
+          this.setState({uri:  channel.sd_live_url});
+        } else if ( channel.hd_live_url && this.state.uri == channel.sd_live_url ) {
+          this.setState({uri:  channel.hd_live_url});
+        }
+      }
     }
 
 
@@ -296,6 +319,7 @@ class Live extends React.Component {
           onToggleFullscreen={this.onToggleFullscreen}
           showModal={this.props.showModal}
           chromecast_devices={this.props.chromecast_devices}
+          onError={this.onError}
         />
       );
     }
@@ -346,6 +370,7 @@ function mapDispatchToProps(dispatch) {
     }, dispatch);
 }
 
+ReactMixin.onClass(Live, TimerMixin);
 export default connect(mapStateToProps, mapDispatchToProps)(Live);
 
 const styles = StyleSheet.create({
