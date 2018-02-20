@@ -204,9 +204,7 @@ class Episode extends React.Component {
 
     playVideo = () => {
       if ( this.props.guest ) {
-        return () => {
-          Alert.alert( 'Unavailable', 'Must be a paid subscriber to acccess video');
-        }
+        return Alert.alert( 'Unavailable', 'Must be a paid subscriber to acccess video');
       }
       let episode = this.props.episode || {};
       let series_id = this.props.series ? this.props.series.id : episode.show_id;
