@@ -7,6 +7,7 @@ import { setValue } from '../actions/data';
 import { setPlayerValue } from '../actions/player';
 import Chromecast from 'react-native-google-cast';
 import { navigateTo } from '../actions/navigation';
+import { DEBUG_MODAL } from '../constants';
 
 const { height, width } = Dimensions.get('window');
 
@@ -17,7 +18,8 @@ class ModalComponent extends React.Component {
   }
   
   componentWillMount() {
-    this.props.setValue('showModal', false );
+    // DEBUG
+    this.props.setValue('showModal', DEBUG_MODAL );
   } 
 
 
@@ -43,16 +45,30 @@ class ModalComponent extends React.Component {
     let data = this.props.chromecast_devices.map( (x) => {
       x.key = x.id;
       return x;
-     }) || [];
+     });
+     if ( data.length == 0 && DEBUG_MODAL ) {
+       data = [ { name: 'Chromecast' }, { name: 'Bedrooom' } ];
+     }
     return (
         <View>
           <Text style={styles.headerText}>SELECT A DEVICE</Text>
-          <Text>{"\n"}</Text>
           <FlatList
             data={data}
             renderItem={this.renderChromecastMenuItem}
           />
+          { this.renderClose() }
         </View>
+    );
+  }
+
+  renderClose = () => {
+    return (
+      <TouchableOpacity style={styles.closeText}
+        onPress={() => { 
+        this.props.setValue('showModal', false);
+      }}>
+        <Text style={styles.closeText}>close</Text>
+      </TouchableOpacity>
     );
   }
 
@@ -132,28 +148,37 @@ if (width < 370) {
 const styles = StyleSheet.create({
   container: {
     marginTop: height / 2 - 200,
-    height: containerWidth / 2,
+    height: containerWidth,
     marginHorizontal: marginHorizontal,
     width: containerWidth,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     alignItems: 'center',  
     justifyContent: 'center',
   },
   background:{
     height: height,
     width: width + 5,
-    backgroundColor: 'black',
+    backgroundColor: '#3d4044',
     position: 'absolute',
-    opacity: .8,
+    opacity: .95,
   },
   headerText:{
-    color: colors.black,
-    fontSize: 20,
-    fontWeight: 'bold'
+    marginTop: 10,
+    marginBottom: 5,
+    color: colors.white,
+    fontSize: 18,
   },
   text:{
-    color: colors.black,
-    fontSize: 16,
+    marginTop: 10,
+    color: colors.white,
+    fontSize: 14,
+  },
+  closeText:{
+    bottom: 0,
+    color: colors.white,
+    fontSize: 14,
+    alignItems: 'flex-end',  
+    justifyContent: 'flex-end',
   },
 
 });
