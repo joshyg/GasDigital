@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, TouchableHighlight, TouchableOpacity, View, Dimensions, StyleSheet, Modal, Text } from "react-native";
+import { Platform, FlatList, TouchableHighlight, TouchableOpacity, View, Dimensions, StyleSheet, Modal, Text } from "react-native";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fonts, colors } from "../constants";
@@ -42,7 +42,8 @@ class ModalComponent extends React.Component {
   }
 
   renderChromecastMenu = () => {
-    let data = this.props.chromecast_devices.map( (x) => {
+    let devices = this.props.chromecast_devices || [];
+    let data = devices.map( (x) => {
       x.key = x.id;
       return x;
      });
@@ -80,6 +81,9 @@ class ModalComponent extends React.Component {
   renderModal() {
     const { showModal, modalType } = this.props;
     console.log('JG: rendering modal ', modalType );
+    if ( ! modalType && DEBUG_MODAL ) {
+      return this.renderChromecastMenu();
+    }
     if ( ! showModal || ! modalType || ! this.renderFunctions[modalType] ) {
       return null;
     }
@@ -149,10 +153,10 @@ if (width < 370) {
 const styles = StyleSheet.create({
   container: {
     marginTop: height / 2 - 200,
-    height: containerWidth,
+    height: Platform.OS == "ios" ? containerWidth : containerWidth / 2,
     marginHorizontal: marginHorizontal,
-    width: containerWidth,
-    backgroundColor: 'transparent',
+    width: Platform.OS == "ios" ? containerWidth : containerWidth - 50,
+    backgroundColor: Platform.OS == 'ios' ? 'transparent' : '#3d4044',
     alignItems: 'center',  
     justifyContent: 'center',
   },
@@ -180,6 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignItems: 'flex-end',  
     justifyContent: 'flex-end',
+    marginBottom: 5
   },
 
 });

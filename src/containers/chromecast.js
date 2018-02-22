@@ -5,7 +5,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Chromecast from 'react-native-google-cast';
-import { showModal, setValue } from '../actions/data';
+import { setValue } from '../actions/data';
 import { setVideoTimerValue, setPlayerValue } from '../actions/player';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
@@ -43,10 +43,6 @@ class ChromecastComponent extends Component {
         console.log('JG: device available: ', existance);
         let devices = await Chromecast.getDevices();
         console.log('JG: chromecast devices = ', devices);
-        // FIXME: add modal
-        if ( devices.length > 0 ) {
-          this.setState({chromecast_device:devices[0]});
-        }
         this.props.setValue('chromecast_devices', devices);
 
       });
@@ -135,7 +131,6 @@ function mapDispatchToProps(dispatch) {
       setValue,
       setPlayerValue,
       setVideoTimerValue,
-      showModal,
     }, dispatch);
 }
 
