@@ -17,6 +17,7 @@ class ChromecastComponent extends Component {
     }
 
     componentWillMount() {
+      console.log('JG: chromecast mounted');
       this.scanForChromecast();
       this.updateProgress();
     }
