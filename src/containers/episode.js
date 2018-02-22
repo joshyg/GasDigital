@@ -22,6 +22,7 @@ import Orientation from 'react-native-orientation';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import Chromecast from 'react-native-google-cast';
+import KeepAwake from 'react-native-keep-awake';
 
 class Episode extends React.Component {
     constructor(props) {
@@ -527,6 +528,7 @@ class Episode extends React.Component {
 
         return (
             <Base navigation={this.props.navigation}>
+              { this.props.videoMode && ( <KeepAwake/> ) }
               <ScrollView  contentContainerStyle={styles.container}>
                 { this.props.videoMode ? this.renderVideo() : 
                 (<Image 

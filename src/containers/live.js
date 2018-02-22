@@ -27,6 +27,7 @@ import { DEBUG_LIVE_VIEW } from '../constants';
 import Chromecast from 'react-native-google-cast';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
+import KeepAwake from 'react-native-keep-awake';
 
 moment = require('moment-timezone');
 
@@ -347,6 +348,7 @@ class Live extends React.Component {
     render() {
         return (
             <Base navigation={this.props.navigation}>
+              { this.state.uri && ! this.state.guest && <KeepAwake/> }
               { this.state.guest ? 
                   this.renderGuestMessage() : 
                   this.state.uri ? 

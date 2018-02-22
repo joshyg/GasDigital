@@ -44,6 +44,7 @@
 		73E187305EFE421F8998DFFE /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 596042F55024403697299B27 /* libCodePush.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		912F7DA9E71945CAA182FA40 /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F77FBD0856864575913C3F7D /* libSMXCrashlytics.a */; };
+		981E42F6203E86B500452F39 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 981E42C4203E868A00452F39 /* libKCKeepAwake.a */; };
 		98251738200920E7007819F1 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		9827ECAC2010F88B0030A3EA /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9827ECAA2010F88B0030A3EA /* Fabric.framework */; };
 		9827ECAD2010F88B0030A3EA /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9827ECAB2010F88B0030A3EA /* Crashlytics.framework */; };
@@ -241,6 +242,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
+		};
+		981E42C3203E868A00452F39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 981E42BC203E868A00452F39 /* KCKeepAwake.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = KCKeepAwake;
 		};
 		9820C1092030D4A400EB7A1E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -482,6 +490,7 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		8252498CA9AC4273B945934D /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		981E42BC203E868A00452F39 /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KCKeepAwake.xcodeproj; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; };
 		9827ECAA2010F88B0030A3EA /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		9827ECAB2010F88B0030A3EA /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		982CD9E8200675D900E40986 /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVideo.xcodeproj; path = "../node_modules/react-native-video/ios/RCTVideo.xcodeproj"; sourceTree = "<group>"; };
@@ -515,6 +524,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				981E42F6203E86B500452F39 /* libKCKeepAwake.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				98251738200920E7007819F1 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -724,6 +734,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				981E42BC203E868A00452F39 /* KCKeepAwake.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -781,6 +792,14 @@
 				00E356EE1AD99517003FC87E /* GasDigitalRNTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* GasDigitalRN-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* GasDigitalRN-tvOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		981E42BD203E868A00452F39 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				981E42C4203E868A00452F39 /* libKCKeepAwake.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1035,6 +1054,10 @@
 				{
 					ProductGroup = 9820C1042030D4A400EB7A1E /* Products */;
 					ProjectRef = 0413800EF66B4EF6AD4613A1 /* GoogleCast.xcodeproj */;
+				},
+				{
+					ProductGroup = 981E42BD203E868A00452F39 /* Products */;
+					ProjectRef = 981E42BC203E868A00452F39 /* KCKeepAwake.xcodeproj */;
 				},
 				{
 					ProductGroup = 982CD86D1FFE9B9300E40986 /* Products */;
@@ -1305,6 +1328,13 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		981E42C4203E868A00452F39 /* libKCKeepAwake.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libKCKeepAwake.a;
+			remoteRef = 981E42C3203E868A00452F39 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		9820C10A2030D4A400EB7A1E /* libGoogleCast.a */ = {
