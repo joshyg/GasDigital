@@ -123,7 +123,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 13
-        versionName "11.2"
+        versionName "11.3"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

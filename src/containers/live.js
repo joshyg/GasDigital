@@ -348,7 +348,7 @@ class Live extends React.Component {
     render() {
         return (
             <Base navigation={this.props.navigation}>
-              { this.state.uri && ! this.state.guest && <KeepAwake/> }
+              { this.state.uri && ! this.state.guest ? ( <KeepAwake/> ) : null }
               { this.state.guest ? 
                   this.renderGuestMessage() : 
                   this.state.uri ? 
