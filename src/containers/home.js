@@ -47,7 +47,7 @@ class Home extends React.Component {
     }
 
     prefetchEpisodes(props) {
-      if ( ! ENABLE_PREFETCH ) {
+      if ( ! ENABLE_PREFETCH || this.props.guest ) {
         return;
       }
       for ( ch in props.channels ) {

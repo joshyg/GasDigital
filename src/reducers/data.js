@@ -38,6 +38,7 @@ export default reducer = (state = initialState, action) => {
     let link,
         page,
         channels,
+        channelFetchTime,
         channelsById,
         rssFeedsById,
         episode,
@@ -57,7 +58,6 @@ export default reducer = (state = initialState, action) => {
         if ( payloadError(action.payload) ) {
           return { ...state };
         }
-        console.log('JG: GET_CHANNELS, payload = ', action.payload);
         channels = action.payload.resp_data.data;
         for ( ch in channels ) {
           Image.prefetch(channels[ch].thumb)
@@ -106,7 +106,7 @@ export default reducer = (state = initialState, action) => {
             }
           }
         }
-        const channelFetchTime = {};
+        channelFetchTime = {};
         // channelFetchTime is meant to throttle
         // fetch on mount, so fetches of latter
         // pages should not reset count.  This caused
@@ -121,6 +121,33 @@ export default reducer = (state = initialState, action) => {
           lastChannelFetchTime: { ...state.lastChannelFetchTime, ...channelFetchTime },
           isGettingEpisodes: false,
           page: page
+        }
+
+    case 'DATA_GET_RSS':
+      if ( payloadError(action.payload) ){
+        return { ...state, isGettingEpisodes: false };
+      }
+      const { cat, url, data, err } = action.payload;
+        link = action.payload.cat;
+        returnedEpisodes = data;
+        returnedEpisodeIds = returnedEpisodes.map(x => x.id);
+        channelEpisodeIds = {};
+        channelEpisodeIds[link] = returnedEpisodeIds;
+        episodes = {};
+        for ( i in returnedEpisodes ) {
+          let episode = returnedEpisodes[i];
+          if ( ! state.episodes[episode.id] ) {
+            episodes[episode.id] = episode;
+          }
+        }
+        channelFetchTime = {};
+        channelFetchTime[link] = Date.now()/1000;
+        return { ...state, 
+          channelEpisodeIds: { ...state.channelEpisodeIds, ...channelEpisodeIds },
+          episodes: { ...state.episodes, ...episodes },
+          lastChannelFetchTime: { ...state.lastChannelFetchTime, ...channelFetchTime },
+          isGettingEpisodes: false,
+          page: 1
         }
 
     case 'DATA_GETTING_EPISODES':
@@ -379,17 +406,6 @@ export default reducer = (state = initialState, action) => {
           modalData: action.payload.data,
           modalType: action.payload.type
         };
-
-    case 'DATA_GET_RSS':
-      const { show_id, url, data, err } = action.payload;
-      console.log('JG: rss feed for ',
-        show_id, 
-        url,
-        ' is ', data, ' err = ', err, ' payload = ', action.payload);
-        const rssFeed = { show_id: data };
-        return { ...state,
-                 rssFeedsById: {...state.rssFeedsById, ...rssFeed }
-        }
 
 
     case 'AUTH_LOG_OUT':

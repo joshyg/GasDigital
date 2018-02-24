@@ -23,21 +23,9 @@ export function GetData(php_file, data) {
         });
 }
 
-export function getRSS( show_id, url ) {
-  const args = { show_id, url };
+export function getRSS( cat, url ) {
+  const args = { cat, url };
   var parser = new xml2js.Parser();
-  /*
-  const headers = {
-      'Accept': 'application/xhtml+xml',
-      'Content-Type': 'application/x-www-form-urlencoded'
-  };
-  const api = axios.create({
-      baseURL: 'https://bisping.libsyn.com/rss',
-      headers,
-      timeout: 6000,
-      transformRequest: [ data => { if (data) return qs.stringify(data) } ]
-  });
-  */
   return axios.get(url).then(response => {
     let data;
     let err;
@@ -45,14 +33,15 @@ export function getRSS( show_id, url ) {
       err = error; 
       let jsonResult = result.rss.channel[0].item;
       data = jsonResult.map(x => {
+        let description = x.description[0].replace(/<(?:.|\n)*?>/gm, '');
         let episode = {
           id: x.guid[0]._,
           name: x.title[0],
           dataUrl: x.enclosure[0]['$'].url,
           audioUrl: x.enclosure[0]['$'].url,
           downloadUrl: x.enclosure[0]['$'].url,
-          series_id: show_id,
           thumbnailUrl: x['itunes:image'][0]['$'].href,
+          description: description
         };
         return episode;
       });

@@ -33,9 +33,6 @@ class Series extends React.Component {
     componentWillMount(){
       let series = this.props.series;
       if(!series){return}
-      if ( series.id && series.rss_feed ) {
-        this.props.getRSS( this.props.series.id, this.props.series.rss_feed );
-      }
       this.props.setValue('page', 1);
 
       let channel = series.link.split('cat=')[1];
@@ -45,7 +42,6 @@ class Series extends React.Component {
       if ( ! this.props.channelEpisodeIds || 
            ! this.props.channelEpisodeIds[channel] ||
            Date.now()/1000 - this.props.lastChannelFetchTime[channel] > 30 ) {
-        console.log('JG: fetchOnMount');
         this.fetchEpisodes(this.props,channel);
       } else if ( this.props.channelEpisodeIds && this.props.channelEpisodeIds[channel] ) {
         let page = parseInt(this.props.channelEpisodeIds[channel].length/this.state.perpage);
@@ -53,7 +49,6 @@ class Series extends React.Component {
       }
       // set initial episode list
       if ( this.props.channelEpisodeIds && this.props.channelEpisodeIds[channel] ) {
-        console.log('JG: renderOnMount');
         let channelEpisodes = this.props.channelEpisodeIds[channel].map(x => { return this.props.episodes[x] });
         this.setState({episodes:channelEpisodes});
       } 
@@ -65,6 +60,17 @@ class Series extends React.Component {
     }
 
     fetchEpisodes(props,channel,page=1) {
+      const { series } = this.props;
+      if ( this.props.guest && 
+           series && 
+           series.id && 
+           series.rss_feed ) {
+        if ( page == 1 ) {
+          props.setValue('isGettingEpisodes', true);
+          this.props.getRSS( channel, this.props.series.rss_feed );
+        }
+        return;
+      }
       props.setValue('isGettingEpisodes', true);
       props.getEpisodes(channel,this.props.user_id,page);
       props.getBonusContent(channel);
@@ -108,8 +114,10 @@ class Series extends React.Component {
       }
       console.log('JG: onEndReached page/props.page = ',pageNum,this.props.page, " distance from end = ", distanceFromEnd );
       this.setState({page:pageNum});
-      this.props.setValue('isGettingEpisodes', true);
-      this.props.getEpisodes(channel,this.props.user_id,pageNum);
+      if ( ! this.props.guest ) {
+        this.props.setValue('isGettingEpisodes', true);
+        this.props.getEpisodes(channel,this.props.user_id,pageNum);
+      }
     }
 
 
@@ -191,6 +199,7 @@ class Series extends React.Component {
 function mapStateToProps(state) {
     return {
       user_id: state.auth.user_id,
+      guest: state.auth.guest,
       episode: state.data.episode,
       series: state.data.series,
       channels: state.data.channels,
