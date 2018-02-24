@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { resetTo, navigateTo } from '../actions/navigation';
 import { togglePlayback } from '../actions/player';
-import {  getEpisodes,setValue, getBonusContent } from '../actions/data';
+import {  getRSS, getEpisodes,setValue, getBonusContent } from '../actions/data';
 import ListItemEpisode from './list_item_episode';
 import { EPISODES_PER_PAGE, colors } from '../constants';
 
@@ -33,6 +33,9 @@ class Series extends React.Component {
     componentWillMount(){
       let series = this.props.series;
       if(!series){return}
+      if ( series.id && series.rss_feed ) {
+        this.props.getRSS( this.props.series.id, this.props.series.rss_feed );
+      }
       this.props.setValue('page', 1);
 
       let channel = series.link.split('cat=')[1];
@@ -209,6 +212,7 @@ function mapDispatchToProps(dispatch) {
         getEpisodes,
         setValue,
         getBonusContent,
+        getRSS,
     }, dispatch);
 }
 

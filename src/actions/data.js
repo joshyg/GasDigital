@@ -199,3 +199,12 @@ export function setValue(key,value) {
     payload
   };
 }
+
+export function getRSS( show_id, url ) {
+  console.log('JG: grabbing rss ', url );
+  let payload = DataApi.getRSS( show_id, url );
+  return {
+    type: 'DATA_GET_RSS',
+    payload
+  };
+}

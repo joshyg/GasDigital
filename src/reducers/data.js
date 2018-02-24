@@ -4,6 +4,7 @@ const initialState = {
     channels: [], 
     schedule: [], 
     channelsById: {}, 
+    rssFeedsById: {}, 
     lastChannelFetchTime: {},
     episodes: {},
     episode: {},
@@ -38,6 +39,7 @@ export default reducer = (state = initialState, action) => {
         page,
         channels,
         channelsById,
+        rssFeedsById,
         episode,
         episodes,
         channelEpisodeIds,
@@ -377,6 +379,18 @@ export default reducer = (state = initialState, action) => {
           modalData: action.payload.data,
           modalType: action.payload.type
         };
+
+    case 'DATA_GET_RSS':
+      const { show_id, url, data, err } = action.payload;
+      console.log('JG: rss feed for ',
+        show_id, 
+        url,
+        ' is ', data, ' err = ', err, ' payload = ', action.payload);
+        const rssFeed = { show_id: data };
+        return { ...state,
+                 rssFeedsById: {...state.rssFeedsById, ...rssFeed }
+        }
+
 
     case 'AUTH_LOG_OUT':
         return { ...initialState, connection: state.connection };
