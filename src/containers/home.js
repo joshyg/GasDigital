@@ -93,12 +93,14 @@ class Home extends React.Component {
       if ( ! channels ) {
         channels = [];
       }
-      channels.unshift({
-        id: 'all_recent',
-        all_recent:true,
-        title:'All Recent', 
-        thumb: recentImage.uri
-      });
+      if ( ! this.props.guest ) {
+        channels.unshift({
+          id: 'all_recent',
+          all_recent:true,
+          title:'All Recent', 
+          thumb: recentImage.uri
+        });
+      }
       return channels;
     }
 
@@ -124,6 +126,7 @@ class Home extends React.Component {
 function mapStateToProps(state) {
     return {
       user_id: state.auth.user_id,
+      guest: state.auth.guest,
       channels: state.data.channels,
       channelEpisodeIds: state.data.channelEpisodeIds,
       isGettingEpisodes: state.data.isGettingEpisodes,
