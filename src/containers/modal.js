@@ -64,7 +64,7 @@ class ModalComponent extends React.Component {
 
   renderClose = () => {
     return (
-      <TouchableOpacity style={styles.closeText}
+      <TouchableOpacity 
         onPress={() => { 
         this.props.setValue('showModal', false);
       }}>
