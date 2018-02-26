@@ -652,7 +652,7 @@ export default class VideoPlayer extends Component {
     }
 
     async toggleChromeCast() {
-      Orientation.unlockAllOrientations();
+      Orientation.lockToPortrait();
       if ( this.props.onToggleChromecast ) {
         this.props.onToggleChromecast();
       }
