@@ -240,7 +240,12 @@ class Live extends React.Component {
     }
 
     onToggleFullscreen = (isFullscreen) => {
-      this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
+      //this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
+      if ( isFullscreen ) {
+        Orientation.lockToLandscape();
+      } else {
+        Orientation.unlockAllOrientations();
+      }
     }
     
     renderVideo() {
@@ -258,8 +263,8 @@ class Live extends React.Component {
           progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
           //onProgress={this.onProgress}
           resizeMode='contain'
-          disableFullscreenControls={true}
-          isFullscreen={true}
+          disableFullscreenControls={false}
+          isFullscreen={false}
           disableBack={true}
           disableVolume={true}
           disableSeekbar={true}

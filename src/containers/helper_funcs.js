@@ -2,7 +2,7 @@ import { DEBUG_LIVE_VIEW } from '../constants';
 moment = require('moment-timezone');
 export function getLiveShow( props ) {
   if ( DEBUG_LIVE_VIEW ) {
-    let show = props.episodes[props.recentEpisodeIds[1]];
+    let show = props.episodes[props.recentEpisodeIds[0]];
     return show;
   }
   const weekdays = [

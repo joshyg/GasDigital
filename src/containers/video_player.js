@@ -1103,7 +1103,9 @@ export default class VideoPlayer extends Component {
      * Provide all of our options and render the whole component.
      */
     render() {
-        let screenHeight = this.state.isFullscreen ? height : height/3;
+        let screenHeight = this.state.isFullscreen ? 
+        height :
+        this.props.live ? height : height/3;
         let statusBarHeight = Platform.OS == 'android' ? 25 : 0;
         const videoHeight = this.props.spinValue.interpolate({
           inputRange: [-1, 0, 1],

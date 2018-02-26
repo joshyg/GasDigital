@@ -344,6 +344,11 @@ class Episode extends React.Component {
 
     onToggleFullscreen = (isFullscreen) => {
       this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
+      if ( isFullscreen ) {
+        Orientation.lockToLandscape();
+      } else {
+        Orientation.unlockAllOrientations();
+      }
     }
     
     renderVideo() {
@@ -368,7 +373,7 @@ class Episode extends React.Component {
             onBuffer={this.onBuffer}                // Callback when remote video is buffering
             //onProgress={this.onProgress}
             resizeMode='contain'
-            disableFullscreenControls={this.state.orientation.includes('LANDSCAPE')}
+            disableFullscreenControls={false}
             disableBack={true}
             disableVolume={true}
             spinValue={this.state.spinValue}
