@@ -44,13 +44,27 @@ class Player extends React.Component {
         this.onProgress = this.onProgress.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
     }
-
+    togglePlayPause = () => {
+      if ( this.props.currentTrack  && ! this.props.videoMode ) {
+        this.props.setPlayerValue('isPlaying',!this.props.isPlaying)
+      } else if ( this.props.currentVideo && this.props.videoMode ) {
+        this.props.setPlayerValue('isPlayingVideo',!this.props.isPlayingVideo)
+      }
+    }
     componentWillMount() {
         console.log('JG: player mounted');
         this.onEnd = _.throttle(3000,this.onEnd);
         MusicControl.handleAudioInterruptions(true);
         MusicControl.on('play', ()=> {
-          this.props.setPlayerValue('isPlaying',true)
+          // FIXME: I noticed the following behavior on my
+          // headphones: there is one button, ios triggers togglePlayPause,
+          // but android only triggeres play each time.  Not sure if all 
+          // phones/headphones behave this way, but will assume for now they do.
+          if ( Platform.OS == 'ios' ) {
+            this.props.setPlayerValue('isPlaying',true)
+          } else {
+            this.togglePlayPause();
+          }
         })
 
         // on iOS this event will also be triggered by audio router change events
@@ -64,11 +78,7 @@ class Player extends React.Component {
         })
 
         MusicControl.on('togglePlayPause', ()=> {
-          if ( this.props.currentTrack  && ! this.props.videoMode ) {
-            this.props.setPlayerValue('isPlaying',!this.props.isPlaying)
-          } else if ( this.props.currentVideo && this.props.videoMode ) {
-            this.props.setPlayerValue('isPlayingVideo',!this.props.isPlayingVideo)
-          }
+          this.togglePlayPause();
         })
     
         MusicControl.on('nextTrack', ()=> {
