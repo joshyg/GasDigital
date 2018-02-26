@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Image, Text, TouchableOpacity, StyleSheet, Platform} from 'react-native';
-import Svg, { Ellipse, Path } from 'react-native-svg';
+import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
+import { DEBUG_NO_ANDROID_SVGS } from '../constants';
 
 
 function WithSVG(props) {
@@ -77,6 +78,7 @@ function WithSVG(props) {
               width = '30'
             >
             <Path x={liveTranslateX} y={liveTranslateY} scale={liveScale} fill={props.fill} d='M13.6,36.4c-2,0-3.6,1.6-3.6,3.6v21.7c0,2,1.6,3.6,3.6,3.6c2,0,3.6-1.6,3.6-3.6V40 C17.2,38,15.6,36.4,13.6,36.4z M25.6,20.7c-2,0-3.6,1.6-3.6,3.6v53c0,2,1.6,3.6,3.6,3.6c2,0,3.6-1.6,3.6-3.6v-53 C29.2,22.3,27.6,20.7,25.6,20.7z M37.7,8.6c-2,0-3.6,1.6-3.6,3.6v77.1c0,2,1.6,3.6,3.6,3.6s3.6-1.6,3.6-3.6V12.3 C41.3,10.3,39.7,8.6,37.7,8.6z M49.7,29.7c-2,0-3.6,1.6-3.6,3.6v35c0,2,1.6,3.6,3.6,3.6c2,0,3.6-1.6,3.6-3.6v-35 C53.3,31.3,51.7,29.7,49.7,29.7z M61.8,8.6c-2,0-3.6,1.6-3.6,3.6v77.1c0,2,1.6,3.6,3.6,3.6s3.6-1.6,3.6-3.6V12.3 C65.4,10.3,63.8,8.6,61.8,8.6z M73.8,26.7c-2,0-3.6,1.6-3.6,3.6v41c0,2,1.6,3.6,3.6,3.6c2,0,3.6-1.6,3.6-3.6v-41 C77.4,28.3,75.8,26.7,73.8,26.7z M85.9,37c-2,0-3.6,1.6-3.6,3.6v20.5c0,2,1.6,3.6,3.6,3.6s3.6-1.6,3.6-3.6V40.6 C89.5,38.6,87.9,37,85.9,37z'/>
+          { props.liveNow && (<Circle cx="25" cy="5" r="5" fill="red" />) }
             </Svg>
           </View>
         )
@@ -114,7 +116,7 @@ const WithoutSVG = function (props) {
 }
 
 let IconSvg;
-if (__DEV__ && Platform.OS == "android") {
+if ( DEBUG_NO_ANDROID_SVGS && __DEV__ && Platform.OS == "android") {
     IconSvg = WithoutSVG;
 } else {
     IconSvg = WithSVG;

@@ -28,6 +28,7 @@ import Chromecast from 'react-native-google-cast';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import KeepAwake from 'react-native-keep-awake';
+import { getLiveShow } from './helper_funcs';
 
 moment = require('moment-timezone');
 
@@ -162,8 +163,13 @@ class Live extends React.Component {
     }
 
     setUri(props,pauseChromecast=false) {
+      let show = getLiveShow(props);
+      let video;
+      if ( ! show ) {
+        this.setState({uri:''});
+        return;
+      }
       if ( DEBUG_LIVE_VIEW ) {
-        let show = props.episodes[props.recentEpisodeIds[1]];
         this.setState({
           uri:show.dataUrl,
           show: show
@@ -173,87 +179,30 @@ class Live extends React.Component {
           image: show.thumbnailUrl,
           name: show.name,
         }
-        this.props.setPlayerValue('currentLiveVideo', video);
-        this.props.setPlayerValue('isPlaying', false);
-        this.props.setPlayerValue('liveMode', true);
-        this.props.setPlayerValue('isFullscreenVideo', true);
-        if ( pauseChromecast ) {
-          this.pauseChromecast();
-        }
-        return;
-      }
-      const weekdays = [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday'
-      ];
-      let date = new moment();
-      // convert all dates to eastern time
-      const currentYear = date.year();
-      const currentMonth = date.month();
-      const currentDay = date.day();
-      const currentDate = date.date();
-      const today = weekdays[currentDay];
-      const yesterday = weekdays[( currentDay - 1 )%7];
-      for ( let show of props.schedule ) {
-        if ( show.day != today && show.day != yesterday ) {
-          continue;
-        }
-
-        const start_hour = parseInt(show.start_time.split(':')[0]) + ( date.utcOffset() + 300 ) / 60;
-        const start_min = parseInt(show.start_time.split(':')[1]) + ( date.utcOffset() + 300 ) % 60;
-        let show_starts = moment(new Date(currentYear,currentMonth,currentDate, start_hour , start_min));
-
-        const end_hour = parseInt(show.end_time.split(':')[0]) + ( date.utcOffset() + 300 ) / 60;
-        const end_min = parseInt(show.end_time.split(':')[1]) + ( date.utcOffset() + 300 ) % 60;
-        let show_ends = moment(new Date(currentYear,currentMonth,currentDate, end_hour, end_min));
-
-        if ( show.day == today && show_ends < show_starts ) {
-            show_ends.add(1000*60*60*24);
-        } else if ( show.day == yesterday ) {
-          if ( show_ends > show_starts ) {
-            show_ends.add(-1000*60*60*24);
+      } else {
+        let channel = this.props.channelsById[show.show_id];
+        let uri = channel.hd_live_url;
+        this.setState({
+          uri:uri,
+          channel: channel,
+          show: {
+            name: channel.title,
+            thumbnailUrl: channel.thumb
           }
-          show_starts.add(-1000*60*60*24);
-        }
-
-        console.log('JG: ', show, ' is today show_starts, show_ends, date = ', show_starts, show_ends, date );
-        if ( show_starts <= date && show_ends >= date ) {
-          console.log('JG: show ', show, ' is now' );
-          if ( this.props.channelsById[show.show_id] ) {
-            let channel = this.props.channelsById[show.show_id];
-            console.log('JG: setting uri to show/channel ', show, channel, " date = ", date, " currentDay = ", currentDay, " show_starts = ", show_starts );
-            let uri = channel.hd_live_url;
-            this.setState({
-              uri:uri,
-              channel: channel,
-              show: {
-                name: channel.title,
-                thumbnailUrl: channel.thumb
-              }
-            });
-            let video = {
-              uri: uri,
-              image: channel.thumb,
-              name: channel.title,
-            }
-            this.props.setPlayerValue('currentLiveVideo', video);
-            this.props.setPlayerValue('isPlaying', false);
-            this.props.setPlayerValue('liveMode', true);
-            this.props.setPlayerValue('isFullscreenVideo', true);
-            this.pauseChromecast();
-            if ( pauseChromecast ) {
-              this.pauseChromecast();
-            }
-            return;
-          }
+        });
+        video = {
+          uri: uri,
+          image: channel.thumb,
+          name: channel.title,
         }
       }
-      this.setState({uri:''});
+      this.props.setPlayerValue('currentLiveVideo', video);
+      this.props.setPlayerValue('isPlaying', false);
+      this.props.setPlayerValue('liveMode', true);
+      this.props.setPlayerValue('isFullscreenVideo', true);
+      if ( pauseChromecast ) {
+        this.pauseChromecast();
+      }
     }
 
     onError = () => {

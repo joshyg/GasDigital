@@ -13,10 +13,11 @@ import {
     deleteCurrentlyDownloadingFiles,
 } from '../actions/data';
 const { height, width } = Dimensions.get('window');
-import { setValue } from '../actions/data';
+import { getSchedule, setValue } from '../actions/data';
 import { setPlayerValue } from '../actions/player';
 import Orientation from 'react-native-orientation';
 import Chromecast from './chromecast';
+import { getLiveShow } from './helper_funcs';
 
 
 class App extends React.Component {
@@ -37,6 +38,24 @@ class App extends React.Component {
           return false;
         });
         this.props.setPlayerValue('isFullscreenVideo', false );
+        this.props.getSchedule();
+        this.props.setValue('gettingSchedule', true);
+        this.checkLiveThread();
+    }
+
+    checkLive = () => {
+        if ( getLiveShow(this.props) ) {
+          this.props.setPlayerValue('liveNow', true);
+        } else {
+          this.props.setPlayerValue('liveNow', false);
+        }
+    }
+
+    checkLiveThread = () => {
+      this.checkLive();
+      this.setInterval( () => {
+        this.checkLive();
+      }, 8000);
     }
 
     componentWillReceiveProps(nextProps) { 
@@ -118,6 +137,11 @@ function mapStateToProps(state) {
     videoMode: state.player.videoMode,
     liveMode: state.player.liveMode,
     routes: state.navigation.routes,
+    episodes: state.data.episodes,
+    recentEpisodeIds: state.data.recentEpisodeIds,
+    schedule: state.data.schedule,
+
+
   };
 }
 
@@ -127,6 +151,7 @@ function mapDispatchToProps(dispatch) {
     resetTo,
     setValue,
     setPlayerValue,
+    getSchedule,
     deleteCurrentlyDownloadingFiles
   }, dispatch);
 }

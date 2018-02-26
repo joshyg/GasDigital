@@ -42,6 +42,7 @@ class BottomMenu extends React.Component {
                       height={35} 
                       width={45} 
                       fill={colors.white} 
+                      liveNow={this.props.liveNow}
                       strokeWidth={activeItem === 'live' ? "2" : "1"}/>
                     <Text style={[ {marginTop: -8}, styles.topMenuText, activeItem === 'live' ? styles.selected : {}  ]}>Live</Text>
                 </TouchableOpacity>    
@@ -80,6 +81,7 @@ class BottomMenu extends React.Component {
 function mapStateToProps(state) {
     return {
         activeMenuItem: state.navigation.activeMenuItem,
+        liveNow: state.player.liveNow,
     };
 }
 

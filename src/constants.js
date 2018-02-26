@@ -37,6 +37,7 @@ export const DEBUG_PREMIUM = false;
 export const DEBUG_CRASH = false;
 export const DEBUG_LIVE_VIEW = false;
 export const DEBUG_MODAL = false;
+export const DEBUG_NO_ANDROID_SVGS = false;
 export const EPISODES_PER_PAGE = 30;
 export const ENABLE_PREFETCH = false;
 export const APP_VERSION = 2.0;
