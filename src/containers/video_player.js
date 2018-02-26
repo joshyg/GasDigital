@@ -956,7 +956,8 @@ export default class VideoPlayer extends Component {
         const seekbarControl = !this.props.disableSeekbar ? this.renderSeekbar() : this.renderNullControl();
 
         const controlMarginBottom = this.isLandscape() ? 0 : 
-                                  ! this.props.live ? 0 : 60;
+                                  ! this.props.live ? 0 : 
+                                    Platform.OS == 'ios' ? 60 : 80;
 
         console.log('JG: controlMarginBottom, ls, fs = ', controlMarginBottom, this.isLandscape(), this.state.isFullscreen);
         return(

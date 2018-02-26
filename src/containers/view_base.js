@@ -101,7 +101,8 @@ class Base extends React.Component {
     }
 
     renderHeader = () => {
-      if ( ! this.landscapeVideo() && ! this.props.isFullscreenVideo || 
+      if ( ! this.landscapeVideo() && ! this.props.isFullscreenVideo &&
+           this.props.navigation.state.routeName != 'live' ||
            this.props.navigation.state.routeName == 'player_view' ) {
         return (
           <View style={[styles.header]} >

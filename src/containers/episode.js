@@ -347,7 +347,7 @@ class Episode extends React.Component {
       if ( isFullscreen ) {
         Orientation.lockToLandscape();
       } else {
-        Orientation.unlockAllOrientations();
+        Orientation.lockToPortrait();
       }
     }
     

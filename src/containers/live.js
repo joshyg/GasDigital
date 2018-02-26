@@ -244,7 +244,7 @@ class Live extends React.Component {
       if ( isFullscreen ) {
         Orientation.lockToLandscape();
       } else {
-        Orientation.unlockAllOrientations();
+        Orientation.lockToPortrait();
       }
     }
     
@@ -264,6 +264,7 @@ class Live extends React.Component {
           //onProgress={this.onProgress}
           resizeMode='contain'
           disableFullscreenControls={false}
+          disableTimer={true}
           isFullscreen={false}
           disableBack={true}
           disableVolume={true}
