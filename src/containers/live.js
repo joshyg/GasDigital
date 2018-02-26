@@ -247,7 +247,7 @@ class Live extends React.Component {
         Orientation.lockToPortrait();
       }
     }
-    
+
     renderVideo() {
       return (
         <Video source={{uri:this.state.uri}}   // Can be a URL or a local file.
@@ -273,6 +273,7 @@ class Live extends React.Component {
           episode={this.getEpisodeInfo}
           live={true}
           onToggleFullscreen={this.onToggleFullscreen}
+          onTogglePlayback={this.pauseChromecast}
           showModal={this.props.showModal}
           chromecast_devices={this.props.chromecast_devices}
           onError={this.onError}
