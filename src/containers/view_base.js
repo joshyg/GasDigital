@@ -11,6 +11,7 @@ const { height, width } = Dimensions.get('window');
 import { colors, fonts } from '../constants';
 import Orientation from 'react-native-orientation';
 import Modal from './modal.js';
+import { setPlayerValue } from '../actions/player';
 
 //FIXME: this component will be used to instantiate top/bottom menu
 class Base extends React.Component {
@@ -45,6 +46,7 @@ class Base extends React.Component {
       Orientation.getOrientation((err, orientation) => {
         console.log(`Current Device Orientation: ${orientation}`);
         this.setState({orientation});
+        this.props.setPlayerValue('orientation', orientation);
       });
       Orientation.addOrientationListener(this.orientationDidChange);
     }
@@ -64,6 +66,7 @@ class Base extends React.Component {
     orientationDidChange = (orientation) => {
       console.log('JG: setting orientation to ', orientation);
       this.setState({orientation});
+      this.props.setPlayerValue('orientation', orientation);
     }
 
     showPlayer() {
@@ -98,7 +101,8 @@ class Base extends React.Component {
     }
 
     renderHeader = () => {
-      if ( ! this.landscapeVideo() && ! this.props.isFullscreenVideo ) {
+      if ( ! this.landscapeVideo() && ! this.props.isFullscreenVideo || 
+           this.props.navigation.state.routeName == 'player_view' ) {
         return (
           <View style={[styles.header]} >
             {!this.props.hideBackButton ? 
@@ -164,6 +168,7 @@ function mapDispatchToProps(dispatch) {
         navigateTo,
         resetTo,
         back,
+        setPlayerValue,
     }, dispatch);
 }
 

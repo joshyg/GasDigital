@@ -19,6 +19,7 @@ import {
 import _ from 'lodash';
 import SvgIcon from '../components/svg_icons';
 import { colors } from '../constants.js';
+import Orientation from 'react-native-orientation';
 
 const { height, width } = Dimensions.get('window');
 
@@ -651,6 +652,10 @@ export default class VideoPlayer extends Component {
     }
 
     async toggleChromeCast() {
+      Orientation.unlockAllOrientations();
+      if ( this.props.onToggleChromecast ) {
+        this.props.onToggleChromecast();
+      }
       this.props.showModal('chromecastMenu');
     }
 
@@ -950,6 +955,10 @@ export default class VideoPlayer extends Component {
         const timerControl = !this.props.disableTimer ? this.renderTimer() : this.renderNullControl();
         const seekbarControl = !this.props.disableSeekbar ? this.renderSeekbar() : this.renderNullControl();
 
+        const controlMarginBottom = this.isLandscape() ? 0 : 
+                                  ! this.props.live ? 0 : 60;
+
+        console.log('JG: controlMarginBottom, ls, fs = ', controlMarginBottom, this.isLandscape(), this.state.isFullscreen);
         return(
             <Animated.View style={[
                 styles.controls.bottom,
@@ -965,7 +974,8 @@ export default class VideoPlayer extends Component {
                     { seekbarControl }
                     <View style={[
                         styles.controls.row,
-                        styles.controls.bottomControlGroup
+                        styles.controls.bottomControlGroup,
+                        { marginBottom: controlMarginBottom }
                     ]}>
                         { playPauseControl }
                         { this.renderTitle() }
@@ -1099,6 +1109,11 @@ export default class VideoPlayer extends Component {
         return null;
     }
 
+    isLandscape = () => {
+      return this.props.orientation != "PORTRAIT" &&
+             this.props.orientation != "PORTRAITUPSIDEDOWN";
+    }
+
     /**
      * Provide all of our options and render the whole component.
      */
@@ -1115,7 +1130,6 @@ export default class VideoPlayer extends Component {
           inputRange: [-1, 0, 1],
           outputRange: [height, width, height]
         });
-
         return (
              <Animated.View style={[{ height:videoHeight, width: videoWidth }]}>
                  <TouchableWithoutFeedback

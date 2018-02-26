@@ -275,6 +275,7 @@ class Live extends React.Component {
           showModal={this.props.showModal}
           chromecast_devices={this.props.chromecast_devices}
           onError={this.onError}
+          orientation={this.props.orientation}
         />
       );
     }
@@ -324,6 +325,7 @@ function mapStateToProps(state) {
       chromecast_devices: state.data.chromecast_devices,
       chromecastMode: state.player.chromecastMode,
       isPlayingChromecast: state.player.isPlayingChromecast,
+      orientation: state.player.orientation
     };
 }
 

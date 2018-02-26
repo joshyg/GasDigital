@@ -114,6 +114,12 @@ class Player extends React.Component {
       MusicControl.enableControl('play', true)
       MusicControl.enableControl('pause', true)
       MusicControl.enableControl('stop', false)
+      /*
+      if ( Platform.OS == 'android' ) {
+        MusicControl.enableControl('volume', true) // Only affected when remoteVolume is enabled
+        MusicControl.enableControl('remoteVolume', true)
+      }
+      */
     }
 
     //TODO repeated code that's also in player_controls container!!
@@ -212,7 +218,9 @@ class Player extends React.Component {
         }
         
 
-        this.setNowPlaying(startTime);
+        if ( Platform.OS == 'ios' ) {
+          this.setNowPlaying(startTime);
+        }
     }
 
     onProgress(data) {
