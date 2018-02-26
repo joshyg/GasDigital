@@ -62,6 +62,14 @@ class Player extends React.Component {
         MusicControl.on('stop', ()=> {
           this.props.setPlayerValue('isPlaying',false)
         })
+
+        MusicControl.on('togglePlayPause', ()=> {
+          if ( this.props.currentTrack  && ! this.props.videoMode ) {
+            this.props.setPlayerValue('isPlaying',!this.props.isPlaying)
+          } else if ( this.props.currentVideo && this.props.videoMode ) {
+            this.props.setPlayerValue('isPlayingVideo',!this.props.isPlayingVideo)
+          }
+        })
     
         MusicControl.on('nextTrack', ()=> {
           this.playNext();
@@ -234,8 +242,6 @@ class Player extends React.Component {
         // let duration = parseInt(this.props.timer.duration);
         // let currentTime = parseInt(this.props.timer.currentTime);
         // if ( duration - currentTime < 10 || duration < 10 ) {
-            
-
             this.props.setPlayerValue('queueIndex', this.props.queueIndex + 1);
             let episode = this.props.queue[this.props.queueIndex + 1] || {};
             let track = {
@@ -289,8 +295,10 @@ function mapStateToProps(state) {
     return {
         timer: state.player.timer,
         isPlaying: state.player.isPlaying,
+        isPlayingVideo: state.player.isPlayingVideo,
         isSettingTime: state.player.isSettingTime,
         currentTrack: state.player.currentTrack,
+        currentVideo: state.player.currentVideo,
         videoMode: state.player.videoMode,
         newTime: state.player.newTime,
         offlineEpisodes: state.data.offlineEpisodes,
