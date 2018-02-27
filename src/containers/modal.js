@@ -24,6 +24,10 @@ class ModalComponent extends React.Component {
 
 
   connectToChromecastDevice = async (itemId) => {
+    
+    if ( await Chromecast.isConnected() ) {
+      await Chromecast.disconnect();
+    }
     let connection = await Chromecast.connectToDevice(itemId);
     // disable any audio tracks
     this.props.setPlayerValue('isPlaying', false);
