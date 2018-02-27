@@ -75,7 +75,6 @@ export default reducer = (state = initialState, action) => {
           return { ...state, isGettingSchedule:false };
         }
         let schedule = action.payload.resp_data.data;
-        console.log('JG: GET_SCHEDULE schedule = ', schedule );
         return { ...state, schedule, isGettingSchedule: false };
 
     case 'DATA_GET_EPISODES':

@@ -959,7 +959,6 @@ export default class VideoPlayer extends Component {
                                   ! this.props.live ? 0 : 
                                     Platform.OS == 'ios' ? 60 : 80;
 
-        console.log('JG: controlMarginBottom, ls, fs = ', controlMarginBottom, this.isLandscape(), this.state.isFullscreen);
         return(
             <Animated.View style={[
                 styles.controls.bottom,
