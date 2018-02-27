@@ -9,6 +9,7 @@ import { setValue } from '../actions/data';
 import { setVideoTimerValue, setPlayerValue } from '../actions/player';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
+import { navigateTo } from '../actions/navigation';
 
 class ChromecastComponent extends Component {
     constructor(props) {
@@ -57,6 +58,10 @@ class ChromecastComponent extends Component {
           this.props.currentVideo;
         console.log('JG: attempting to cast ', video );
         if ( video ) {
+          this.props.setPlayerValue('isPlaying', false);
+          this.props.setPlayerValue('isPlayingVideo', false);
+          this.props.setValue('showModal', false);
+          this.props.navigateTo("player_view");
           Chromecast.castMedia(
             video.uri, 
             video.name, 
@@ -131,6 +136,7 @@ function mapDispatchToProps(dispatch) {
       setValue,
       setPlayerValue,
       setVideoTimerValue,
+      navigateTo,
     }, dispatch);
 }
 

@@ -8,6 +8,8 @@ import { setPlayerValue } from '../actions/player';
 import Chromecast from 'react-native-google-cast';
 import { navigateTo } from '../actions/navigation';
 import { DEBUG_MODAL } from '../constants';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
 
 const { height, width } = Dimensions.get('window');
 
@@ -24,16 +26,17 @@ class ModalComponent extends React.Component {
 
 
   connectToChromecastDevice = async (itemId) => {
-    
     if ( await Chromecast.isConnected() ) {
       await Chromecast.disconnect();
     }
     let connection = await Chromecast.connectToDevice(itemId);
-    // disable any audio tracks
-    this.props.setPlayerValue('isPlaying', false);
-    this.props.setPlayerValue('isPlayingVideo', false);
-    this.props.setValue('showModal', false);
-    this.props.navigateTo("player_view");
+    // ANDROID doesnt seem to work the first time when switching
+    // between casts.
+    if ( Platform.OS == 'android' ) {
+      this.setTimeout( x => {
+        Chromecast.connectToDevice(itemId);
+      }, 2000);
+    }
   }
 
   renderChromecastMenuItem  = ({item}) => {
@@ -139,6 +142,7 @@ function mapDispatchToProps(dispatch) {
     }, dispatch);
 }
 
+ReactMixin.onClass(ModalComponent, TimerMixin);
 export default connect(mapStateToProps, mapDispatchToProps)(ModalComponent);
 
 let containerWidth = 280;
