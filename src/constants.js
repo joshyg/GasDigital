@@ -14,6 +14,10 @@ export const colors = {
     grey4: '#3A3A3A',
     grey5: '#373737',
     transparent: 'rgba(0,0,0,0)',
+    bodyBackground: '#191919',
+    headerBackground: 'rgba(37, 37, 37, 0.5)',
+    footerBakground: '#2e2e2e'
+
 };
 
 export const fonts = {

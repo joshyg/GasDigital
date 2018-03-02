@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'center',
+      backgroundColor: colors.bodyBackground
   },
   header: {
       paddingTop: 10,
@@ -194,11 +195,13 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
       height: 52,
-      marginBottom: 10
+      marginBottom: 10,
+      backgroundColor: colors.headerBackground
   },
   body: {
       flex: 1,
       position: 'relative',
+      backgroundColor: colors.bodyBackground
   },
   backButton: {
     height: 20,

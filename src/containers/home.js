@@ -11,7 +11,7 @@ import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import { setPlayerValue } from '../actions/player';
-import { ENABLE_PREFETCH } from '../constants';
+import { colors, ENABLE_PREFETCH } from '../constants';
 
 class Home extends React.Component {
     constructor(props) {
@@ -86,6 +86,18 @@ class Home extends React.Component {
       );
     }
 
+    renderRow({item}) {
+      return (
+        <FlatList
+          data={item}
+          renderItem={this.renderChannel.bind(this)}
+          keyExtractor={(item, index) => { return item.id }}
+          horizontal={true}
+        />
+      );
+    } 
+    
+
     channels = () => {
       let channels = _.cloneDeep(this.props.channels);
       let recentImage = resolveAssetSource(require('../../assets/images/recent-icon.png'));
@@ -104,6 +116,25 @@ class Home extends React.Component {
       return channels;
     }
 
+    rows = () => {
+      let channels = this.channels();
+      let rows = [];
+      let row = [];
+      for ( ch of channels ) {
+        row.push(ch);
+        if ( row.length == 2 ) {
+          rows.push(_.cloneDeep(row));
+          row = [];
+        }
+      }
+      if ( row.length > 0 ) {
+        rows.push(_.cloneDeep(row));
+      }
+      return rows;
+    }
+
+
+
 
 
     
@@ -112,8 +143,8 @@ class Home extends React.Component {
             <Base hideBackButton={true} navigation={this.props.navigation}>
               <View style={styles.channelsContainer}>
                 <FlatList
-                  data={this.channels()}
-                  renderItem={this.renderChannel.bind(this)}
+                  data={this.rows()}
+                  renderItem={this.renderRow.bind(this)}
                   keyExtractor={(item, index) => { return item.id }}
                   horizontal={false}
                 />
@@ -155,6 +186,7 @@ const styles = StyleSheet.create({
   channelsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.bodyBackground
   },
   episodesContainer: {
     alignItems: 'flex-start',

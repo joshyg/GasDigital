@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
         height: 54,
         justifyContent: 'space-around',
         width: width,
-        backgroundColor: colors.grey2
+        backgroundColor: colors.footerBackground
     },
     menuItem: {
         justifyContent: 'center',

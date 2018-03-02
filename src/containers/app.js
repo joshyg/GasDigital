@@ -18,6 +18,7 @@ import { setPlayerValue } from '../actions/player';
 import Orientation from 'react-native-orientation';
 import Chromecast from './chromecast';
 import { getLiveShow } from './helper_funcs';
+import { colors } from '../constants';
 
 
 class App extends React.Component {
@@ -165,5 +166,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: height,
     width: width,
+    backgroundColor: colors.bodyBackground
   },
 });

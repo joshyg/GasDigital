@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     width: 150,
     paddingBottom: 10,
     marginBottom: 10,
+    borderRadius: 15
   },
   episodesContainer: {
 
@@ -244,7 +245,8 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 13,
     paddingLeft: 5,
-    paddingRight: 5
+    paddingRight: 5,
+    color: colors.white,
   },
     selected: {
       marginTop: 0,
