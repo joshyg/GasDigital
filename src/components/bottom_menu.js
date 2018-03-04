@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setActiveMenuItem, resetTo, navigateTo } from '../actions/navigation';
 import SvgIcon from './svg_icons';
-import { colors, fonts } from '../constants';
+import { iconNames, colors, fonts } from '../constants';
 
 class BottomMenu extends React.Component {
     setActiveMenu(item) {
@@ -18,20 +18,12 @@ class BottomMenu extends React.Component {
         this.props.resetTo(item);
     }
 
-    iconNames = {
-      'homescreen': 'headphones',
-      'live': 'video-camera',
-      'search': 'search',
-      'library': 'download',
-      'settings': 'cog',
-    }
-
     renderIcon(name, activeItem) {
       return (
         <Icon 
           name={name}
-          size={this.iconNames[activeItem] == name ? 33 : 30}
-          color={this.iconNames[activeItem] == name ? "#fcf411" : '#8e8e93'}
+          size={iconNames[activeItem] == name ? 33 : 30}
+          color={iconNames[activeItem] == name ? "#fcf411" : '#8e8e93'}
         />
       );
     }

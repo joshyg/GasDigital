@@ -8,7 +8,7 @@ import { navigateTo, resetTo, back } from '../actions/navigation';
 import BottomMenu from '../components/bottom_menu';
 import PlayerFooter from './player_footer';
 const { height, width } = Dimensions.get('window');
-import { colors, fonts } from '../constants';
+import { iconNames, colors, fonts } from '../constants';
 import Orientation from 'react-native-orientation';
 import Modal from './modal.js';
 import { setPlayerValue } from '../actions/player';
@@ -105,7 +105,8 @@ class Base extends React.Component {
            this.props.navigation.state.routeName != 'live' ||
            this.props.navigation.state.routeName == 'player_view' ) {
         return (
-          <View style={[styles.header]} >
+          <View>
+            <View style={styles.backButtonContainer}>
             {!this.props.hideBackButton ? 
               <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
                   <Image style={styles.backButton}  source={require('../../assets/icons/back.png')}/>
@@ -113,10 +114,13 @@ class Base extends React.Component {
               :
               <View style={{width: 30}}/>
             }
-            <Image resizeMode={'contain'} style={{height: 40, width: 150}} source={require('../../assets/images/logo.png')}/>
-            <TouchableOpacity onPress={()=>{this.props.navigateTo('settings')}}>
-                <Image style={{height: 30, width: 30}}  source={require('../../assets/icons/settings.png')}/>
-            </TouchableOpacity>
+            </View>
+            <View style={[styles.header]} >
+              <Text 
+              style={{color:'#fcf411', textAlign: 'center', fontSize: 18}} >
+                {this.props.activeMenuItem}
+              </Text>
+            </View>
           </View>
         );
       }
@@ -160,7 +164,8 @@ function mapStateToProps(state) {
       connection: state.data.connection,
       routes: state.navigation.routes,
       isFullscreenVideo: state.player.isFullscreenVideo,
-      chromecastMode: state.player.chromecastMode
+      chromecastMode: state.player.chromecastMode,
+      activeMenuItem: state.navigation.activeMenuItem,
     };
 }
 
@@ -193,10 +198,20 @@ const styles = StyleSheet.create({
       width: width,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
       height: 52,
       marginBottom: 10,
-      backgroundColor: colors.headerBackground
+      backgroundColor: colors.headerBackground,
+  },
+  backButtonContainer: {
+      paddingTop: 20,
+      paddingLeft: 10,
+      paddingRight: 10,
+      height: 52,
+      marginBottom: 10,
+      backgroundColor: colors.headerBackground,
+      zIndex: 5,
+      position:'absolute'
   },
   body: {
       flex: 1,

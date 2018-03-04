@@ -34,6 +34,14 @@ export const offlineDownloadStatus = {
     downloaded: 'downloaded',
 };
 
+export const iconNames = {
+  'homescreen': 'headphones',
+  'live': 'video-camera',
+  'search': 'search',
+  'library': 'download',
+  'settings': 'cog',
+};
+
 // export const BASE_URL = 'http://rss.gasdigitalnetwork.com/';
 export const BASE_URL = 'https://gasdigitalnetwork.com/';
 export const ENABLE_DOWNLOAD_VIDEO = false;
