@@ -1,8 +1,8 @@
 import React from 'react';
 import {Text, StyleSheet, ScrollView, TouchableOpacity, View,Dimensions, FlatList, Alert, Platform, Image, StatusBar } from 'react-native';
-
-
+import { colors } from '../constants';
 const { width } = Dimensions.get('window');
+import Icon from 'react-native-vector-icons/Entypo';
 
 export default function ListItemEpisode (props) {
     const { item } = props;
@@ -11,29 +11,33 @@ export default function ListItemEpisode (props) {
     if ( typeof description != 'string' ) {
       description = '';
     }
+    if ( description.length > 240 ) {
+      description = description.slice(0,240) + '...';
+    }
     return (
-		<TouchableOpacity style={styles.container} onPress={()=>{props.goToEpisode(item)}}>
-	     	<Image 
-	        style={styles.thumbnail}
-	        source={{
-            uri: item && item.thumbnailUrl,
-            cache: 'force-cache'
-          }}
-	     	/>
-
-	     	<View style={[props.playlistView ? {width: width - 180} : {width: width - 130},{marginLeft: 10}]}>
-        		<Text numberOfLines={1} style={styles.title}>{item && item.name}</Text>
-                <Text numberOfLines={1} style={styles.description}>{description}</Text>
-                {(props.spinny && (<Image key="audio" style={styles.icon} 
-                    source={require('../../assets/icons/spinny.gif')}/>))}
+      <View>
+        <View style={{alignItems:'flex-end', marginRight: 5}} >
+          <Icon 
+            name={'dots-three-horizontal'}
+            size={30}
+            color={colors.yellow}
+          />
+        </View>
+  		  <TouchableOpacity   style={styles.container} onPress={()=>{props.goToEpisode(item)}}>
+  	     	<View style={[props.playlistView ? {width: width - 50} : {width: width},{marginLeft: 10}]}>
+        		<Text style={styles.title}>{item && item.name}</Text>
+            <Text style={styles.description}>{description}</Text>
+            {(props.spinny && (<Image key="audio" style={styles.icon} 
+                source={require('../../assets/icons/spinny.gif')}/>))}
         	</View>
-
-            {props.playlistView &&
-                <TouchableOpacity onPress={props.removeFromPlaylist}>
-                    <Image source={require('../../assets/icons/minus.png')} style={styles.icon}/>
-                </TouchableOpacity>
-            }
+  
+          {props.playlistView &&
+              <TouchableOpacity onPress={props.removeFromPlaylist}>
+                  <Image source={require('../../assets/icons/minus.png')} style={styles.icon}/>
+              </TouchableOpacity>
+          }
         </TouchableOpacity>
+      </View> 
     );
 }
 
@@ -43,23 +47,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 110,
         width: width,
-        borderBottomWidth: 1,
-        borderBottomColor: 'grey',
         marginBottom: 10,
         paddingBottom: 10,
         alignItems: 'center'
     },
-    thumbnail: {
-    	width: 100, 
-    	height: 100,
-    	marginLeft: 15,
-    },
     title: {
-    	fontSize: 20,
-        marginBottom: 5
+      fontFamily: 'Avenir',
+    	fontSize: 14,
+      marginBottom: 5,
+      fontWeight: '900',
+      color: colors.yellow,
     },
     description: {
-        fontSize: 15
+      fontSize: 14,
+      color: colors.white,
+      fontFamily: 'Avenir',
+      fontWeight: '300',
     },
     icon: {
         height: 20,

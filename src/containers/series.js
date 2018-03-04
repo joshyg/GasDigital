@@ -23,6 +23,7 @@ class Series extends React.Component {
         perpage:EPISODES_PER_PAGE,
         hasBonus: false,
         showBonus: false,
+        showFullDescription: false,
       }
       this.goToEpisode = this.goToEpisode.bind(this);
       this.fetchEpisodes = _.throttle(2000,this.fetchEpisodes);
@@ -126,6 +127,36 @@ class Series extends React.Component {
       this.props.navigateTo('episode');
     }
 
+    showFullDescription = () => {
+      this.setState({showFullDescription: true});
+    }
+
+    renderDescription() {
+      let series = this.props.series;
+      if ( ! series || ! series.desc ) {
+        return null;
+      }
+      let description = this.state.showFullDescription ? 
+        series.desc :
+        series.desc.slice(0,240);
+      console.log('JG: description = ', description);
+       if ( ! this.state.showFullDescription && series.desc.length > 240 ) {
+         return (
+            <View style={{marginBottom: 30}}>
+              <Text style={styles.description}>{description+'...'}</Text>
+              <TouchableOpacity onPress={this.showFullDescription}>
+                <Text style={[styles.description, { color: colors.yellow }]} >More</Text>
+              </TouchableOpacity>
+            </View>
+          );
+       }
+       return ( 
+         <View style={{marginBottom: 30}}>
+           <Text style={styles.description}>{description}</Text>
+         </View>
+       )
+    }
+
     renderHeader = () => {
       let series = this.props.series;
       return (
@@ -147,9 +178,7 @@ class Series extends React.Component {
         </TouchableOpacity>
         </View>
         )}
-        <View style={{marginBottom: 30}}>
-          <Text style={styles.description}>{series && series.desc}</Text>
-        </View>
+        {this.renderDescription()}
         </View>
       );
     }
