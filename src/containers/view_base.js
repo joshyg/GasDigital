@@ -8,10 +8,11 @@ import { navigateTo, resetTo, back } from '../actions/navigation';
 import BottomMenu from '../components/bottom_menu';
 import PlayerFooter from './player_footer';
 const { height, width } = Dimensions.get('window');
-import { iconNames, colors, fonts } from '../constants';
+import { routeHeaders, colors, fonts } from '../constants';
 import Orientation from 'react-native-orientation';
 import Modal from './modal.js';
 import { setPlayerValue } from '../actions/player';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 //FIXME: this component will be used to instantiate top/bottom menu
 class Base extends React.Component {
@@ -109,7 +110,11 @@ class Base extends React.Component {
             <View style={styles.backButtonContainer}>
             {!this.props.hideBackButton ? 
               <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
-                  <Image style={styles.backButton}  source={require('../../assets/icons/back.png')}/>
+                <Icon 
+                  name='chevron-left'
+                  size={24}
+                  color='#fcf411'
+                />
               </TouchableOpacity>
               :
               <View style={{width: 30}}/>
@@ -118,7 +123,7 @@ class Base extends React.Component {
             <View style={[styles.header]} >
               <Text 
               style={{color:'#fcf411', textAlign: 'center', fontSize: 18}} >
-                {this.props.activeMenuItem}
+                {routeHeaders[this.props.activeMenuItem]}
               </Text>
             </View>
           </View>

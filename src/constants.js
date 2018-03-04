@@ -42,6 +42,14 @@ export const iconNames = {
   'settings': 'cog',
 };
 
+export const routeHeaders = {
+  'homescreen': 'Listen',
+  'live': 'Live',
+  'search': 'Search',
+  'library': 'Library',
+  'settings': 'Settings',
+};
+
 // export const BASE_URL = 'http://rss.gasdigitalnetwork.com/';
 export const BASE_URL = 'https://gasdigitalnetwork.com/';
 export const ENABLE_DOWNLOAD_VIDEO = false;

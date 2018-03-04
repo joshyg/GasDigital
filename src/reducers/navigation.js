@@ -91,7 +91,7 @@ const initialState = {
     ...initialNavState,
     scene: {},
     toRoute: null, // String: Name of the scene we are navigating to.
-    activeMenuItem: {},
+    activeMenuItem: 'homescreen',
 };
 
 export default reducer = (state = initialState, action) => {
@@ -145,7 +145,7 @@ export default reducer = (state = initialState, action) => {
         let persistedNavState = action.payload && action.payload.navigation || {};
         return {
             ...initialState,
-            activeMenuItem: 'home',
+            activeMenuItem: 'homescreen',
         };
 
     default:

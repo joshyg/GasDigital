@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setActiveMenuItem, resetTo, navigateTo } from '../actions/navigation';
 import SvgIcon from './svg_icons';
-import { iconNames, colors, fonts } from '../constants';
+import { iconNames, routeHeaders, colors, fonts } from '../constants';
 
 class BottomMenu extends React.Component {
     setActiveMenu(item) {
@@ -35,29 +35,29 @@ class BottomMenu extends React.Component {
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'homescreen')}>
-                    {this.renderIcon('headphones', activeItem)}
-                    <Text style={[ styles.topMenuText,activeItem === 'homescreen' ? styles.selected : {}  ]}>Listen</Text>
+                    {this.renderIcon(iconNames['homescreen'], activeItem)}
+                    <Text style={[ styles.topMenuText,activeItem === 'homescreen' ? styles.selected : {}  ]}>{routeHeaders['homescreen']}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'live')}>
-                    {this.renderIcon('video-camera', activeItem)}
-                    <Text style={[ styles.topMenuText, activeItem === 'live' ? styles.selected : {}  ]}>Live</Text>
+                    {this.renderIcon(iconNames['live'], activeItem)}
+                    <Text style={[ styles.topMenuText, activeItem === 'live' ? styles.selected : {}  ]}>{routeHeaders['live']}</Text>
                 </TouchableOpacity>    
                         
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'search')}>
-                    {this.renderIcon('search', activeItem)}
-                    <Text style={[  styles.topMenuText, activeItem === "search" ? styles.selected : {},{marginTop: -3} ]}>Search</Text>
+                    {this.renderIcon(iconNames['search'], activeItem)}
+                    <Text style={[  styles.topMenuText, activeItem === "search" ? styles.selected : {},{marginTop: -3} ]}>{routeHeaders['search']}</Text>
                 </TouchableOpacity>
 
                 
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'library')}>
-                    {this.renderIcon('download', activeItem)}
-                    <Text style={[ styles.topMenuText,activeItem === "library" ? styles.selected : {}]}>Library</Text>
+                    {this.renderIcon(iconNames['library'], activeItem)}
+                    <Text style={[ styles.topMenuText,activeItem === "library" ? styles.selected : {}]}>{routeHeaders['library']}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'settings')}>
-                    {this.renderIcon('cog', activeItem)}
-                    <Text style={[ styles.topMenuText,activeItem === "library" ? styles.selected : {}]}>Settings</Text>
+                    {this.renderIcon(iconNames['settings'], activeItem)}
+                    <Text style={[ styles.topMenuText,activeItem === "library" ? styles.selected : {}]}>{routeHeaders['settings']}</Text>
                 </TouchableOpacity>
                                                                
             </View>
