@@ -43,7 +43,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
@@ -60,21 +60,34 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-   <key>NSAppTransportSecurity</key>
-   <dict>
-       <key>NSExceptionDomains</key>
-       <dict>
-           <key>localhost</key>
-           <dict>
-               <key>NSExceptionAllowsInsecureHTTPLoads</key>
-               <true/>
-           </dict>
-       </dict>
-   </dict>
-   <key>NSBluetoothPeripheralUsageDescription</key>
-   <string>needs bluetooth access to scan for nearby ChromeCast devices.</string>
-  <key>NSMicrophoneUsageDescription</key>
-  <string>needs microphone access to listen for ultrasonic tokens when pairing with nearby ChromeCast devices.</string>
-
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>needs bluetooth access to scan for nearby ChromeCast devices.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>needs microphone access to listen for ultrasonic tokens when pairing with nearby ChromeCast devices.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Zocial.ttf</string>
+	</array>
 </dict>
 </plist>

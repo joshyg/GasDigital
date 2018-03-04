@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text,Image, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView, Dimensions} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import _ from 'lodash/fp';
 import { connect } from 'react-redux';
@@ -17,60 +18,54 @@ class BottomMenu extends React.Component {
         this.props.resetTo(item);
     }
 
+    iconNames = {
+      'homescreen': 'headphones',
+      'live': 'video-camera',
+      'search': 'search',
+      'library': 'download',
+      'settings': 'cog',
+    }
+
+    renderIcon(name, activeItem) {
+      return (
+        <Icon 
+          name={name}
+          size={this.iconNames[activeItem] == name ? 33 : 30}
+          color={this.iconNames[activeItem] == name ? "#fcf411" : '#8e8e93'}
+        />
+      );
+    }
+
+
     render() {
         const { width } = Dimensions.get('window');
         const activeItem = this.props.activeMenuItem;
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'homescreen')}>
-                    <SvgIcon 
-                      style={{marginLeft: -35, marginTop: -7}} 
-                      type="home" 
-                      scale={1}  
-                      height={35} 
-                      width={55} 
-                      fill={activeItem === 'home' ? colors.white : null}/>
-                    <Text style={[ {marginTop: -3}, styles.topMenuText,activeItem === 'homescreen' ? styles.selected : {}  ]}>Home</Text>
+                    {this.renderIcon('headphones', activeItem)}
+                    <Text style={[ styles.topMenuText,activeItem === 'homescreen' ? styles.selected : {}  ]}>Listen</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'live')}>
-                    <SvgIcon 
-                      translateX={"11"} 
-                      translateY={"4"} 
-                      type="live" 
-                      scale={.94} 
-                      height={35} 
-                      width={45} 
-                      fill={colors.white} 
-                      liveNow={this.props.liveNow}
-                      strokeWidth={activeItem === 'live' ? "2" : "1"}/>
-                    <Text style={[ {marginTop: -8}, styles.topMenuText, activeItem === 'live' ? styles.selected : {}  ]}>Live</Text>
+                    {this.renderIcon('video-camera', activeItem)}
+                    <Text style={[ styles.topMenuText, activeItem === 'live' ? styles.selected : {}  ]}>Live</Text>
                 </TouchableOpacity>    
                         
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'search')}>
-                    <SvgIcon 
-                      translateX="4" 
-                      translateY="4" 
-                      type="search" 
-                      scale={1} 
-                      height={30} 
-                      width={30} 
-                      strokeWidth={activeItem === "search" ? "2" : "1"} 
-                      fill={activeItem === "search" ? colors.white : colors.grey1}/>
+                    {this.renderIcon('search', activeItem)}
                     <Text style={[  styles.topMenuText, activeItem === "search" ? styles.selected : {},{marginTop: -3} ]}>Search</Text>
                 </TouchableOpacity>
 
                 
                 <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'library')}>
-                    <SvgIcon 
-                      style={{marginRight: -3}} 
-                      translateY="2" 
-                      type="library" 
-                      scale={.9} 
-                      height={26} 
-                      width={24} 
-                      fill={activeItem === "library" ? colors.white : null}/>
+                    {this.renderIcon('download', activeItem)}
                     <Text style={[ styles.topMenuText,activeItem === "library" ? styles.selected : {}]}>Library</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.menuItem} onPress={this.setActiveMenu.bind(this,'settings')}>
+                    {this.renderIcon('cog', activeItem)}
+                    <Text style={[ styles.topMenuText,activeItem === "library" ? styles.selected : {}]}>Settings</Text>
                 </TouchableOpacity>
                                                                
             </View>
@@ -104,10 +99,6 @@ const styles = StyleSheet.create({
     menuItem: {
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    icon: {
-        height: 24,
-        width: 24,
     },
     topMenuText: {
         fontSize: 10,
