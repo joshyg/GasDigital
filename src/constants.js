@@ -1,6 +1,6 @@
 export const colors = {
     yellow: '#fcf411',
-    blue: '#0768A9',
+    blue: '#0d54ba',
     darkBlue: '#246773',
     facebookBlue: '#3B5998',
     red: '#C23535',
@@ -13,6 +13,7 @@ export const colors = {
     grey3: '#484848',
     grey4: '#3A3A3A',
     grey5: '#373737',
+    buttonGrey: '#8e8e93',
     transparent: 'rgba(0,0,0,0)',
     bodyBackground: '#191919',
     headerBackground: 'rgba(37, 37, 37, 0.5)',

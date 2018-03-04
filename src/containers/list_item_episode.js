@@ -45,7 +45,6 @@ export default function ListItemEpisode (props) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        height: 110,
         width: width,
         marginBottom: 10,
         paddingBottom: 10,

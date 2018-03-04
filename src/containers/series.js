@@ -169,13 +169,19 @@ class Series extends React.Component {
         { this.state.hasBonus && (
 
         <View style={styles.showBonusToggle}>
-          <TouchableOpacity style={[styles.button, this.state.showBonus ? styles.unselected : styles.selected   ]} onPress={()=>{this.setState({showBonus: false})}}>
-            <Text style={this.state.showBonus ? {color: 'black'}  : {color: colors.white}}>Recent</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[this.state.showBonus ? styles.unselected : styles.selected]} 
+            onPress={()=>{this.setState({showBonus: false})}}
+          >
+            <Text style={this.state.showBonus ? {color: colors.white}  : {color: colors.blue}}>Recent</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, this.state.showBonus ? styles.selected : styles.unselected ]} onPress={()=>{this.setState({showBonus: true})}}>
-            <Text style={this.state.showBonus ?  {color: colors.white} : {color: 'black'}}>Bonus Content</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[!this.state.showBonus ? styles.unselected : styles.selected]} 
+            onPress={()=>{this.setState({showBonus: true})}}
+          >
+            <Text style={this.state.showBonus ?  {color: colors.blue} : {color: colors.white}}>Bonus Content</Text>
+          </TouchableOpacity>
         </View>
         )}
         {this.renderDescription()}
@@ -280,26 +286,27 @@ const styles = StyleSheet.create({
     selected: {
       marginTop: 0,
       marginBottom: 0,
-      borderWidth: 1,
-      borderColor: colors.black,
-      backgroundColor: 'black',
-      width: 160,
-      height: 45,
+      marginHorizontal: 5,
+      borderRadius: 10,
+      backgroundColor:  colors.yellow,
+      width: 164,
+      height: 40,
       justifyContent: 'center',
       padding: 12,
       alignItems: 'center',
       justifyContent: 'center',
       display: 'flex',
       flexDirection: 'row',
+      borderRadius: 10,
   },
   unselected: {
       marginTop: 0,
       marginBottom: 0,
-      borderWidth: 1,
-      borderColor: colors.black,
-      backgroundColor: 'white',
-      width: 160,
-      height: 45,
+      marginHorizontal: 5,
+      borderRadius: 10,
+      backgroundColor: colors.buttonGrey,
+      width: 164,
+      height: 40,
       justifyContent: 'center',
       padding: 12,
       alignItems: 'center',
