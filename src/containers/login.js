@@ -56,22 +56,19 @@ class Login extends React.Component {
     }   
 
     render() {
-        let marginTop = width < 350 ? 0 : 50;
         return (
             <View style={styles.inputContainer}>
-              <Image style={{height: 80, marginTop }} resizeMode={'contain'} source={require('../../assets/images/logo.png')}/>
-              <Text>{"\n"}</Text>
+              <Image style={{height: 80, marginBottom: 10}} resizeMode={'contain'} source={require('../../assets/images/logo.png')}/>
               <TextInput style={styles.textInput} onChangeText={x => this.setState({email:x})} autoCapitalize={'none'} underlineColorAndroid={'transparent'} placeholder={'email'} type="TextInput"/>
-              <Text>{"\n"}</Text>
               <TextInput style={styles.textInput} onChangeText={x => this.setState({password:x})} underlineColorAndroid={'transparent'} placeholder={'password'} type="TextInput" secureTextEntry={true}/>
-              <Text>{"\n"}</Text>
-              <TouchableOpacity style={styles.button} onPress={this.logIn} >
-                <Text>Log In</Text>
-              </TouchableOpacity>
-              <Text>{"\n"}</Text>
-              <TouchableOpacity style={styles.button} onPress={this.logInAsGuest} >
-                <Text>Continue As Guest</Text>
-              </TouchableOpacity>
+              <View style={styles.loginButtons}>
+                <TouchableOpacity style={styles.button} onPress={this.logIn} >
+                  <Text style={styles.buttonText}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={this.logInAsGuest} >
+                  <Text style={styles.buttonText}>Guest</Text>
+                </TouchableOpacity>
+              </View>
             </View>
         );
     }
@@ -101,26 +98,30 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
-let buttonWidth = 288;
-if (width <  350){
-    buttonWidth = 268;
-}
- 
 const styles = StyleSheet.create({
+  loginButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
    button: {
-       marginTop: 0,
+       marginTop: 10,
        marginBottom: 0,
        borderWidth: 1,
        borderColor: colors.yellow,
        backgroundColor: colors.yellow,
-       width: buttonWidth,
-       height: 45,
+       width: 118,
+       height: 40,
        justifyContent: 'center',
        padding: 12,
        marginLeft: 5,
        marginRight: 5,
        alignItems: 'center',
-       justifyContent: 'center'
+       justifyContent: 'center',
+       borderRadius: 10
+   },
+   buttonText: {
+    color: colors.blue,
+    fontFamily: 'Avenir'
    },
    inputContainer: {
        borderWidth: 0,
@@ -130,18 +131,20 @@ const styles = StyleSheet.create({
        flex: 1,
        justifyContent: 'center',
        alignItems: 'center',
-       backgroundColor: 'transparent',
+       backgroundColor: colors.bodyBackground,
        width: width,
-       top: width < 350 ? 70 : 90,
+       height: height,
        position: 'absolute'
    },
    textInput: {
-       backgroundColor: colors.grey2,
+       backgroundColor: colors.white,
        paddingTop: 10,
        paddingLeft: 10,
        height: 40,
-       width: buttonWidth,
+       width: 248,
        marginTop: 5,
+       marginBottom: 5,
        color: colors.yellow,
+       borderRadius: 10,
    }
 });
