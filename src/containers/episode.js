@@ -23,6 +23,7 @@ import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import Chromecast from 'react-native-google-cast';
 import KeepAwake from 'react-native-keep-awake';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Episode extends React.Component {
     constructor(props) {
@@ -483,24 +484,33 @@ class Episode extends React.Component {
     renderButtons = () => {
       if ( ! this.hasVideo() ) {
         return (
-          <View style={{alignItems:'center'}}>
-            <TouchableOpacity style={styles.button} onPress={this.playAudioTrack}>
-              <Image style={[styles.iconMarginRight]} source={require('../../assets/icons/play-audio.png')}/>
-              <Text>Play Audio</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.button} onPress={this.playAudioTrack}>
+            <Icon 
+              name={'volume-up'}
+              size={18}
+              color={colors.blue}
+            />
+            <Text style={styles.buttonText}> Audio</Text>
+          </TouchableOpacity>
         );
       }
       return (
-        <View style={{alignItems:'center'}}>
+        <View style={styles.playButtons}>
           <TouchableOpacity style={styles.button} onPress={this.playVideo} >
-            <Image style={[styles.iconMarginRight]} source={require('../../assets/icons/play-video.png')}/>
-            <Text>Play Video</Text>
+            <Icon 
+              name={'video-camera'}
+              size={18}
+              color={colors.blue}
+            />
+            <Text style={styles.buttonText}> Video</Text>
           </TouchableOpacity>
-          <Text>{"\n"}</Text>
           <TouchableOpacity style={styles.button} onPress={this.playAudioTrack}>
-            <Image style={[styles.iconMarginRight]} source={require('../../assets/icons/play-audio.png')}/>
-            <Text>Play Audio</Text>
+            <Icon 
+              name={'volume-up'}
+              size={18}
+              color={colors.blue}
+            />
+            <Text style={styles.buttonText}> Audio</Text>
           </TouchableOpacity>
         </View>
       );
@@ -519,11 +529,21 @@ class Episode extends React.Component {
       }
       return ( 
         <View>
-          {this.renderMidbar()}
           {this.renderButtons()}
           <Text>{"\n"}</Text>
           <Text style={styles.title}>{episode.name}</Text>
           <Text style={styles.description}>{description}</Text>
+        </View>
+      );
+    }
+
+    renderImages() {
+      return (
+        <View style={styles.imageContainer}>
+          <Image 
+            style={styles.episodeImage}
+            source={{uri: this.props.episode && this.props.episode.thumbnailUrl}}
+          />
         </View>
       );
     }
@@ -535,12 +555,7 @@ class Episode extends React.Component {
             <Base navigation={this.props.navigation}>
               { this.props.videoMode && ( <KeepAwake/> ) }
               <ScrollView  contentContainerStyle={styles.container}>
-                { this.props.videoMode ? this.renderVideo() : 
-                (<Image 
-                  style={styles.thumbnail}
-                  source={{uri: this.props.episode && this.props.episode.thumbnailUrl}}
-                />)
-                }
+                { this.props.videoMode ? this.renderVideo() : this.renderImages() }
                 {( this.state.orientation.includes('PORTRAIT') || ! this.props.videoMode ) && this.renderDetails()}
               </ScrollView>
             </Base>
@@ -593,29 +608,35 @@ ReactMixin.onClass(Episode, TimerMixin);
 export default connect(mapStateToProps, mapDispatchToProps)(Episode);
 const { height, width } = Dimensions.get('window');
  
-let buttonWidth = 200;
- if (width <  350){
-     buttonWidth = 178;
- }
+let buttonWidth = 164;
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  thumbnail: {
-    height: height/3,
-    width: width,
-    marginBottom: 20
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  episodeImage: {
+    height: 150,
+    width: 150,
+    borderRadius: 10,
   },
   description: {
     fontSize: 14,
     paddingLeft: 5,
-    paddingRight: 5
+    paddingRight: 5,
+    color: colors.white,
+    fontFamily: 'Avenir',
   },
   title: {
     fontSize: 18,
-    marginBottom: 15
+    marginBottom: 15,
+    color: colors.white,
+    fontFamily: 'Avenir',
   },
   icon: {
     height: 25,
@@ -640,21 +661,27 @@ const styles = StyleSheet.create({
      marginBottom: 10,
      width: width
   },
+  playButtons:{
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
   button: {
       marginTop: 0,
       marginBottom: 0,
-      borderWidth: 1,
-      borderColor: colors.yellow,
+      marginHorizontal: 5,
+      borderRadius: 10,
       backgroundColor: colors.yellow,
-      width: buttonWidth,
-      height: 45,
+      width: 100,
+      height: 40,
       justifyContent: 'center',
       padding: 12,
-      marginLeft: 15,
-      marginRight: 15,
       alignItems: 'center',
       justifyContent: 'center',
       display: 'flex',
       flexDirection: 'row',
+  },
+  buttonText: {
+    color: colors.blue,
+    fontFamily: 'Avenir'
   },
 });

@@ -139,8 +139,7 @@ class Series extends React.Component {
       let description = this.state.showFullDescription ? 
         series.desc :
         series.desc.slice(0,240);
-      console.log('JG: description = ', description);
-       if ( ! this.state.showFullDescription && series.desc.length > 240 ) {
+      if ( ! this.state.showFullDescription && series.desc.length > 240 ) {
          return (
             <View style={{marginBottom: 30}}>
               <Text style={styles.description}>{description+'...'}</Text>
@@ -274,14 +273,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 15
   },
-  episodesContainer: {
-
-  },
   description: {
     fontSize: 13,
     paddingLeft: 5,
     paddingRight: 5,
     color: colors.white,
+    fontFamily: 'Avenir'
   },
     selected: {
       marginTop: 0,
