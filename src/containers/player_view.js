@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
   thumbnail: {
     height: 300,
     width: 300,
-    marginBottom: 20
+    marginBottom: 20,
+    borderRadius: 15,
   },
 });

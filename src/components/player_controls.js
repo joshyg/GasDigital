@@ -3,6 +3,7 @@ import {View, Text, Dimensions, StyleSheet, Image, TouchableHighlight, Touchable
 import _ from 'lodash/fp';
 import ProgressSlider from './progress_slider';
 import { colors, fonts } from '../constants';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
@@ -28,11 +29,11 @@ export default function PlayerControlsComponent(props) {
                 setCurrentTime={props.setCurrentTime}
                 isSettingTime={()=>{}}
                 isEnabled={props.isSliderEnabled}
-                canSet={!props.isDiscoveryMode}
+                canSet={true}
             />
             <View style={styles.dataProgress}>
-                    <Text style={[ fonts.content, fonts.small ]}>{props.progressTime}</Text>
-                    <Text style={[ fonts.content, fonts.small ]}>{track.length}</Text>
+                    <Text style={styles.timeText}>{props.progressTime}</Text>
+                    <Text style={styles.timeText}>{track.length}</Text>
             </View>
 
                 <View style={[{paddingLeft: 15, paddingRight: 15},Platform.OS === 'android' ? {marginBottom: 0} : {marginBottom: 25}] }>
@@ -52,26 +53,27 @@ export default function PlayerControlsComponent(props) {
                     </TouchableOpacity>
 
                 { ! props.liveMode && <TouchableOpacity onPress={props.seekBackFifteen}>
-                        <Image
-                            style={styles.jump}
-                            resizeMode={'contain'}
-                            source={skipBackFifteenButton}
-                        />
+                      <Icon
+                        name={'backward'}
+                        size={30}
+                        color={colors.white}
+                      />
                     </TouchableOpacity> }
     
                     <TouchableOpacity onPress={props.onPlayPress}>
-                        <Image
-                            source={playPause}
-                            style={{height: 100, width: 100}}
-                        />
+                      <Icon
+                        name={props.isPlaying ? 'pause' : 'play'}
+                        size={60}
+                        color={colors.white}
+                      />
                     </TouchableOpacity>
                     
                   { !props.liveMode && <TouchableOpacity onPress={props.seekForwardFifteen}>
-                        <Image
-                            style={styles.jump}
-                            resizeMode={'contain'}
-                            source={skipForwardFifteenButton}
-                        />
+                      <Icon
+                        name={'forward'}
+                        size={30}
+                        color={colors.white}
+                      />
                     </TouchableOpacity> }
 
                     <TouchableOpacity disabled={!props.hasNext} onPress={props.onNextPress}>
@@ -100,21 +102,13 @@ if ( Platform.OS === 'android' ) {
 
 
 const styles = StyleSheet.create({
-    progress: {
-        borderWidth: 1,
-        borderColor: colors.yellow,
-        height: 0,
-        position: 'absolute',
-        left: 0,
-        bottom: height - (height * 0.5) - (50 * 2)
-    },
-
     jump:{
         height: 40,
         width: 40,
     },
     dataProgress: {
         marginTop: 10,
+        marginLeft: 30,
         justifyContent: 'space-between'
     },
     controls: {
@@ -126,6 +120,13 @@ const styles = StyleSheet.create({
         
     },
     title: {
-        fontSize: 20
+      fontSize: 20,
+      color: colors.white,
+      fontFamily: 'Avenir',
+    },
+    timeText: {
+      fontSize: 10,
+      color: colors.white,
+      fontFamily: 'Avenir',
     }
 });

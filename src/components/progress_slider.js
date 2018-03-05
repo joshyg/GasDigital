@@ -23,19 +23,19 @@ export default class ProgressSlider extends Component {
                 min={0}
                 max={Math.floor(props.timer.playableDuration)}
                 values={[ Math.floor(props.timer.currentTime) ]}
-                sliderLength={width}
+                sliderLength={props.isFooter ? width : width - 60}
                 selectedStyle={{ backgroundColor: colors.yellow }}
                 unselectedStyle={{ backgroundColor: 'grey' }}
-                markerStyle={ props.canSet ? styles.marker : styles.none }
-                pressedMarkerStyle={styles.pressedMarker}
-                containerStyle={styles.sliderContainer}
+                markerStyle={ props.canSet ? this.styles.marker : this.styles.none }
+                pressedMarkerStyle={this.styles.pressedMarker}
+                containerStyle={this.styles.sliderContainer}
                 touchDimensions={{
                     height: touchTarget,
                     width: touchTarget,
                     borderRadius: 0,
                     slipDisplacement: 0
                 }}
-                trackStyle={styles.trackStyle}
+                trackStyle={this.styles.trackStyle}
 
                 onValuesChangeStart={() => {props.isSettingTime(true);}}
                 onValuesChange={val => {}}
@@ -45,23 +45,24 @@ export default class ProgressSlider extends Component {
                 {...props}
             />
         );
+
     }
+    styles = StyleSheet.create({
+      sliderContainer: {
+          position: 'absolute',
+          marginHorizontal: this.props.isFooter ? 0 : 30,
+          top: 0,
+      },
+      marker: {
+          height: 11,
+          width: 11,
+          borderRadius: 5,
+          backgroundColor: colors.blue
+      },
+          none: {
+          height: 0,
+          width: 0
+      },
+    });
 }
 
-const styles = StyleSheet.create({
-    sliderContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0
-    },
-    marker: {
-        height: 11,
-        width: 11,
-        borderRadius: 5,
-        backgroundColor: colors.blue
-    },
-        none: {
-        height: 0,
-        width: 0
-    },
-});

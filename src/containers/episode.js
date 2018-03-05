@@ -484,14 +484,16 @@ class Episode extends React.Component {
     renderButtons = () => {
       if ( ! this.hasVideo() ) {
         return (
-          <TouchableOpacity style={styles.button} onPress={this.playAudioTrack}>
-            <Icon 
-              name={'volume-up'}
-              size={18}
-              color={colors.blue}
-            />
-            <Text style={styles.buttonText}> Audio</Text>
-          </TouchableOpacity>
+          <View style={styles.playButtons}>
+            <TouchableOpacity style={styles.audioOnlyButton} onPress={this.playAudioTrack}>
+              <Icon 
+                name={'volume-up'}
+                size={18}
+                color={colors.blue}
+              />
+              <Text style={styles.buttonText}> Audio</Text>
+            </TouchableOpacity>
+          </View>
         );
       }
       return (
@@ -679,6 +681,21 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       display: 'flex',
       flexDirection: 'row',
+  },
+  audioOnlyButton: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 0,
+      marginBottom: 0,
+      marginHorizontal: 5,
+      borderRadius: 10,
+      backgroundColor: colors.yellow,
+      width: 150,
+      height: 40,
+      padding: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+      display: 'flex',
   },
   buttonText: {
     color: colors.blue,
