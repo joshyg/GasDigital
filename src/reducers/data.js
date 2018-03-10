@@ -7,6 +7,7 @@ const initialState = {
     rssFeedsById: {}, 
     lastChannelFetchTime: {},
     episodes: {},
+    favoriteEpisodes: {},
     episode: {},
     channelEpisodeIds: {}, 
     channelBonusEpisodeIds: {}, 
@@ -15,6 +16,7 @@ const initialState = {
     searchResults: [],
     isGettingEpisodes: false,
     isGettingSchedule: false,
+    isGettingFavorites: false,
     offlineEpisodes: {},
     liveShowMessage: '',
     page: 1
@@ -277,8 +279,12 @@ export default reducer = (state = initialState, action) => {
         episode = _.cloneDeep(state.episodes[addFaveId]);
         episode.is_favourite = true;
         episodes = {};
+        favoriteEpisodes = {};
         episodes[addFaveId] = episode;
-        return { ...state, episodes: { ...state.episodes, ...episodes } }
+        favoritepisodes[addFaveId] = episode;
+        return { ...state, 
+          favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes},
+          episodes: { ...state.episodes, ...episodes } }
 
     case 'DATA_REMOVE_FAVORITE':
         const removeFaveId = action.payload.req_data.show_id;
@@ -286,13 +292,18 @@ export default reducer = (state = initialState, action) => {
         episode = _.cloneDeep(state.episodes[removeFaveId]);        
         episode.is_favourite = false;
         episodes = {};
+        favoriteEpisodes = {};
         episodes[removeFaveId] = episode;
-        return { ...state, episodes: { ...state.episodes, ...episodes } }
+        favoriteEpisodes[removeFaveId] = null;
+        return { ...state, 
+          favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes},
+          episodes: { ...state.episodes, ...episodes } }
 
     case 'DATA_GET_FAVORITES':
         returnedEpisodes = action.payload.resp_data.data;
         returnedEpisodeIds = returnedEpisodes.map(x => x.id);
         episodes = {};
+        favoriteEpisodes = {};
         for ( i in returnedEpisodes ) {
           let episode = returnedEpisodes[i];
           if ( ! state.episodes[episode.id] ) {
@@ -302,8 +313,12 @@ export default reducer = (state = initialState, action) => {
         for ( id in returnedEpisodeIds ) {
           if (!episodes[id]) continue;
           episodes[id].is_favourite = true;
+          favoriteEpisodes[id] = episodes[id];
         }
-        return { ...state, episodes: { ...state.episodes, ...episodes } };
+        return { ...state, 
+          isGettingFavorites: false, 
+          favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes},
+          episodes: { ...state.episodes, ...episodes } };
 
     /* Playlists */
     case 'DATA_REMOVE_FROM_PLAYLIST':
