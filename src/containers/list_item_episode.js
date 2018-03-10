@@ -16,13 +16,15 @@ export default function ListItemEpisode (props) {
     }
     return (
       <View>
-        <View style={{alignItems:'flex-end', marginRight: 5}} >
+        <TouchableOpacity 
+          style={{alignItems:'flex-end', marginRight: 5}}
+          onPress={props.showActionSheetWithOptions}>
           <Icon 
             name={'dots-three-horizontal'}
             size={30}
             color={colors.yellow}
           />
-        </View>
+        </TouchableOpacity>
   		  <TouchableOpacity   style={styles.container} onPress={()=>{props.goToEpisode(item)}}>
   	     	<View style={[props.playlistView ? {width: width - 50} : {width: width},{marginLeft: 10}]}>
         		<Text style={styles.title}>{item && item.name}</Text>

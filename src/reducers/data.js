@@ -17,6 +17,7 @@ const initialState = {
     isGettingEpisodes: false,
     isGettingSchedule: false,
     isGettingFavorites: false,
+    isSettingFavorites: false,
     offlineEpisodes: {},
     liveShowMessage: '',
     page: 1
@@ -274,8 +275,10 @@ export default reducer = (state = initialState, action) => {
 
     /* Playlists */
     case 'DATA_ADD_FAVORITE':
+        console.log('JG: DATA_ADD_FAVORITE, payload = ', action.payload);
         const addFaveId = action.payload.req_data.show_id;
         if (!state.episodes[addFaveId]) return { ...state };
+        console.log('JG: episode legit');
         episode = _.cloneDeep(state.episodes[addFaveId]);
         episode.is_favourite = true;
         episodes = {};
@@ -284,6 +287,7 @@ export default reducer = (state = initialState, action) => {
         favoritepisodes[addFaveId] = episode;
         return { ...state, 
           favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes},
+          isSettingFavorites: false, 
           episodes: { ...state.episodes, ...episodes } }
 
     case 'DATA_REMOVE_FAVORITE':

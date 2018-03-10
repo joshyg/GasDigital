@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@expo/react-native-action-sheet": "^1.0.2",
     "@ptomasroos/react-native-multi-slider": "0.0.11",
     "axios": "^0.17.1",
     "buffer": "^5.1.0",
@@ -42,5 +43,8 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "devDependencies": {
+    "babel-preset-react-native-stage-0": "^1.0.1"
   }
 }

@@ -5,13 +5,25 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { resetTo, navigateTo } from '../actions/navigation';
 import { togglePlayback } from '../actions/player';
-import {  getRSS, getEpisodes,setValue, getBonusContent } from '../actions/data';
+import {  
+  getRSS, 
+  getEpisodes,
+  setValue,
+  getBonusContent ,
+  addFavorite,
+  removeFavorite,
+  addToPlaylist,
+  removeFromPlaylist,
+  getOfflineEpisode,
+  deleteOfflineEpisode,
+  displayOfflineEpisodeDownloading,
+} from '../actions/data';
 import ListItemEpisode from './list_item_episode';
-import { EPISODES_PER_PAGE, colors } from '../constants';
-
-
+import { EPISODES_PER_PAGE, offlineDownloadStatus, colors } from '../constants';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 import Base from './view_base';
 
+@connectActionSheet
 class Series extends React.Component {
     constructor(props) {
       super(props);
@@ -48,14 +60,18 @@ class Series extends React.Component {
         let page = parseInt(this.props.channelEpisodeIds[channel].length/this.state.perpage);
         this.setState({page});
       }
+      this.updateEpisodes(this.props, channel);
+    }
+
+    updateEpisodes(props, channel) {
       // set initial episode list
-      if ( this.props.channelEpisodeIds && this.props.channelEpisodeIds[channel] ) {
-        let channelEpisodes = this.props.channelEpisodeIds[channel].map(x => { return this.props.episodes[x] });
+      if ( props.channelEpisodeIds && props.channelEpisodeIds[channel] ) {
+        let channelEpisodes = props.channelEpisodeIds[channel].map(x => { return props.episodes[x] });
         this.setState({episodes:channelEpisodes});
       } 
       // bonus episodes
-      if(this.props.channelBonusEpisodeIds && this.props.channelBonusEpisodeIds[channel] ){
-          let bonusEpisodes = this.props.channelBonusEpisodeIds[channel].map(x => { return this.props.episodes[x] });
+      if(props.channelBonusEpisodeIds && props.channelBonusEpisodeIds[channel] ){
+          let bonusEpisodes = props.channelBonusEpisodeIds[channel].map(x => { return props.episodes[x] });
           this.setState({hasBonus: true, bonusEpisodes:  bonusEpisodes})
       }
     }
@@ -87,10 +103,8 @@ class Series extends React.Component {
         this.setState({channel:channel});
         if ( nextProps.channelEpisodeIds[channel] ) { 
           let channelEpisodes = nextProps.channelEpisodeIds[channel].map(x => { return nextProps.episodes[x] });
-          console.log('JG: cwrp update episodes');
           this.setState({episodes:channelEpisodes});
         } else {
-          console.log('JG: cwrp fetch episodes');
           this.fetchEpisodes(nextProps,this.state.channel);
         }
 
@@ -98,8 +112,16 @@ class Series extends React.Component {
             let bonusEpisodes = nextProps.channelBonusEpisodeIds[channel].map(x => { return nextProps.episodes[x] });
             this.setState({hasBonus: true, bonusEpisodes:  bonusEpisodes})
         }
+        if ( this.props.isSettingFavorites && ! nextProps.isSettingFavorites ) {
+          let series = this.props.series;
+          if(series){
+            let channel = series.link.split('cat=')[1];
+            this.updateEpisodes(nextProps, channel);
+          }
+        }
 
       }
+
     }
 
     componentDidMount() {
@@ -188,12 +210,114 @@ class Series extends React.Component {
       );
     }
 
+    downloadOfflineEpisode = (episode,type) => {
+      // Immediately shows episode as downloading
+      this.props.displayOfflineEpisodeDownloading(this.props.episode, type); 
+
+      // Starts downloading, and when promise is finished, 
+      // shows episode is finished downloading
+      this.props.getOfflineEpisode(this.props.episode, type); 
+    }
+
+    downloadOfflineAudio = episode => {
+      this.downloadOfflineEpisode(episode,'audio');
+    }
+
+    downloadOfflineVideo = episode => {
+      this.downloadOfflineEpisode(episode,'video');
+    }
+
+    deleteOfflineEpisode = (episode,type) => {
+      if ( this.props.isPlaying && 
+        this.props.currentTrack.episode_id == episode.id ) {
+        Alert.alert( 'Forbidden', 'Cant delete download of currently playing track' );
+        return;
+      }
+      this.props.deleteOfflineEpisode(
+        this.props.episode, 
+        (type === 'audio') ? 
+          this.props.offlineEpisodes[episode.id].audioUrl : 
+          this.props.offlineEpisodes[episode.id].videoUrl,
+        type
+      );
+    }
+
+    deleteOfflineAudio = (episode) => {
+      this.deleteOfflineEpisode(episode,'audio');
+    }
+
+    deleteOfflineVideo = (episode) => {
+      this.deleteOfflineEpisode(episode,'video');
+    }
+
+    removeFavorite = (episode) => {
+      this.props.setValue('isSettingFavorites', true);
+      this.props.removeFavorite(
+        this.props.user_id, 
+        episode.id,
+        episode.id,
+      )
+    }
+
+    addFavorite = (episode) => {
+      console.log('JG: add favorite episode = ', episode);
+      this.props.setValue('isSettingFavorites', true);
+      this.props.addFavorite(
+        this.props.user_id, 
+        episode.id,
+        episode.id,
+        episode
+      )
+    }
+
+    audioDownloaded = (episode) => {
+      let audioDownloadingState = offlineDownloadStatus.notDownloaded;
+      if (!!this.props.offlineEpisodes[episode.id] && 
+          !!this.props.offlineEpisodes[episode.id].status) {
+        audioDownloadingState = this.props.offlineEpisodes[episode.id].status;
+      }
+    }
+
+    episodeFavorited = (episode) => {
+      return episode.is_favourite || this.props.favoriteEpisodes[episode.id];
+    }
+
+    showActionSheetWithOptions = (item) => {
+      let options = [];
+      let actions = [];
+      if ( this.audioDownloaded(item) ) {
+        options.push('Remove Audio Download');
+        actions.push(this.downloadOfflineAudio);
+      } else {
+        options.push('Download Audio');
+        actions.push(this.deleteOfflineAudio);
+      }
+      if ( this.episodeFavorited(item) ) {
+        options.push('Unfavorite');
+        actions.push(this.removeFavorite);
+      } else {
+        options.push('Favorite');
+        actions.push(this.addFavorite);
+      }
+      options.push('Cancel');
+      actions.push(()=>{});
+      this.props.showActionSheetWithOptions({
+        options,
+        cancelButtonIndex:options.length-1
+      },
+      buttonIndex => { 
+        actions[buttonIndex](item);
+      });
+    }
 
     renderEpisode({item,index}) {
       return (
         <View>
         { index == 0 && this.renderHeader() }
-        <ListItemEpisode item={item} goToEpisode={() => {this.goToEpisode(item)}}/>
+        <ListItemEpisode 
+          item={item} 
+          showActionSheetWithOptions={() => {this.showActionSheetWithOptions(item)}}
+          goToEpisode={() => {this.goToEpisode(item)}}/>
         </View>
       );
     }
@@ -242,7 +366,10 @@ function mapStateToProps(state) {
       isGettingEpisodes: state.data.isGettingEpisodes,
       channelBonusEpisodeIds: state.data.channelBonusEpisodeIds,
       lastChannelFetchTime: state.data.lastChannelFetchTime,
-      page: state.data.page
+      page: state.data.page,
+      offlineEpisodes: state.data.offlineEpisodes,
+      favoriteEpisodes: state.data.favoriteEpisodes,
+      isSettingFavorites: state.data.isSettingFavorites
     };
 }
 
@@ -256,6 +383,13 @@ function mapDispatchToProps(dispatch) {
         setValue,
         getBonusContent,
         getRSS,
+        addFavorite,
+        removeFavorite,
+        addToPlaylist,
+        removeFromPlaylist,
+        getOfflineEpisode,
+        deleteOfflineEpisode,
+        displayOfflineEpisodeDownloading,
     }, dispatch);
 }
 

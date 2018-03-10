@@ -135,7 +135,7 @@ class Library extends React.Component {
 function mapStateToProps(state) {
     return {
       isGettingFavorites: state.data.isGettingFavorites,
-      favrotieEpisodes: state.data.favoriteEpisodes
+      favoriteEpisodes: state.data.favoriteEpisodes
     };
 }
 

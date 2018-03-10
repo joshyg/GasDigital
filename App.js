@@ -14,6 +14,7 @@ import {
 import GasDigital from './src';
 import codePush from "react-native-code-push";
 import { Crashlytics } from 'react-native-fabric';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -37,7 +38,9 @@ console.log = function() {
 class App extends Component<{}> {
   render() {
     return (
-        <GasDigital/>
+        <ActionSheetProvider>
+          <GasDigital/>
+        </ActionSheetProvider>
     );
   }
 }
