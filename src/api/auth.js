@@ -2,7 +2,7 @@ import Api from './index';
 import { APP_VERSION, BASE_URL } from '../constants';
 
 export function logIn (username,password) {
-    let url = "web.php?fun=login&user="+username+"&pass="+password+"&app_version="+APP_VERSION;
+    let url = "web.php?fun=login&user="+encodeURIComponent(username)+"&pass="+encodeURIComponent(password)+"&app_version="+APP_VERSION;
     return Api.get(url)
         .then((res) => {
             console.log("JG: logged in, response = ", res);
