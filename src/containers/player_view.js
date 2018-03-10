@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import _ from 'lodash/fp';
-import { playNext, setPlayback } from '../actions/player';
+import { setPlayerValue, playNext, setPlayback } from '../actions/player';
 import { navigateTo } from '../actions/navigation';
 import PlayerControls from './player_controls';
 import Base from './view_base';
@@ -30,12 +30,16 @@ class PlayerView extends Component {
     }
 
     track = () => {
+      let track;
       if ( ! this.props.chromecastMode ) {
-        return this.props.currentTrack;
+        track = this.props.currentTrack;
       } else if ( ! this.props.liveMode ) {
-        return this.props.currentVideo;
+        track = this.props.currentVideo;
+      } else {
+       track = this.props.currentLiveVideo;
       }
-      return this.props.currentLiveVideo;
+      this.props.setPlayerValue('playerHeader', track.name);
+      return track;
     }
 
     render() {
@@ -76,6 +80,7 @@ function mapDispatchToProps(dispatch) {
         playNext,
         setPlayback,
         navigateTo,
+        setPlayerValue
     }, dispatch);
 }
 

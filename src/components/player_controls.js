@@ -19,6 +19,13 @@ export default function PlayerControlsComponent(props) {
     const skipBackFifteenButton = require('../../assets/icons/skip_fifteen_back.png');
     let HIT_SLOP = 15;
 
+    let trackName  = "";
+    if ( track.name && track.name.length < 20 ) {
+      trackName = track.name;
+    } else if ( track.name && track.name.length > 20 ) {
+      trackName = track.name.slice(0,20) + '...';
+    }
+
     return (
         <View>
             <ProgressSlider
@@ -38,8 +45,11 @@ export default function PlayerControlsComponent(props) {
 
                 <View style={[{paddingLeft: 15, paddingRight: 15},Platform.OS === 'android' ? {marginBottom: 0} : {marginBottom: 25}] }>
                     <Text style={styles.title}>
-                        {track.name}
+                        {trackName}
                     </Text>
+                   { track.seriesTitle && (
+                     <Text style={styles.seriesTitle}>{track.seriesTitle}</Text>
+                   )}
                 </View>
             
                 
@@ -120,9 +130,17 @@ const styles = StyleSheet.create({
         
     },
     title: {
-      fontSize: 20,
+      fontSize: 24,
+      fontWeight: 'bold',
       color: colors.white,
       fontFamily: 'Avenir',
+      textAlign: 'center'
+    },
+    seriesTitle: {
+      fontSize: 24,
+      color: colors.yellow,
+      fontFamily: 'Avenir',
+      textAlign: 'center'
     },
     timeText: {
       fontSize: 10,

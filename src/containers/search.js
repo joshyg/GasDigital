@@ -7,12 +7,14 @@ import Base from './view_base';
 import { search, setValue } from '../actions/data';
 import _ from 'underscore';
 import ListItemEpisode from './list_item_episode';
+import { colors } from '../constants'; 
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Search extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        
+        textEmpty: true
       }
     }
 
@@ -52,6 +54,11 @@ class Search extends React.Component {
     search = (text) => {
       let endState = {}
       this.props.search(text, this.props.user_id)
+      if ( text == '' ) {
+        this.setState({textEmpty: true});
+      } else if ( this.state.textEmpty ) {
+        this.setState({textEmpty: false});
+      }
     }
 
     render() {
@@ -62,16 +69,32 @@ class Search extends React.Component {
                 style={styles.inputContainer}
                 onChangeText={_.debounce(this.search, 300)}
                 underlineColorAndroid={'transparent'}
+                placeholder={'Search'}
+                placeholderTextColor={colors.yellow}
                 value={this.state.text} />
               <Text>{"\n"}</Text>
-              <View style={styles.episodesContainer}>
-                <FlatList
-                  data={this.props.searchResults}
-                  renderItem={this.renderEpisode.bind(this)}
-                  keyExtractor={(item, index) => { return item.id }}
-                  onEndReached={this.onEndReached.bind(this)}
-                />
-              </View>
+              { this.props.searchResults.length > 0 && !this.state.textEmpty ? (
+                <View style={styles.episodesContainer}>
+                  <FlatList
+                    data={this.props.searchResults}
+                    renderItem={this.renderEpisode.bind(this)}
+                    keyExtractor={(item, index) => { return item.id }}
+                    onEndReached={this.onEndReached.bind(this)}
+                  /> 
+                </View>
+              ) : (
+                <View style={styles.noResultsStyle}>
+                  <Icon 
+                    name={'search'}
+                    size={120}
+                    color={colors.yellow}
+                  />
+                  <Text>{"\n"}</Text>
+                  <Text style={styles.header}>Search GaS Digital</Text>
+                  <Text style={styles.subHeader}>Find your favorite episode, show, host or guest</Text>
+                </View>
+              )}
+
             </Base>
         );
     }
@@ -102,20 +125,33 @@ export default connect(mapStateToProps, mapDispatchToProps)(Search);
 const styles = StyleSheet.create({
   inputContainer: {
     margin: 10,
+    marginTop: 25,
     paddingLeft: 10,
     paddingRight: 10,
-    height: 40, 
-    borderColor: 'gray', 
-    borderWidth: 1,
+    height: 36, 
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+    color: colors.yellow,
   },
-  channelsContainer: {
+  noResultsStyle: {
+    marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'column'
   },
   episodesContainer: {
     alignItems: 'flex-start',
   },
-  episodeRow: {
-    flexDirection: 'row'
+  header: {
+    fontSize: 20,
+    fontFamily: 'Avenir',
+    color: colors.yellow,
+    textAlign: 'center'
+  },
+  subHeader: {
+    fontSize: 18,
+    fontFamily: 'Avenir',
+    color: colors.buttonGrey,
+    textAlign: 'center'
   },
 });

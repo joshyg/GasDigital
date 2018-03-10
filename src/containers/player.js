@@ -262,6 +262,7 @@ class Player extends React.Component {
         // if ( duration - currentTime < 10 || duration < 10 ) {
             this.props.setPlayerValue('queueIndex', this.props.queueIndex + 1);
             let episode = this.props.queue[this.props.queueIndex + 1] || {};
+            let series = this.props.channelsById[episode.show_id];
             let track = {
                 uri: episode.dataUrl,
                 download_uri: episode.downloadUrl,
@@ -269,7 +270,9 @@ class Player extends React.Component {
                 name: episode.name,
                 episode_id: episode.id,
                 series_id: episode.show_id,
-                audioUrl: episode.audioUrl
+                audioUrl: episode.audioUrl,
+                seriesTitle: series && series.title
+                
             }
             this.props.setPlayerValue('isPlayingVideo', false);
             this.props.setPlayerValue('videoMode', false);
@@ -323,6 +326,7 @@ function mapStateToProps(state) {
         queue: state.player.queue,
         queueIndex: state.player.queueIndex,
         episodeProgress: state.player.episodeProgress,
+        channelsById: state.data.channelsById,
     };
 }
 

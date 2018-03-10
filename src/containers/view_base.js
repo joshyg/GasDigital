@@ -101,9 +101,19 @@ class Base extends React.Component {
       return null;
     }
 
+    getPlayerHeader() {
+      if ( this.props.playerHeader.length <= 20 ) {
+        return this.props.playerHeader;
+      } else {
+        return this.props.playerHeader.slice(0,20) + '...';
+      }
+    }
+
+
     renderHeader = () => {
       if ( ! this.landscapeVideo() && ! this.props.isFullscreenVideo &&
-           this.props.navigation.state.routeName != 'live' ||
+           this.props.navigation.state.routeName != 'live' && 
+           this.props.navigation.state.routeName != 'search' ||
            this.props.navigation.state.routeName == 'player_view' ) {
         return (
           <View>
@@ -123,7 +133,9 @@ class Base extends React.Component {
             <View style={[styles.header]} >
               <Text 
               style={{color:'#fcf411', textAlign: 'center', fontSize: 18}} >
-                {routeHeaders[this.props.activeMenuItem]}
+                {this.props.navigation.state.routeName == 'player_view' ? 
+                  this.getPlayerHeader() : 
+                  routeHeaders[this.props.activeMenuItem]}
               </Text>
             </View>
           </View>
@@ -171,6 +183,7 @@ function mapStateToProps(state) {
       isFullscreenVideo: state.player.isFullscreenVideo,
       chromecastMode: state.player.chromecastMode,
       activeMenuItem: state.navigation.activeMenuItem,
+      playerHeader: state.player.playerHeader
     };
 }
 

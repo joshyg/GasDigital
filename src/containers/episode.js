@@ -176,15 +176,17 @@ class Episode extends React.Component {
 
     playAudioTrack = () => {
       let episode = this.props.episode || {};
-      let series_id = this.props.series ? this.props.series.id : episode.show_id;
+      let series = this.props.series ? this.props.series : this.props.channelsById[episode.show_id];
+      console.log('JG: series = ', series);
       let track = {
         uri: episode.dataUrl,
         download_uri: episode.downloadUrl,
         image: episode.thumbnailUrl,
         name: episode.name,
         episode_id: episode.id,
-        series_id: series_id,
-        audioUrl: episode.audioUrl
+        series_id: series && series.id,
+        audioUrl: episode.audioUrl,
+        seriesTitle: series && series.title
       }
       this.props.setPlayerValue('queue',[]);
       this.props.setPlayerValue('queueIndex', 0);
@@ -209,14 +211,15 @@ class Episode extends React.Component {
         return Alert.alert( 'Unavailable', 'Must be a paid subscriber to acccess video');
       }
       let episode = this.props.episode || {};
-      let series_id = this.props.series ? this.props.series.id : episode.show_id;
+      let series = this.props.series ? this.props.series : this.props.channelsById[episode.show_id];
       let video = {
         uri: episode.dataUrl,
         download_uri: episode.downloadUrl,
         image: episode.thumbnailUrl,
         name: episode.name,
         episode_id: episode.id,
-        series_id: series_id,
+        series_id: series && series.id,
+        seriesTitle: series && series.title,
         audioUrl: episode.audioUrl
       }
       this.props.setPlayerValue('isPlaying', false);
@@ -584,6 +587,7 @@ function mapStateToProps(state) {
       episodeVideoProgress: state.player.episodeVideoProgress,
       videoMode: state.player.videoMode,
       chromecast_devices: state.data.chromecast_devices,
+      channelsById: state.data.channelsById,
     };
 }
 
