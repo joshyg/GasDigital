@@ -52,8 +52,8 @@ export function getRecentEpisodes(user_id, channel_id) {
     };
 }
 
-export function getEpisodes(cat, user_id, page=1, perpage=EPISODES_PER_PAGE, prefetch=false) {
-    const request = DataApi.GetData('api.php', { cat, user_id, page, perpage, prefetch })
+export function getEpisodes(cat, show_id, user_id, page=1, perpage=EPISODES_PER_PAGE, prefetch=false) {
+    const request = DataApi.GetData('api.php', { cat, show_id, user_id, page, perpage, prefetch })
     return {
         type: 'DATA_GET_EPISODES',
         payload: request,
@@ -66,8 +66,8 @@ export function gettingEpisodes() {
     };
 }
 
-export function getBonusContent(title) {
-    const request = DataApi.GetData('web.php', { fun: 'getBonus', category: title });
+export function getBonusContent(title, show_id='') {
+    const request = DataApi.GetData('web.php', { fun: 'getBonus', category: title, show_id });
     return {
       type: 'DATA_GET_BONUS_CONTENT',
       payload: request

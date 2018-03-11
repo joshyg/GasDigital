@@ -110,7 +110,9 @@ class Base extends React.Component {
     }
 
     getPlayerHeader() {
-      if ( this.props.playerHeader.length <= 20 ) {
+      if ( ! this.props.playerHeader ) {
+        return '';
+      } else if ( this.props.playerHeader.length <= 20 ) {
         return this.props.playerHeader;
       } else {
         return this.props.playerHeader.slice(0,20) + '...';

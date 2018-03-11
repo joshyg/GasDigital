@@ -39,6 +39,7 @@ payloadError = (payload) => {
 
 export default reducer = (state = initialState, action) => {
     let link,
+        show_id,
         page,
         channels,
         channelFetchTime,
@@ -86,6 +87,7 @@ export default reducer = (state = initialState, action) => {
           return { ...state, isGettingEpisodes: false };
         }
         link = action.payload.req_data.cat;
+        show_id = action.payload.req_data.show_id;
         page = action.payload.req_data.page;
         returnedEpisodes = action.payload.resp_data.data;
         returnedEpisodeIds = returnedEpisodes.map(x => x.id);
@@ -107,6 +109,14 @@ export default reducer = (state = initialState, action) => {
               .then(_=>{})
               .catch(err=>{console.log('JG: error prefetching: ', err)});
             }
+            // FIXME: backend not always returning show id
+            if ( ! episode.show_id ) {
+              episodes[episode.id].show_id = show_id;
+            }
+          } else if ( ! state.episodes[episode.id].show_id ) {
+            // FIXME: backend not always returning show id
+            episodes[episode.id] = _.cloneDeep(state.episodes[episode.id]);
+            episodes[episode.id].show_id = show_id;
           }
         }
         channelFetchTime = {};
@@ -184,6 +194,7 @@ export default reducer = (state = initialState, action) => {
           return { ...state, isGettingEpisodes: false };
         }
         link = action.payload.req_data.category;
+        show_id = action.payload.req_data.show_id;
         returnedEpisodes = action.payload.resp_data.result.objects.item;
         if ( ! returnedEpisodes ) {
           return { ...state, isGettingEpisodes: false };
@@ -202,6 +213,14 @@ export default reducer = (state = initialState, action) => {
           let episode = returnedEpisodes[i];
           if ( ! state.episodes[episode.id] ) {
             episodes[episode.id] = episode;
+            // FIXME: backend not always returning show id
+            if ( ! episodes[episode.id].show_id ) {
+              episodes[episode.id].show_id = show_id;
+            }
+          } else if ( ! state.episodes[episode.id].show_id ) {
+            // FIXME: backend not always returning show id
+            episodes[episode.id] = _.cloneDeep(state.episodes[episode.id]);
+            episodes[episode.id].show_id = show_id;
           }
         }
 

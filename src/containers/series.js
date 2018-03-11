@@ -55,7 +55,7 @@ class Series extends React.Component {
       if ( ! this.props.channelEpisodeIds || 
            ! this.props.channelEpisodeIds[channel] ||
            Date.now()/1000 - this.props.lastChannelFetchTime[channel] > 30 ) {
-        this.fetchEpisodes(this.props,channel);
+        this.fetchEpisodes(this.props,channel,series.id);
       } else if ( this.props.channelEpisodeIds && this.props.channelEpisodeIds[channel] ) {
         let page = parseInt(this.props.channelEpisodeIds[channel].length/this.state.perpage);
         this.setState({page});
@@ -76,7 +76,7 @@ class Series extends React.Component {
       }
     }
 
-    fetchEpisodes(props,channel,page=1) {
+    fetchEpisodes(props,channel,series_id,page=1) {
       const { series } = this.props;
       if ( this.props.guest && 
            series && 
@@ -89,8 +89,8 @@ class Series extends React.Component {
         return;
       }
       props.setValue('isGettingEpisodes', true);
-      props.getEpisodes(channel,this.props.user_id,page);
-      props.getBonusContent(channel);
+      props.getEpisodes(channel,series_id,this.props.user_id,page);
+      props.getBonusContent(channel,series_id);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -105,7 +105,7 @@ class Series extends React.Component {
           let channelEpisodes = nextProps.channelEpisodeIds[channel].map(x => { return nextProps.episodes[x] });
           this.setState({episodes:channelEpisodes});
         } else {
-          this.fetchEpisodes(nextProps,this.state.channel);
+          this.fetchEpisodes(nextProps,this.state.channel,series.id);
         }
 
         if(nextProps.channelBonusEpisodeIds && nextProps.channelBonusEpisodeIds[channel] ){

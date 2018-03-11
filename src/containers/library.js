@@ -63,14 +63,34 @@ class Library extends React.Component {
       return offlineEps;
     }
 
+    getEpisodeName(episode) {
+      if (episode.name.length > 15) {
+        return episode.name.slice(0,14)+'...';
+      }
+      return episode.name;
+    }
+
+    getEpisodeSeriesName(episode) {
+      console.log('JG: getEpisodeSeriesName, episode = ', episode);
+      let series = this.props.channelsById[episode.show_id];
+      if ( !series ) { return };
+      let seriesName = series.title;
+      if (seriesName.length > 15) {
+        return seriesName.slice(0,14)+'...';
+      }
+      return seriesName;
+    }
+
     renderEpisode({item}, spinny) {
       return (
   		  <TouchableOpacity   
-        style={styles.container}
+        style={styles.episodeContainer}
         onPress={()=>{this.goToEpisode(item)}}>
           <Image 
             style={styles.episodeImage}
             source={{uri: item && item.thumbnailUrl}}/>
+          <Text style={styles.episodeName}>{this.getEpisodeName(item)}</Text>
+          <Text style={styles.seriesName}>{this.getEpisodeSeriesName(item)}</Text>
         </TouchableOpacity>
       );
     } 
@@ -116,6 +136,7 @@ function mapStateToProps(state) {
       offlineEpisodes: state.data.offlineEpisodes,
       episodes: state.data.episodes,
       user_id: state.auth.user_id,
+      channelsById: state.data.channelsById,
     };
 }
 
@@ -135,6 +156,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
+  episodeContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 8
+  },
   title: {
     fontSize: 48,
     fontFamily: 'Avenir',
@@ -144,6 +170,19 @@ const styles = StyleSheet.create({
   episodeImage: {
     width: 126,
     height: 126,
-    borderRadius: 5
+    borderRadius: 10,
+  },
+  episodeName: {
+    fontSize: 14,
+    fontFamily: 'Avenir',
+    fontWeight: 'bold',
+    color: colors.yellow,
+    textAlign: 'center'
+  },
+  seriesName: {
+    fontSize: 14,
+    fontFamily: 'Avenir',
+    color: colors.white,
+    textAlign: 'center'
   },
 });

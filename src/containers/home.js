@@ -53,12 +53,12 @@ class Home extends React.Component {
       }
       for ( ch in props.channels ) {
         let channel = props.channels[ch];
-        channel = channel.link.split('cat=')[1];
-        if ( ! this.props.channelEpisodeIds[channel] ||
-               this.props.channelEpisodeIds[channel].length == 0 ) {
+        let channelName = channel.link.split('cat=')[1];
+        if ( ! this.props.channelEpisodeIds[channelName] ||
+               this.props.channelEpisodeIds[channelName].length == 0 ) {
             props.setValue('isGettingEpisodes', true);
-            this.props.getEpisodes(channel,this.props.user_id)
-            this.props.getBonusContent(channel);
+            this.props.getEpisodes(channelName,channel.id,this.props.user_id)
+            this.props.getBonusContent(channelName,channel.id);
             break;
         }
       }
