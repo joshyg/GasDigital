@@ -258,7 +258,7 @@ class Live extends React.Component {
           volume={1}                            // 0 is muted, 1 is normal.
           muted={false}
           paused={this.props.chromecastMode}
-          playInBackground={false}                // Audio continues to play when app entering background.
+          playInBackground={true}                // Audio continues to play when app entering background.
           playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
           progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
           //onProgress={this.onProgress}
