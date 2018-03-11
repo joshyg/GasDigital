@@ -112,14 +112,14 @@ class Series extends React.Component {
             let bonusEpisodes = nextProps.channelBonusEpisodeIds[channel].map(x => { return nextProps.episodes[x] });
             this.setState({hasBonus: true, bonusEpisodes:  bonusEpisodes})
         }
-        if ( this.props.isSettingFavorites && ! nextProps.isSettingFavorites ) {
-          let series = this.props.series;
-          if(series){
-            let channel = series.link.split('cat=')[1];
-            this.updateEpisodes(nextProps, channel);
-          }
-        }
 
+      }
+      if ( this.props.isSettingFavorites && ! nextProps.isSettingFavorites ) {
+        let series = nextProps.series;
+        if(series){
+          let channel = series.link.split('cat=')[1];
+          this.updateEpisodes(nextProps, channel);
+        }
       }
 
     }

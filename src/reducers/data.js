@@ -46,6 +46,7 @@ export default reducer = (state = initialState, action) => {
         rssFeedsById,
         episode,
         episodes,
+        favoriteEpisodes,
         channelEpisodeIds,
         returnedEpisodes,
         returnedEpisodeIds,
@@ -275,23 +276,21 @@ export default reducer = (state = initialState, action) => {
 
     /* Playlists */
     case 'DATA_ADD_FAVORITE':
-        console.log('JG: DATA_ADD_FAVORITE, payload = ', action.payload);
-        const addFaveId = action.payload.req_data.show_id;
+        const addFaveId = action.payload.req_data.video_id;
         if (!state.episodes[addFaveId]) return { ...state };
-        console.log('JG: episode legit');
         episode = _.cloneDeep(state.episodes[addFaveId]);
         episode.is_favourite = true;
         episodes = {};
         favoriteEpisodes = {};
         episodes[addFaveId] = episode;
-        favoritepisodes[addFaveId] = episode;
+        favoriteEpisodes[addFaveId] = episode;
         return { ...state, 
           favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes},
           isSettingFavorites: false, 
           episodes: { ...state.episodes, ...episodes } }
 
     case 'DATA_REMOVE_FAVORITE':
-        const removeFaveId = action.payload.req_data.show_id;
+        const removeFaveId = action.payload.req_data.video_id;
         if (!state.episodes[removeFaveId]) return { ...state };
         episode = _.cloneDeep(state.episodes[removeFaveId]);        
         episode.is_favourite = false;
@@ -301,6 +300,7 @@ export default reducer = (state = initialState, action) => {
         favoriteEpisodes[removeFaveId] = null;
         return { ...state, 
           favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes},
+          isSettingFavorites: false, 
           episodes: { ...state.episodes, ...episodes } }
 
     case 'DATA_GET_FAVORITES':

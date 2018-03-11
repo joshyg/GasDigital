@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { resetTo, navigateTo } from '../actions/navigation';
 import ListItemSeries from './list_item_series';
 import Base from './view_base';
-import { getSchedule, getBonusContent, getRecentVideos, getChannels, getEpisodes, setValue } from '../actions/data';
+import { getSchedule, getBonusContent, getRecentVideos, getFavorites, getChannels, getEpisodes, setValue } from '../actions/data';
 import _ from 'lodash/fp';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 import ReactMixin from 'react-mixin';
@@ -28,6 +28,7 @@ class Home extends React.Component {
       this.props.getSchedule();
       this.props.getChannels(this.props.user_id);
       this.props.getRecentVideos(this.props.user_id,20);
+      this.props.getFavorites(this.props.user_id);
       this.prefetchEpisodes(this.props);
       this.props.setPlayerValue('videoMode', false);
     }
@@ -145,7 +146,7 @@ class Home extends React.Component {
                 <FlatList
                   data={this.rows()}
                   renderItem={this.renderRow.bind(this)}
-                  keyExtractor={(item, index) => { return item.id }}
+                  keyExtractor={(item, index) => { return index }}
                   horizontal={false}
                 />
               </View>
@@ -176,6 +177,7 @@ function mapDispatchToProps(dispatch) {
         setPlayerValue,
         getBonusContent,
         getSchedule,
+        getFavorites,
     }, dispatch);
 }
 

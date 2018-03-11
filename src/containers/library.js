@@ -12,15 +12,17 @@ class Library extends React.Component {
     componentWillMount(){
       this.props.setValue('isGettingFavorites', true);
       this.props.getFavorites(this.props.user_id);
-      this.state = {
+      this.setState({
         faves: this.getFaves()
-      };
+      });
     }
     getFaves() {
       let faves = [];
       for (ep in this.props.favoriteEpisodes) {
         let episode = this.props.favoriteEpisodes[ep];
-        faves.push(episode);
+        if ( episode ) {
+          faves.push(episode);
+        }
       }
       return faves;
     }
@@ -86,7 +88,6 @@ class Library extends React.Component {
     }
 
     renderEpisode({item}, spinny) {
-      console.log('JG: render episode ', item);
       return (
   		  <TouchableOpacity   
         style={styles.container}
@@ -135,7 +136,8 @@ class Library extends React.Component {
 function mapStateToProps(state) {
     return {
       isGettingFavorites: state.data.isGettingFavorites,
-      favoriteEpisodes: state.data.favoriteEpisodes
+      favoriteEpisodes: state.data.favoriteEpisodes,
+      user_id: state.auth.user_id,
     };
 }
 
