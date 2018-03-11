@@ -47,6 +47,7 @@ class Library extends React.Component {
       let flatListItems = [];
       let offlineEps = [];
       for (offlineEpId in this.props.offlineEpisodes) {
+        console.log('JG: offlineEp = ', this.props.episodes[offlineEpId]);
         // Add downloading audio files
         if (this.props.offlineEpisodes[offlineEpId].status == offlineDownloadStatus.downloaded) {
           offlineEps.push(this.props.episodes[offlineEpId]);

@@ -42,9 +42,22 @@ class PlayerView extends Component {
       return track;
     }
 
+    getThreeDotItem = () => {
+      if ( this.props.liveMode ) {
+        return null;
+      }
+      if ( ! this.props.chromecastMode ) {
+        let track = this.props.currentTrack;
+        return track && track.episode;
+      } 
+      let video = this.props.currentVideo;
+      return video && video.episode;
+    }
+
+
     render() {
       return (
-        <Base navigation={this.props.navigation}>
+        <Base navigation={this.props.navigation} threeDotItem={this.getThreeDotItem()}>
           <View style={styles.container}>
             <Image 
               style={styles.thumbnail}

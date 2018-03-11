@@ -271,9 +271,9 @@ class Player extends React.Component {
                 episode_id: episode.id,
                 series_id: episode.show_id,
                 audioUrl: episode.audioUrl,
-                seriesTitle: series && series.title
-                
-            }
+                seriesTitle: series && series.title,
+                episode: episode 
+            };
             this.props.setPlayerValue('isPlayingVideo', false);
             this.props.setPlayerValue('videoMode', false);
             this.props.setPlayerValue('currentTrack', track);

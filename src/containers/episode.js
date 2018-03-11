@@ -24,7 +24,6 @@ import TimerMixin from 'react-timer-mixin';
 import Chromecast from 'react-native-google-cast';
 import KeepAwake from 'react-native-keep-awake';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 class Episode extends React.Component {
     constructor(props) {
       super(props);
@@ -186,7 +185,8 @@ class Episode extends React.Component {
         episode_id: episode.id,
         series_id: series && series.id,
         audioUrl: episode.audioUrl,
-        seriesTitle: series && series.title
+        seriesTitle: series && series.title,
+        episode: episode
       }
       this.props.setPlayerValue('queue',[]);
       this.props.setPlayerValue('queueIndex', 0);
@@ -220,7 +220,8 @@ class Episode extends React.Component {
         episode_id: episode.id,
         series_id: series && series.id,
         seriesTitle: series && series.title,
-        audioUrl: episode.audioUrl
+        audioUrl: episode.audioUrl,
+        episode: episode
       }
       this.props.setPlayerValue('isPlaying', false);
       this.props.setPlayerValue('chromecastMode', false);
@@ -557,7 +558,7 @@ class Episode extends React.Component {
 
 
         return (
-            <Base navigation={this.props.navigation}>
+            <Base navigation={this.props.navigation} threeDotItem={this.props.episode}>
               { this.props.videoMode && ( <KeepAwake/> ) }
               <ScrollView  contentContainerStyle={styles.container}>
                 { this.props.videoMode ? this.renderVideo() : this.renderImages() }
@@ -588,6 +589,7 @@ function mapStateToProps(state) {
       videoMode: state.player.videoMode,
       chromecast_devices: state.data.chromecast_devices,
       channelsById: state.data.channelsById,
+      favoriteEpisodes: state.data.favoriteEpisodes,
     };
 }
 

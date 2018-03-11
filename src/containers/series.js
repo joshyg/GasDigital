@@ -212,7 +212,7 @@ class Series extends React.Component {
 
     downloadOfflineEpisode = (episode,type) => {
       // Immediately shows episode as downloading
-      this.props.displayOfflineEpisodeDownloading(this.props.episode, type); 
+      this.props.displayOfflineEpisodeDownloading(episode, type); 
 
       // Starts downloading, and when promise is finished, 
       // shows episode is finished downloading
@@ -242,7 +242,7 @@ class Series extends React.Component {
               this.props.offlineEpisodes[episode.id].videoUrl;
       }
       this.props.deleteOfflineEpisode(
-        this.props.episode, 
+        episode, 
         url,
         type
       );
@@ -328,21 +328,6 @@ class Series extends React.Component {
         </View>
       );
     }
-
-    playTrack() {
-      if ( ! this.props.episode ) {
-        return;
-      }
-      let track = {
-        uri: this.props.episode.dataUrl,
-        image: this.props.episode.thumbnailUrl,
-        name: this.props.episode.name
-     }
-
-      this.props.setValue('currentTrack', track);
-      this.props.togglePlayback();
-    }
-
 
     render() {
         const { height, width } = Dimensions.get('window');
