@@ -122,8 +122,8 @@ android {
         applicationId "com.appocta.gdn"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 13
-        versionName "11.3"
+        versionCode 14
+        versionName "11.4"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
