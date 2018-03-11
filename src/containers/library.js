@@ -6,7 +6,7 @@ import { resetTo, navigateTo } from '../actions/navigation';
 import Base from './view_base';
 import { getChannels, getFavorites, getEpisodes, setValue } from '../actions/data';
 import { logOut } from '../actions/auth';
-import { colors } from '../constants';
+import { colors, offlineDownloadStatus } from '../constants';
 
 class Library extends React.Component {
     componentWillMount(){
@@ -43,48 +43,23 @@ class Library extends React.Component {
     }
 
 
-    getOfflineEpisodes() {
+    getOfflineEpisodes = () => {
       let flatListItems = [];
       let offlineEps = [];
-      let downloadingOfflineEps = [];
       for (offlineEpId in this.props.offlineEpisodes) {
         // Add downloading audio files
-        switch (this.props.offlineEpisodes[offlineEpId].status) {
-        case offlineDownloadStatus.downloading:
-          downloadingOfflineEps.push(this.props.episodes[offlineEpId]);
-          break;
-        case offlineDownloadStatus.downloaded:
+        if (this.props.offlineEpisodes[offlineEpId].status == offlineDownloadStatus.downloaded) {
           offlineEps.push(this.props.episodes[offlineEpId]);
-          break;
         }
 
         // Add downloading video files
-        switch (this.props.offlineEpisodes[offlineEpId].videoStatus) {
-        case offlineDownloadStatus.downloading:
-          downloadingOfflineEps.push(this.props.episodes[offlineEpId]);
-          break;
-        case offlineDownloadStatus.downloaded:
+        /*
+        if (this.props.offlineEpisodes[offlineEpId].videoStatus == offlineDownloadStatus.downloaded) {
           offlineEps.push(this.props.episodes[offlineEpId]);
-          break;
         }
+        */
       }
-
-      if (!!offlineEps.length) {
-        let uniqueOfflineEpisodes = (offlineEps);
-        // let uniqueOfflineEpisodes = _.uniq(offlineEps);
-        for (let i = 0; i < uniqueOfflineEpisodes.length; i++) {
-          flatListItems.push({episode: uniqueOfflineEpisodes[i]});
-        }
-      }
-      if (!!downloadingOfflineEps.length) {
-        let uniqueDownloadingEpisodes = (downloadingOfflineEps);
-        // let uniqueDownloadingEpisodes = _.uniq(downloadingOfflineEps);
-        for (let i = 0; i < uniqueDownloadingEpisodes.length; i++) {
-          flatListItems.push({episode: uniqueDownloadingEpisodes[i], spinny: true});
-        }
-      }
-
-      return flatListItems;
+      return offlineEps;
     }
 
     renderEpisode({item}, spinny) {
@@ -137,6 +112,8 @@ function mapStateToProps(state) {
     return {
       isGettingFavorites: state.data.isGettingFavorites,
       favoriteEpisodes: state.data.favoriteEpisodes,
+      offlineEpisodes: state.data.offlineEpisodes,
+      episodes: state.data.episodes,
       user_id: state.auth.user_id,
     };
 }

@@ -216,7 +216,7 @@ class Series extends React.Component {
 
       // Starts downloading, and when promise is finished, 
       // shows episode is finished downloading
-      this.props.getOfflineEpisode(this.props.episode, type); 
+      this.props.getOfflineEpisode(episode, type); 
     }
 
     downloadOfflineAudio = episode => {
@@ -233,11 +233,17 @@ class Series extends React.Component {
         Alert.alert( 'Forbidden', 'Cant delete download of currently playing track' );
         return;
       }
+      let url;
+      if ( type == 'audio' ) {
+        url = this.props.offlineEpisodes[episode.id] && 
+              this.props.offlineEpisodes[episode.id].audioUrl;
+      } else {
+        url = this.props.offlineEpisodes[episode.id] && 
+              this.props.offlineEpisodes[episode.id].videoUrl;
+      }
       this.props.deleteOfflineEpisode(
         this.props.episode, 
-        (type === 'audio') ? 
-          this.props.offlineEpisodes[episode.id].audioUrl : 
-          this.props.offlineEpisodes[episode.id].videoUrl,
+        url,
         type
       );
     }
@@ -276,6 +282,7 @@ class Series extends React.Component {
           !!this.props.offlineEpisodes[episode.id].status) {
         audioDownloadingState = this.props.offlineEpisodes[episode.id].status;
       }
+      return audioDownloadingState == offlineDownloadStatus.downloaded;
     }
 
     episodeFavorited = (episode) => {
@@ -287,10 +294,10 @@ class Series extends React.Component {
       let actions = [];
       if ( this.audioDownloaded(item) ) {
         options.push('Remove Audio Download');
-        actions.push(this.downloadOfflineAudio);
+        actions.push(this.deleteOfflineAudio);
       } else {
         options.push('Download Audio');
-        actions.push(this.deleteOfflineAudio);
+        actions.push(this.downloadOfflineAudio);
       }
       if ( this.episodeFavorited(item) ) {
         options.push('Unfavorite');
