@@ -29,6 +29,7 @@ import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import KeepAwake from 'react-native-keep-awake';
 import { getLiveShow } from './helper_funcs';
+import { colors } from '../constants';
 
 moment = require('moment-timezone');
 
@@ -285,9 +286,9 @@ class Live extends React.Component {
     renderMessage() {
       return (
         <View style={{alignItems:'center', top: 200}}>
-          <Text>No Live Show Right Now</Text>
+          <Text style={styles.text}>No Live Show Right Now</Text>
           { this.state.next_show.show_name && (
-          <Text>Next up is {this.state.next_show.show_name} at {this.state.next_show.start_time} {this.state.next_show.day} ET</Text>
+          <Text style={styles.text}>Next up is {this.state.next_show.show_name} at {this.state.next_show.start_time} ET {this.state.next_show.day}</Text>
           )}
         </View>
       );
@@ -296,7 +297,7 @@ class Live extends React.Component {
     renderGuestMessage() {
       return (
         <View style={{alignItems:'center', top: 200}}>
-          <Text>Live shows are for premium Users only</Text>
+          <Text style={styles.text}>Live shows are for premium Users only</Text>
         </View>
       );
     }
@@ -355,5 +356,12 @@ const styles = StyleSheet.create({
   },
   episodeRow: {
     flexDirection: 'row'
+  },
+  text: {
+    fontSize: 18,
+    color: colors.white,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    fontFamily: 'Avenir'
   },
 });

@@ -4,7 +4,7 @@ export const colors = {
     darkBlue: '#246773',
     facebookBlue: '#3B5998',
     red: '#C23535',
-    white: '#fff',
+    white: '#ffffff',
     white3: '#d8d8d8',
     black: '#000',
     dark: '#252525',
