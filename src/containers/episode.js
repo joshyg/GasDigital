@@ -195,8 +195,8 @@ class Episode extends React.Component {
       this.props.setPlayerValue('chromecastMode', false);
       this.props.setPlayerValue('liveMode', false);
       this.props.setPlayerValue('currentTrack', track);
-      if ( ! track.audioUrl && series_id ) {
-        this.props.fetchAndPlayAudio(series_id, episode.id);
+      if ( ! track.audioUrl && series.id ) {
+        this.props.fetchAndPlayAudio(series.id, episode.id);
       } else if ( track.audioUrl ) {
         this.props.setPlayerValue('isPlaying', true);
       } else {
