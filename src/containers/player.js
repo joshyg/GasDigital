@@ -52,7 +52,9 @@ class Player extends React.Component {
     this.updateProgress = this.updateProgress.bind(this);
   }
   togglePlayPause = () => {
-    if (this.props.currentTrack && !this.props.videoMode) {
+    if (this.props.liveMode) {
+      this.props.setPlayerValue('livePaused', !this.props.livePaused);
+    } else if (this.props.currentTrack && !this.props.videoMode) {
       this.props.setPlayerValue('isPlaying', !this.props.isPlaying);
     } else if (this.props.currentVideo && this.props.videoMode) {
       this.props.setPlayerValue('isPlayingVideo', !this.props.isPlayingVideo);
@@ -78,6 +80,7 @@ class Player extends React.Component {
     // happening when headphones are unplugged or a bluetooth audio peripheral disconnects from the device
     MusicControl.on('pause', () => {
       this.props.setPlayerValue('isPlaying', false);
+      this.props.setPlayerValue('livePaused', true);
     });
 
     MusicControl.on('stop', () => {
@@ -339,6 +342,7 @@ function mapStateToProps(state) {
     queueIndex: state.player.queueIndex,
     episodeProgress: state.player.episodeProgress,
     channelsById: state.data.channelsById,
+    livePaused: state.player.livePaused,
   };
 }
 

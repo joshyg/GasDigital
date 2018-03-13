@@ -48,6 +48,7 @@ class Live extends React.Component {
   componentWillMount() {
     this.props.getSchedule();
     this.props.setValue('gettingSchedule', true);
+    this.props.setPlayerValue('livePaused', false);
     this.setUri(this.props, true);
     this.setNextShow(this.props);
     this.checkLiveThread();
@@ -94,6 +95,11 @@ class Live extends React.Component {
         easing: Easing.ease,
       }).start();
     }
+  };
+
+  togglePlayPause = () => {
+    this.props.setPlayerValue('livePaused', !this.props.livePaused);
+    this.pauseChromecast();
   };
 
   pauseChromecast = async () => {
@@ -259,9 +265,9 @@ class Live extends React.Component {
         rate={1} // 0 is paused, 1 is normal.
         volume={1} // 0 is muted, 1 is normal.
         muted={false}
-        paused={this.props.chromecastMode}
+        paused={this.props.chromecastMode || this.props.livePaused}
         playInBackground={true} // Audio continues to play when app entering background.
-        playWhenInactive={false} // [iOS] Video continues to play when control or notification center are shown.
+        playWhenInactive={true} // [iOS] Video continues to play when control or notification center are shown.
         progressUpdateInterval={250.0} // [iOS] Interval to fire onProgress (default to ~250ms)
         //onProgress={this.onProgress}
         resizeMode="contain"
@@ -275,7 +281,7 @@ class Live extends React.Component {
         episode={this.getEpisodeInfo}
         live={true}
         onToggleFullscreen={this.onToggleFullscreen}
-        onTogglePlayback={this.pauseChromecast}
+        onTogglePlayback={this.togglePlayPause}
         showModal={this.props.showModal}
         chromecast_devices={this.props.chromecast_devices}
         onError={this.onError}
@@ -331,6 +337,7 @@ function mapStateToProps(state) {
     chromecastMode: state.player.chromecastMode,
     isPlayingChromecast: state.player.isPlayingChromecast,
     orientation: state.player.orientation,
+    livePaused: state.player.livePaused,
   };
 }
 
