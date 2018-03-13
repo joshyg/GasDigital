@@ -1,51 +1,51 @@
-import React, { Component } from "react";
-import ReactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
+import React, {Component} from 'react';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
 import {
   View,
   Platform,
   NativeEventEmitter,
   NativeModules,
   DeviceEventEmitter,
-  AsyncStorage
-} from "react-native";
-import { offlineDownloadStatus } from "../constants";
-import { setTimerValue } from "../actions/player";
-import resolveAssetSource from "react-native/Libraries/Image/resolveAssetSource";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import MediaPlayer from "react-native-video";
-import MusicControl from "react-native-music-control";
-var RCTDeviceEventEmitter = require("RCTDeviceEventEmitter");
-import _ from "lodash/fp";
+  AsyncStorage,
+} from 'react-native';
+import {offlineDownloadStatus} from '../constants';
+import {setTimerValue} from '../actions/player';
+import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import MediaPlayer from 'react-native-video';
+import MusicControl from 'react-native-music-control';
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+import _ from 'lodash/fp';
 import {
   togglePlayback,
   setPlayerValue,
   playNext,
   playPrevious,
-  fetchAndPlayAudio
-} from "../actions/player";
+  fetchAndPlayAudio,
+} from '../actions/player';
 
 const EVENTS = [
-  "playerProgress",
-  "playerFinished",
-  "RemotePlay",
-  "RemoteToggle",
-  "RemotePause",
-  "RemoteStop",
-  "RemoteNextTrack",
-  "RemotePreviousTrack"
+  'playerProgress',
+  'playerFinished',
+  'RemotePlay',
+  'RemoteToggle',
+  'RemotePause',
+  'RemoteStop',
+  'RemoteNextTrack',
+  'RemotePreviousTrack',
 ];
 
-const AUDIO_REF = "audio";
+const AUDIO_REF = 'audio';
 var androidProgressInterval;
 
-const LAST_TRACK = "@LastTrack:key";
+const LAST_TRACK = '@LastTrack:key';
 class Player extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      source_uri: this.getSourceUri(this.props, "")
+      source_uri: this.getSourceUri(this.props, ''),
     };
     this.onLoad = this.onLoad.bind(this);
     this.onProgress = this.onProgress.bind(this);
@@ -53,22 +53,22 @@ class Player extends React.Component {
   }
   togglePlayPause = () => {
     if (this.props.currentTrack && !this.props.videoMode) {
-      this.props.setPlayerValue("isPlaying", !this.props.isPlaying);
+      this.props.setPlayerValue('isPlaying', !this.props.isPlaying);
     } else if (this.props.currentVideo && this.props.videoMode) {
-      this.props.setPlayerValue("isPlayingVideo", !this.props.isPlayingVideo);
+      this.props.setPlayerValue('isPlayingVideo', !this.props.isPlayingVideo);
     }
   };
   componentWillMount() {
-    console.log("JG: player mounted");
+    console.log('JG: player mounted');
     this.onEnd = _.throttle(3000, this.onEnd);
     MusicControl.handleAudioInterruptions(true);
-    MusicControl.on("play", () => {
+    MusicControl.on('play', () => {
       // FIXME: I noticed the following behavior on my
       // headphones: there is one button, ios triggers togglePlayPause,
       // but android only triggeres play each time.  Not sure if all
       // phones/headphones behave this way, but will assume for now they do.
-      if (Platform.OS == "ios") {
-        this.props.setPlayerValue("isPlaying", true);
+      if (Platform.OS == 'ios') {
+        this.props.setPlayerValue('isPlaying', true);
       } else {
         this.togglePlayPause();
       }
@@ -76,23 +76,23 @@ class Player extends React.Component {
 
     // on iOS this event will also be triggered by audio router change events
     // happening when headphones are unplugged or a bluetooth audio peripheral disconnects from the device
-    MusicControl.on("pause", () => {
-      this.props.setPlayerValue("isPlaying", false);
+    MusicControl.on('pause', () => {
+      this.props.setPlayerValue('isPlaying', false);
     });
 
-    MusicControl.on("stop", () => {
-      this.props.setPlayerValue("isPlaying", false);
+    MusicControl.on('stop', () => {
+      this.props.setPlayerValue('isPlaying', false);
     });
 
-    MusicControl.on("togglePlayPause", () => {
+    MusicControl.on('togglePlayPause', () => {
       this.togglePlayPause();
     });
 
-    MusicControl.on("nextTrack", () => {
+    MusicControl.on('nextTrack', () => {
       this.playNext();
     });
 
-    MusicControl.on("previousTrack", () => {
+    MusicControl.on('previousTrack', () => {
       this.playPrevious();
     });
 
@@ -108,7 +108,7 @@ class Player extends React.Component {
   }
 
   onError(err) {
-    console.log("player err", err);
+    console.log('player err', err);
   }
 
   onReady() {
@@ -117,10 +117,10 @@ class Player extends React.Component {
 
   componentDidMount() {
     MusicControl.enableBackgroundMode(true);
-    MusicControl.enableControl("togglePlayPause", true);
-    MusicControl.enableControl("play", true);
-    MusicControl.enableControl("pause", true);
-    MusicControl.enableControl("stop", false);
+    MusicControl.enableControl('togglePlayPause', true);
+    MusicControl.enableControl('play', true);
+    MusicControl.enableControl('pause', true);
+    MusicControl.enableControl('stop', false);
     /*
       if ( Platform.OS == 'android' ) {
         MusicControl.enableControl('volume', true) // Only affected when remoteVolume is enabled
@@ -155,7 +155,7 @@ class Player extends React.Component {
       offlineEpisode.status == offlineDownloadStatus.downloaded &&
       offlineEpisode.audioUrl
     ) {
-      return "file://" + offlineEpisode.audioUrl;
+      return 'file://' + offlineEpisode.audioUrl;
     }
 
     if (nextProps.currentTrack.audioUrl) {
@@ -166,38 +166,38 @@ class Player extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.newTime) {
-      nextProps.setPlayerValue("newTime", null);
+      nextProps.setPlayerValue('newTime', null);
       this.seek(nextProps.newTime);
       return;
     }
 
     let source_uri = this.getSourceUri(nextProps, this.state.source_uri);
     if (source_uri !== this.state.source_uri) {
-      console.log("JG: new source uri ", source_uri);
-      this.setState({ source_uri: source_uri });
+      console.log('JG: new source uri ', source_uri);
+      this.setState({source_uri: source_uri});
     }
 
     if (this.hasNext(nextProps)) {
-      MusicControl.enableControl("nextTrack", true);
+      MusicControl.enableControl('nextTrack', true);
     } else {
-      MusicControl.enableControl("nextTrack", false);
+      MusicControl.enableControl('nextTrack', false);
     }
     if (this.hasPrevious(nextProps)) {
-      MusicControl.enableControl("previousTrack", true);
+      MusicControl.enableControl('previousTrack', true);
     } else {
-      MusicControl.enableControl("previousTrack", false);
+      MusicControl.enableControl('previousTrack', false);
     }
   }
 
   seek(time) {
-    this.props.setPlayerValue("isSettingTime", true);
+    this.props.setPlayerValue('isSettingTime', true);
     if (this.refs[AUDIO_REF]) {
       this.refs[AUDIO_REF].seek(time);
     }
 
     this.setTimeout(() => {
       //TODO uses setTimeout to give the native media player a chance to perform the seek. Otherwise onProgress triggers first and the slider jerks back to where it was before jerking forward. Can we do this in a better way?
-      this.props.setPlayerValue("isSettingTime", false);
+      this.props.setPlayerValue('isSettingTime', false);
     }, 0);
   }
 
@@ -217,7 +217,7 @@ class Player extends React.Component {
       title: name,
       artwork: image,
       playbackDuration: this.props.timer.duration,
-      elapsedPlaybackTime: now
+      elapsedPlaybackTime: now,
     });
   }
 
@@ -229,14 +229,14 @@ class Player extends React.Component {
       this.seek(startTime);
     }
 
-    if (Platform.OS == "ios") {
+    if (Platform.OS == 'ios') {
       this.setNowPlaying(startTime);
     }
   };
 
   onProgress(data) {
     if (!this.props.isSettingTime) {
-      this.props.setPlayerValue("timer", data);
+      this.props.setPlayerValue('timer', data);
     }
   }
 
@@ -271,7 +271,7 @@ class Player extends React.Component {
     // let duration = parseInt(this.props.timer.duration);
     // let currentTime = parseInt(this.props.timer.currentTime);
     // if ( duration - currentTime < 10 || duration < 10 ) {
-    this.props.setPlayerValue("queueIndex", this.props.queueIndex + 1);
+    this.props.setPlayerValue('queueIndex', this.props.queueIndex + 1);
     let episode = this.props.queue[this.props.queueIndex + 1] || {};
     let series = this.props.channelsById[episode.show_id];
     let track = {
@@ -283,15 +283,15 @@ class Player extends React.Component {
       series_id: episode.show_id,
       audioUrl: episode.audioUrl,
       seriesTitle: series && series.title,
-      episode: episode
+      episode: episode,
     };
-    this.props.setPlayerValue("isPlayingVideo", false);
-    this.props.setPlayerValue("videoMode", false);
-    this.props.setPlayerValue("currentTrack", track);
+    this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.setPlayerValue('videoMode', false);
+    this.props.setPlayerValue('currentTrack', track);
     if (!track.audioUrl) {
       this.props.fetchAndPlayAudio(episode.show_id, episode.id);
     } else {
-      this.props.setPlayerValue("isPlaying", true);
+      this.props.setPlayerValue('isPlaying', true);
     }
     // }
   };
@@ -306,7 +306,7 @@ class Player extends React.Component {
     return (
       <MediaPlayer
         ref={AUDIO_REF}
-        source={{ uri: this.state.source_uri }}
+        source={{uri: this.state.source_uri}}
         rate={paused ? 0 : playerRate}
         onProgress={this.onProgress}
         onEnd={this.onEnd}
@@ -338,7 +338,7 @@ function mapStateToProps(state) {
     queue: state.player.queue,
     queueIndex: state.player.queueIndex,
     episodeProgress: state.player.episodeProgress,
-    channelsById: state.data.channelsById
+    channelsById: state.data.channelsById,
   };
 }
 
@@ -350,9 +350,9 @@ function mapDispatchToProps(dispatch) {
       playNext,
       playPrevious,
       fetchAndPlayAudio,
-      setTimerValue
+      setTimerValue,
     },
-    dispatch
+    dispatch,
   );
 }
 

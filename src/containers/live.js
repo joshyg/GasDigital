@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -12,42 +12,42 @@ import {
   Image,
   Animated,
   Easing,
-  StatusBar
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { resetTo, navigateTo } from "../actions/navigation";
-import ListItemSeries from "./list_item_series";
-import Base from "./view_base";
-import { showModal, getSchedule, setValue } from "../actions/data";
-import { setPlayerValue } from "../actions/player";
-import Video from "./video_player";
-import Orientation from "react-native-orientation";
-import { DEBUG_LIVE_VIEW } from "../constants";
-import Chromecast from "react-native-google-cast";
-import ReactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
-import KeepAwake from "react-native-keep-awake";
-import { getLiveShow } from "./helper_funcs";
-import { colors } from "../constants";
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
+import ListItemSeries from './list_item_series';
+import Base from './view_base';
+import {showModal, getSchedule, setValue} from '../actions/data';
+import {setPlayerValue} from '../actions/player';
+import Video from './video_player';
+import Orientation from 'react-native-orientation';
+import {DEBUG_LIVE_VIEW} from '../constants';
+import Chromecast from 'react-native-google-cast';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
+import KeepAwake from 'react-native-keep-awake';
+import {getLiveShow} from './helper_funcs';
+import {colors} from '../constants';
 
-moment = require("moment-timezone");
+moment = require('moment-timezone');
 
 class Live extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      uri: "",
+      uri: '',
       next_show: {},
-      next_show_start_time: "",
-      orientation: "",
-      spinValue: new Animated.Value(0)
+      next_show_start_time: '',
+      orientation: '',
+      spinValue: new Animated.Value(0),
     };
   }
 
   componentWillMount() {
     this.props.getSchedule();
-    this.props.setValue("gettingSchedule", true);
+    this.props.setValue('gettingSchedule', true);
     this.setUri(this.props, true);
     this.setNextShow(this.props);
     this.checkLiveThread();
@@ -55,7 +55,7 @@ class Live extends React.Component {
 
   checkLiveThread = () => {
     this.setInterval(() => {
-      if (this.state.uri == "") {
+      if (this.state.uri == '') {
         this.setUri(this.props, true);
       }
     }, 10000);
@@ -63,35 +63,35 @@ class Live extends React.Component {
 
   componentWillUnmount() {
     if (!this.props.chromecastMode) {
-      this.props.setPlayerValue("liveMode", false);
+      this.props.setPlayerValue('liveMode', false);
     }
-    this.props.setPlayerValue("isFullscreenVideo", false);
+    this.props.setPlayerValue('isFullscreenVideo', false);
   }
 
   orientationDidChange = orientation => {
-    this.setState({ orientation });
+    this.setState({orientation});
     let toValue;
     let shouldRotate = false;
-    if (orientation.includes("PORTRAIT")) {
+    if (orientation.includes('PORTRAIT')) {
       toValue = 0;
       shouldRotate = true;
-    } else if (orientation == "LANDSCAPE-RIGHT") {
+    } else if (orientation == 'LANDSCAPE-RIGHT') {
       toValue = 1;
       shouldRotate = true;
-    } else if (orientation == "LANDSCAPE-LEFT") {
+    } else if (orientation == 'LANDSCAPE-LEFT') {
       toValue = -1;
       shouldRotate = true;
-    } else if (orientation == "LANDSCAPE") {
+    } else if (orientation == 'LANDSCAPE') {
       // android doesnt support specific orientation
       toValue = 1;
       shouldRotate = true;
     }
     if (shouldRotate) {
-      console.log("JG: rotating to ", toValue);
+      console.log('JG: rotating to ', toValue);
       Animated.timing(this.state.spinValue, {
         toValue: toValue,
         duration: 500,
-        easing: Easing.ease
+        easing: Easing.ease,
       }).start();
     }
   };
@@ -103,26 +103,26 @@ class Live extends React.Component {
     let connected = await Chromecast.isConnected();
     if (connected) {
       Chromecast.togglePauseCast();
-      this.props.setPlayerValue("isPlayingChromecast", false);
-      this.props.setPlayerValue("chromecastMode", false);
+      this.props.setPlayerValue('isPlayingChromecast', false);
+      this.props.setPlayerValue('chromecastMode', false);
     }
   };
 
   setNextShow(props) {
     const weekdays = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
     ];
     let date = new moment();
     let showDate = new moment();
     // convert all dates to eastern time
-    date.set("America/New_York");
-    showDate.set("America/New_York");
+    date.set('America/New_York');
+    showDate.set('America/New_York');
     let next_show = this.state.next_show;
     let next_show_start_time = this.state.next_show_start_time;
     for (let i = 0; i < 7; i++) {
@@ -134,10 +134,10 @@ class Live extends React.Component {
         }
 
         const start_hour =
-          parseInt(show.start_time.split(":")[0]) +
+          parseInt(show.start_time.split(':')[0]) +
           (date.utcOffset() + 300) / 60;
         const start_min =
-          parseInt(show.start_time.split(":")[1]) +
+          parseInt(show.start_time.split(':')[1]) +
           (date.utcOffset() + 300) % 60;
 
         let show_starts = moment(
@@ -146,8 +146,8 @@ class Live extends React.Component {
             showDate.month(),
             showDate.date(),
             start_hour,
-            start_min
-          )
+            start_min,
+          ),
         );
         if (show_starts > date) {
           if (!next_show.start_time || show_starts < next_show_start_time) {
@@ -162,25 +162,25 @@ class Live extends React.Component {
       }
     }
     //console.log('JG: setting next show to ', next_show);
-    this.setState({ next_show, next_show_start_time });
+    this.setState({next_show, next_show_start_time});
   }
 
   setUri(props, pauseChromecast = false) {
     let show = getLiveShow(props);
     let video;
     if (!show) {
-      this.setState({ uri: "" });
+      this.setState({uri: ''});
       return;
     }
     if (DEBUG_LIVE_VIEW) {
       this.setState({
         uri: show.dataUrl,
-        show: show
+        show: show,
       });
       let video = {
         uri: show.dataUrl,
         image: show.thumbnailUrl,
-        name: show.name
+        name: show.name,
       };
     } else {
       let channel = this.props.channelsById[show.show_id];
@@ -190,19 +190,19 @@ class Live extends React.Component {
         channel: channel,
         show: {
           name: channel.title,
-          thumbnailUrl: channel.thumb
-        }
+          thumbnailUrl: channel.thumb,
+        },
       });
       video = {
         uri: uri,
         image: channel.thumb,
-        name: channel.title
+        name: channel.title,
       };
     }
-    this.props.setPlayerValue("currentLiveVideo", video);
-    this.props.setPlayerValue("isPlaying", false);
-    this.props.setPlayerValue("liveMode", true);
-    this.props.setPlayerValue("isFullscreenVideo", true);
+    this.props.setPlayerValue('currentLiveVideo', video);
+    this.props.setPlayerValue('isPlaying', false);
+    this.props.setPlayerValue('liveMode', true);
+    this.props.setPlayerValue('isFullscreenVideo', true);
     if (pauseChromecast) {
       this.pauseChromecast();
     }
@@ -212,9 +212,9 @@ class Live extends React.Component {
     if (this.state.channel) {
       let channel = this.state.channel;
       if (channel.sd_live_url && this.state.uri == channel.hd_live_url) {
-        this.setState({ uri: channel.sd_live_url });
+        this.setState({uri: channel.sd_live_url});
       } else if (channel.hd_live_url && this.state.uri == channel.sd_live_url) {
-        this.setState({ uri: channel.hd_live_url });
+        this.setState({uri: channel.hd_live_url});
       }
     }
   };
@@ -225,16 +225,16 @@ class Live extends React.Component {
   }
 
   componentDidMount() {
-    if (Platform.OS == "ios") {
+    if (Platform.OS == 'ios') {
       Orientation.getSpecificOrientation((err, orientation) => {
         console.log(`Current Device Orientation: ${orientation}`);
-        this.setState({ orientation });
+        this.setState({orientation});
       });
       Orientation.addSpecificOrientationListener(this.orientationDidChange);
     } else {
       Orientation.getOrientation((err, orientation) => {
         console.log(`Current Device Orientation: ${orientation}`);
-        this.setState({ orientation });
+        this.setState({orientation});
       });
     }
     Orientation.addOrientationListener(this.orientationDidChange);
@@ -252,7 +252,7 @@ class Live extends React.Component {
   renderVideo() {
     return (
       <Video
-        source={{ uri: this.state.uri }} // Can be a URL or a local file.
+        source={{uri: this.state.uri}} // Can be a URL or a local file.
         ref={ref => {
           this.player = ref;
         }} // Store reference
@@ -286,11 +286,11 @@ class Live extends React.Component {
 
   renderMessage() {
     return (
-      <View style={{ alignItems: "center", top: 200 }}>
+      <View style={{alignItems: 'center', top: 200}}>
         <Text style={styles.text}>No Live Show Right Now</Text>
         {this.state.next_show.show_name && (
           <Text style={styles.text}>
-            Next up is {this.state.next_show.show_name} at{" "}
+            Next up is {this.state.next_show.show_name} at{' '}
             {this.state.next_show.start_time} ET {this.state.next_show.day}
           </Text>
         )}
@@ -300,7 +300,7 @@ class Live extends React.Component {
 
   renderGuestMessage() {
     return (
-      <View style={{ alignItems: "center", top: 200 }}>
+      <View style={{alignItems: 'center', top: 200}}>
         <Text style={styles.text}>Live shows are for premium Users only</Text>
       </View>
     );
@@ -330,7 +330,7 @@ function mapStateToProps(state) {
     chromecast_devices: state.data.chromecast_devices,
     chromecastMode: state.player.chromecastMode,
     isPlayingChromecast: state.player.isPlayingChromecast,
-    orientation: state.player.orientation
+    orientation: state.player.orientation,
   };
 }
 
@@ -342,9 +342,9 @@ function mapDispatchToProps(dispatch) {
       getSchedule,
       showModal,
       setValue,
-      setPlayerValue
+      setPlayerValue,
     },
-    dispatch
+    dispatch,
   );
 }
 
@@ -353,20 +353,20 @@ export default connect(mapStateToProps, mapDispatchToProps)(Live);
 
 const styles = StyleSheet.create({
   channelsContainer: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   episodesContainer: {
-    alignItems: "flex-start"
+    alignItems: 'flex-start',
   },
   episodeRow: {
-    flexDirection: "row"
+    flexDirection: 'row',
   },
   text: {
     fontSize: 18,
     color: colors.white,
-    textAlign: "center",
+    textAlign: 'center',
     paddingHorizontal: 20,
-    fontFamily: "Avenir"
-  }
+    fontFamily: 'Avenir',
+  },
 });
