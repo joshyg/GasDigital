@@ -83,7 +83,9 @@ class Library extends React.Component {
   };
 
   getEpisodeName(episode) {
-    if (episode.name.length > 15) {
+    if (!episode) {
+      return '';
+    } else if (episode.name.length > 15) {
       return episode.name.slice(0, 14) + '...';
     }
     return episode.name;
@@ -91,6 +93,9 @@ class Library extends React.Component {
 
   getEpisodeSeriesName(episode) {
     console.log('JG: getEpisodeSeriesName, episode = ', episode);
+    if (!episode) {
+      return '';
+    }
     let series = this.props.channelsById[episode.show_id];
     if (!series) {
       return;
