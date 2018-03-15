@@ -124,39 +124,36 @@ class Library extends React.Component {
     );
   }
 
+  renderList(title, data, dest) {
+    return (
+      <View style={styles.listContainer}>
+        <TouchableOpacity
+          style={{marginLeft: 10}}
+          onPress={() => this.goToPage(dest)}>
+          <Text style={styles.title}>{title}</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={data.filter(x => {
+            return !!x;
+          })}
+          renderItem={this.renderEpisode.bind(this)}
+          keyExtractor={(item, index) => {
+            return index;
+          }}
+          horizontal={true}
+        />
+      </View>
+    );
+  }
+
   render() {
     return (
       <Base navigation={this.props.navigation}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Favorites</Text>
-          <FlatList
-            data={this.state.faves}
-            renderItem={this.renderEpisode.bind(this)}
-            keyExtractor={(item, index) => {
-              return index;
-            }}
-            horizontal={true}
-          />
-
-          {/*
-                <TouchableOpacity 
-                  onPress={()=>{this.goToPage('playlist')}}>
-                  <View style={{marginLeft: 10}}>
-                    <Text style={styles.title}>Playlist</Text>
-                  </View>
-                </TouchableOpacity>
-                */}
-
-          <Text style={styles.title}>Offline</Text>
-          <FlatList
-            data={this.getOfflineEpisodes()}
-            renderItem={this.renderEpisode.bind(this)}
-            keyExtractor={(item, index) => {
-              return index;
-            }}
-            horizontal={true}
-          />
-        </View>
+        <ScrollView>
+          {this.renderList('Offline', this.getOfflineEpisodes(), 'offline')}
+          {this.renderList('Favorites', this.state.faves, 'favorites')}
+          {this.renderList('Playlist', this.props.playlist, 'playlist')}
+        </ScrollView>
       </Base>
     );
   }
@@ -170,6 +167,7 @@ function mapStateToProps(state) {
     episodes: state.data.episodes,
     user_id: state.auth.user_id,
     channelsById: state.data.channelsById,
+    playlist: state.data.playlist,
   };
 }
 
@@ -196,6 +194,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 8,
+    height: 200,
+  },
+  listContainer: {
+    paddingHorizontal: 8,
+    height: 250,
   },
   title: {
     fontSize: 48,

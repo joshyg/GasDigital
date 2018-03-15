@@ -89,7 +89,7 @@ class Episode extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let playlistIndex = nextProps.playlist.findIndex(e => {
-      return e.id == nextProps.episode.id;
+      return e && e.id == nextProps.episode.id;
     });
     if (playlistIndex !== -1) {
       this.setState({inPlaylist: true});
@@ -114,7 +114,7 @@ class Episode extends React.Component {
     Orientation.addOrientationListener(this.orientationDidChange);
 
     let playlistIndex = this.props.playlist.findIndex(e => {
-      return e.id == this.props.episode.id;
+      return e && e.id == this.props.episode.id;
     });
     if (playlistIndex !== -1) {
       this.setState({inPlaylist: true});

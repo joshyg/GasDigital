@@ -16,7 +16,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import {connectActionSheet} from '@expo/react-native-action-sheet';
-import {offlineDownloadStatus, colors} from '../constants';
+import {DEBUG_PREMIUM, offlineDownloadStatus, colors} from '../constants';
 import {
   setValue,
   addFavorite,
@@ -32,6 +32,70 @@ const {width} = Dimensions.get('window');
 
 @connectActionSheet
 class ThreeDotButton extends Component {
+  constructor(props) {
+    super(props);
+    this.downloadOfflineEpisode = this.trackAvailable(
+      this.downloadOfflineEpisode,
+    );
+    this.addToPlaylist = this.trackAvailable(this.addToPlaylist);
+  }
+
+  trackAvailable = func => {
+    if (DEBUG_PREMIUM) {
+      return func;
+    }
+    // FIXME: what if user has login but is not premium?
+    // need api support...
+    if (!this.props.guest) {
+      return func;
+    }
+
+    let series = this.props.series;
+    // better to give away episode for free in error case
+    // than deny a paying user
+    if (!series) {
+      return func;
+    }
+    let channel = series.link.split('cat=')[1];
+    if (
+      !this.props.channelEpisodeIds[channel] ||
+      this.props.channelEpisodeIds[channel].length < 10
+    ) {
+      return func;
+    }
+    for (let i = 0; i < 10; i++) {
+      let episodeID = this.props.channelEpisodeIds[channel][i];
+      if (episodeID == this.props.episode.id) {
+        return func;
+      }
+    }
+    if (this.props.recentEpisodeIds) {
+      for (let i in this.props.recentEpisodeIds) {
+        let episodeID = this.props.recentEpisodeIds[i];
+        if (episodeID == this.props.episode.id) {
+          return func;
+        }
+      }
+    }
+
+    return () => {
+      Alert.alert(
+        'Unavailable',
+        'Must be a paid subscriber to acccess this content',
+      );
+    };
+  };
+
+  addToPlaylist = () => {
+    let {item} = this.props;
+    this.props.addToPlaylist(item);
+  };
+
+  removeFromPlaylist = () => {
+    let {item} = this.props;
+    this.props.removeFromPlaylist(item);
+  };
+
   downloadOfflineEpisode = (episode, type) => {
     // Immediately shows episode as downloading
     this.props.displayOfflineEpisodeDownloading(episode, type);
@@ -107,6 +171,16 @@ class ThreeDotButton extends Component {
     return episode.is_favourite || this.props.favoriteEpisodes[episode.id];
   };
 
+  episodeInPlaylist = episode => {
+    if (!this.props.playlist || !episode) {
+      return false;
+    }
+    let playlistIndex = this.props.playlist.findIndex(e => {
+      return e && e.id == episode.id;
+    });
+    return playlistIndex !== -1;
+  };
+
   showActionSheetWithOptions = _ => {
     let options = [];
     let actions = [];
@@ -124,6 +198,13 @@ class ThreeDotButton extends Component {
     } else {
       options.push('Favorite');
       actions.push(this.addFavorite);
+    }
+    if (this.episodeInPlaylist(item)) {
+      options.push('Remove from Playlist');
+      actions.push(this.removeFromPlaylist);
+    } else {
+      options.push('Add to Playlist');
+      actions.push(this.addToPlaylist);
     }
     options.push('Cancel');
     actions.push(() => {});
@@ -168,6 +249,7 @@ function mapStateToProps(state) {
     offlineEpisodes: state.data.offlineEpisodes,
     favoriteEpisodes: state.data.favoriteEpisodes,
     isSettingFavorites: state.data.isSettingFavorites,
+    playlist: state.data.playlist,
   };
 }
 
