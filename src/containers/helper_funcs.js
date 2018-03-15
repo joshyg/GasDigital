@@ -1,18 +1,18 @@
-import { DEBUG_LIVE_VIEW } from "../constants";
-moment = require("moment-timezone");
+import {DEBUG_LIVE_VIEW} from '../constants';
+moment = require('moment-timezone');
 export function getLiveShow(props) {
   if (DEBUG_LIVE_VIEW) {
     let show = props.episodes[props.recentEpisodeIds[0]];
     return show;
   }
   const weekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday"
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
   ];
   let date = new moment();
   // convert all dates to eastern time
@@ -27,20 +27,23 @@ export function getLiveShow(props) {
       continue;
     }
 
+    let offset = 240;
     const start_hour =
-      parseInt(show.start_time.split(":")[0]) + (date.utcOffset() + 300) / 60;
+      parseInt(show.start_time.split(':')[0]) +
+      (date.utcOffset() + offset) / 60;
     const start_min =
-      parseInt(show.start_time.split(":")[1]) + (date.utcOffset() + 300) % 60;
+      parseInt(show.start_time.split(':')[1]) +
+      (date.utcOffset() + offset) % 60;
     let show_starts = moment(
-      new Date(currentYear, currentMonth, currentDate, start_hour, start_min)
+      new Date(currentYear, currentMonth, currentDate, start_hour, start_min),
     );
 
     const end_hour =
-      parseInt(show.end_time.split(":")[0]) + (date.utcOffset() + 300) / 60;
+      parseInt(show.end_time.split(':')[0]) + (date.utcOffset() + offset) / 60;
     const end_min =
-      parseInt(show.end_time.split(":")[1]) + (date.utcOffset() + 300) % 60;
+      parseInt(show.end_time.split(':')[1]) + (date.utcOffset() + offset) % 60;
     let show_ends = moment(
-      new Date(currentYear, currentMonth, currentDate, end_hour, end_min)
+      new Date(currentYear, currentMonth, currentDate, end_hour, end_min),
     );
 
     if (show.day == today && show_ends < show_starts) {
@@ -53,7 +56,7 @@ export function getLiveShow(props) {
     }
 
     if (show_starts <= date && show_ends >= date) {
-      console.log("JG: show ", show, " is now");
+      console.log('JG: show ', show, ' is now');
       return show;
     }
   }
