@@ -133,9 +133,12 @@ class Library extends React.Component {
           <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
         <FlatList
-          data={data.filter(x => {
-            return !!x;
-          })}
+          data={
+            data &&
+            data.filter(x => {
+              return !!x;
+            })
+          }
           renderItem={this.renderEpisode.bind(this)}
           keyExtractor={(item, index) => {
             return index;

@@ -1,5 +1,5 @@
-import _ from "lodash/fp";
-import { offlineDownloadStatus } from "../constants";
+import _ from 'lodash/fp';
+import {offlineDownloadStatus} from '../constants';
 const initialState = {
   channels: [],
   schedule: [],
@@ -19,10 +19,10 @@ const initialState = {
   isGettingFavorites: false,
   isSettingFavorites: false,
   offlineEpisodes: {},
-  liveShowMessage: "",
-  page: 1
+  liveShowMessage: '',
+  page: 1,
 };
-import { Image } from "react-native";
+import {Image} from 'react-native';
 
 payloadError = payload => {
   if (payload.error) {
@@ -31,7 +31,7 @@ payloadError = payload => {
   // based on observation, an episode request that returns nothing will
   // return the string "some thing error", obviously this is not a great way of
   // indicating error, but will try to work with it for now
-  if (payload.resp_data && payload.resp_data.data == "some thing error") {
+  if (payload.resp_data && payload.resp_data.data == 'some thing error') {
     return true;
   }
   return false;
@@ -56,37 +56,37 @@ export default (reducer = (state = initialState, action) => {
     id;
 
   switch (action.type) {
-    case "DATA_SET_VALUE":
-      return { ...state, ...action.payload };
+    case 'DATA_SET_VALUE':
+      return {...state, ...action.payload};
 
-    case "DATA_GET_CHANNELS":
+    case 'DATA_GET_CHANNELS':
       if (payloadError(action.payload)) {
-        return { ...state };
+        return {...state};
       }
       channels = action.payload.resp_data.data;
       for (ch in channels) {
         Image.prefetch(channels[ch].thumb)
           .then(_ => {})
           .catch(err => {
-            console.log("JG: error prefetching: ", err);
+            console.log('JG: error prefetching: ', err);
           });
       }
       channelsById = {};
       for (ch in channels) {
         channelsById[channels[ch].id] = channels[ch];
       }
-      return { ...state, channelsById, channels };
+      return {...state, channelsById, channels};
 
-    case "DATA_GET_SCHEDULE":
+    case 'DATA_GET_SCHEDULE':
       if (payloadError(action.payload)) {
-        return { ...state, isGettingSchedule: false };
+        return {...state, isGettingSchedule: false};
       }
       let schedule = action.payload.resp_data.data;
-      return { ...state, schedule, isGettingSchedule: false };
+      return {...state, schedule, isGettingSchedule: false};
 
-    case "DATA_GET_EPISODES":
+    case 'DATA_GET_EPISODES':
       if (payloadError(action.payload)) {
-        return { ...state, isGettingEpisodes: false };
+        return {...state, isGettingEpisodes: false};
       }
       link = action.payload.req_data.cat;
       show_id = action.payload.req_data.show_id;
@@ -99,7 +99,7 @@ export default (reducer = (state = initialState, action) => {
       } else {
         channelEpisodeIds[link] = _.cloneDeep(state.channelEpisodeIds[link]);
         channelEpisodeIds[link] = channelEpisodeIds[link].concat(
-          returnedEpisodeIds
+          returnedEpisodeIds,
         );
       }
 
@@ -112,7 +112,7 @@ export default (reducer = (state = initialState, action) => {
             Image.prefetch(episode.thumbnailUrl)
               .then(_ => {})
               .catch(err => {
-                console.log("JG: error prefetching: ", err);
+                console.log('JG: error prefetching: ', err);
               });
           }
           // FIXME: backend not always returning show id
@@ -136,21 +136,21 @@ export default (reducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        channelEpisodeIds: { ...state.channelEpisodeIds, ...channelEpisodeIds },
-        episodes: { ...state.episodes, ...episodes },
+        channelEpisodeIds: {...state.channelEpisodeIds, ...channelEpisodeIds},
+        episodes: {...state.episodes, ...episodes},
         lastChannelFetchTime: {
           ...state.lastChannelFetchTime,
-          ...channelFetchTime
+          ...channelFetchTime,
         },
         isGettingEpisodes: false,
-        page: page
+        page: page,
       };
 
-    case "DATA_GET_RSS":
+    case 'DATA_GET_RSS':
       if (payloadError(action.payload)) {
-        return { ...state, isGettingEpisodes: false };
+        return {...state, isGettingEpisodes: false};
       }
-      const { cat, url, data, err } = action.payload;
+      const {cat, url, data, err} = action.payload;
       link = action.payload.cat;
       returnedEpisodes = data;
       returnedEpisodeIds = returnedEpisodes.map(x => x.id);
@@ -167,22 +167,22 @@ export default (reducer = (state = initialState, action) => {
       channelFetchTime[link] = Date.now() / 1000;
       return {
         ...state,
-        channelEpisodeIds: { ...state.channelEpisodeIds, ...channelEpisodeIds },
-        episodes: { ...state.episodes, ...episodes },
+        channelEpisodeIds: {...state.channelEpisodeIds, ...channelEpisodeIds},
+        episodes: {...state.episodes, ...episodes},
         lastChannelFetchTime: {
           ...state.lastChannelFetchTime,
-          ...channelFetchTime
+          ...channelFetchTime,
         },
         isGettingEpisodes: false,
-        page: 1
+        page: 1,
       };
 
-    case "DATA_GETTING_EPISODES":
-      return { ...state, isGettingEpisodes: true };
+    case 'DATA_GETTING_EPISODES':
+      return {...state, isGettingEpisodes: true};
 
-    case "DATA_GET_RECENT_VIDEOS":
+    case 'DATA_GET_RECENT_VIDEOS':
       if (payloadError(action.payload)) {
-        return { ...state };
+        return {...state};
       }
       episodes = {};
       returnedEpisodeIds = [];
@@ -193,7 +193,7 @@ export default (reducer = (state = initialState, action) => {
         Image.prefetch(episode.thumbnailUrl)
           .then(_ => {})
           .catch(err => {
-            console.log("JG: error prefetching: ", err);
+            console.log('JG: error prefetching: ', err);
           });
 
         if (!state.episodes[episode.id]) {
@@ -203,19 +203,19 @@ export default (reducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        episodes: { ...state.episodes, ...episodes },
-        recentEpisodeIds: returnedEpisodeIds
+        episodes: {...state.episodes, ...episodes},
+        recentEpisodeIds: returnedEpisodeIds,
       };
 
-    case "DATA_GET_BONUS_CONTENT":
+    case 'DATA_GET_BONUS_CONTENT':
       if (payloadError(action.payload)) {
-        return { ...state, isGettingEpisodes: false };
+        return {...state, isGettingEpisodes: false};
       }
       link = action.payload.req_data.category;
       show_id = action.payload.req_data.show_id;
       returnedEpisodes = action.payload.resp_data.result.objects.item;
       if (!returnedEpisodes) {
-        return { ...state, isGettingEpisodes: false };
+        return {...state, isGettingEpisodes: false};
       }
       returnedEpisodeIds = returnedEpisodes.map(x => x.id);
       channelEpisodeIds = {};
@@ -223,7 +223,7 @@ export default (reducer = (state = initialState, action) => {
         channelEpisodeIds[link] = returnedEpisodeIds;
       } else {
         channelEpisodeIds[link] = _.cloneDeep(
-          state.channelBonusEpisodeIds[link]
+          state.channelBonusEpisodeIds[link],
         );
         channelEpisodeIds[link].concat(returnedEpisodeIds);
       }
@@ -248,16 +248,16 @@ export default (reducer = (state = initialState, action) => {
         ...state,
         channelBonusEpisodeIds: {
           ...state.channelBonusEpisodeIds,
-          ...channelEpisodeIds
+          ...channelEpisodeIds,
         },
-        episodes: { ...state.episodes, ...episodes },
-        isGettingEpisodes: false
+        episodes: {...state.episodes, ...episodes},
+        isGettingEpisodes: false,
       };
 
-    case "DATA_GET_LIVE_SHOW":
-      console.log("JG: liveshow payload", action.payload);
+    case 'DATA_GET_LIVE_SHOW':
+      console.log('JG: liveshow payload', action.payload);
       if (payloadError(action.payload)) {
-        return { ...state, liveShowMessage: "error" };
+        return {...state, liveShowMessage: 'error'};
       }
       /*
         date_added:"2017-05-19 15:34:36"
@@ -274,10 +274,10 @@ export default (reducer = (state = initialState, action) => {
       if (
         !action.payload.resp_data ||
         !action.payload.resp_data.data ||
-        typeof action.payload.resp_data.data != "object" ||
+        typeof action.payload.resp_data.data != 'object' ||
         action.payload.resp_data.data.length == 0
       ) {
-        return { ...state, liveShowMessage: action.payload.resp_data.message };
+        return {...state, liveShowMessage: action.payload.resp_data.message};
       }
 
       return {
@@ -287,12 +287,12 @@ export default (reducer = (state = initialState, action) => {
         liveShowImage: action.payload.resp_data.data[0].showThumb,
         liveShowTile: action.payload.resp_data.data[0].showTile,
         liveShowId: action.payload.resp_data.data[0].showId,
-        liveShowEntryId: action.payload.resp_data.data[0].showEntryId
+        liveShowEntryId: action.payload.resp_data.data[0].showEntryId,
       };
 
-    case "DATA_SEARCH":
+    case 'DATA_SEARCH':
       if (payloadError(action.payload)) {
-        return { ...state };
+        return {...state};
       }
       returnedEpisodes = action.payload.resp_data.data;
       returnedEpisodeIds = returnedEpisodes.map(x => x.id);
@@ -306,25 +306,25 @@ export default (reducer = (state = initialState, action) => {
       return {
         ...state,
         searchResults: returnedEpisodeIds,
-        episodes: { ...state.episodes, ...episodes }
+        episodes: {...state.episodes, ...episodes},
       };
 
-    case "DATA_GET_AUDIO":
-    case "PLAYER_PLAY_AUDIO":
+    case 'DATA_GET_AUDIO':
+    case 'PLAYER_PLAY_AUDIO':
       if (payloadError(action.payload)) {
-        return { ...state };
+        return {...state};
       }
       const episode_id = action.payload.req_data.vid;
       episode = _.cloneDeep(state.episodes[episode_id]);
       episode.audioUrl = action.payload.resp_data.url;
       episodes = {};
       episodes[episode_id] = episode;
-      return { ...state, episodes: { ...state.episodes, ...episodes } };
+      return {...state, episodes: {...state.episodes, ...episodes}};
 
     /* Playlists */
-    case "DATA_ADD_FAVORITE":
+    case 'DATA_ADD_FAVORITE':
       const addFaveId = action.payload.req_data.video_id;
-      if (!state.episodes[addFaveId]) return { ...state };
+      if (!state.episodes[addFaveId]) return {...state};
       episode = _.cloneDeep(state.episodes[addFaveId]);
       episode.is_favourite = true;
       episodes = {};
@@ -333,14 +333,14 @@ export default (reducer = (state = initialState, action) => {
       favoriteEpisodes[addFaveId] = episode;
       return {
         ...state,
-        favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes },
+        favoriteEpisodes: {...state.favoriteEpisodes, ...favoriteEpisodes},
         isSettingFavorites: false,
-        episodes: { ...state.episodes, ...episodes }
+        episodes: {...state.episodes, ...episodes},
       };
 
-    case "DATA_REMOVE_FAVORITE":
+    case 'DATA_REMOVE_FAVORITE':
       const removeFaveId = action.payload.req_data.video_id;
-      if (!state.episodes[removeFaveId]) return { ...state };
+      if (!state.episodes[removeFaveId]) return {...state};
       episode = _.cloneDeep(state.episodes[removeFaveId]);
       episode.is_favourite = false;
       episodes = {};
@@ -349,12 +349,12 @@ export default (reducer = (state = initialState, action) => {
       favoriteEpisodes[removeFaveId] = null;
       return {
         ...state,
-        favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes },
+        favoriteEpisodes: {...state.favoriteEpisodes, ...favoriteEpisodes},
         isSettingFavorites: false,
-        episodes: { ...state.episodes, ...episodes }
+        episodes: {...state.episodes, ...episodes},
       };
 
-    case "DATA_GET_FAVORITES":
+    case 'DATA_GET_FAVORITES':
       returnedEpisodes = action.payload.resp_data.data;
       returnedEpisodeIds = returnedEpisodes.map(x => x.id);
       episodes = {};
@@ -373,12 +373,12 @@ export default (reducer = (state = initialState, action) => {
       return {
         ...state,
         isGettingFavorites: false,
-        favoriteEpisodes: { ...state.favoriteEpisodes, ...favoriteEpisodes },
-        episodes: { ...state.episodes, ...episodes }
+        favoriteEpisodes: {...state.favoriteEpisodes, ...favoriteEpisodes},
+        episodes: {...state.episodes, ...episodes},
       };
 
     /* Playlists */
-    case "DATA_REMOVE_FROM_PLAYLIST":
+    case 'DATA_REMOVE_FROM_PLAYLIST':
       newPlaylist = _.cloneDeep(state.playlist);
 
       let index = newPlaylist.findIndex(element => {
@@ -387,19 +387,22 @@ export default (reducer = (state = initialState, action) => {
 
       if (index !== -1) {
         newPlaylist.splice(index, 1);
-        return { ...state, playlist: newPlaylist };
+        return {...state, playlist: newPlaylist};
       }
 
-      return { ...state };
+      return {...state};
 
-    case "DATA_ADD_TO_PLAYLIST":
+    case 'DATA_ADD_TO_PLAYLIST':
+      if (!action.payload) {
+        return {...state};
+      }
       newPlaylist = _.cloneDeep(state.playlist);
       newPlaylist.push(action.payload);
 
-      return { ...state, playlist: newPlaylist };
+      return {...state, playlist: newPlaylist};
 
     /* Offline downloading */
-    case "DATA_DISPLAY_OFFLINE_EPISODE_DOWNLOADING_AUDIO":
+    case 'DATA_DISPLAY_OFFLINE_EPISODE_DOWNLOADING_AUDIO':
       newOfflineEpisodes = {};
       id = action.payload.episode.id;
       newOfflineEpisodes[id] = state.offlineEpisodes[id]
@@ -408,10 +411,10 @@ export default (reducer = (state = initialState, action) => {
       newOfflineEpisodes[id].status = offlineDownloadStatus.downloading;
       return {
         ...state,
-        offlineEpisodes: { ...state.offlineEpisodes, ...newOfflineEpisodes }
+        offlineEpisodes: {...state.offlineEpisodes, ...newOfflineEpisodes},
       };
 
-    case "DATA_DISPLAY_OFFLINE_EPISODE_DOWNLOADING_VIDEO":
+    case 'DATA_DISPLAY_OFFLINE_EPISODE_DOWNLOADING_VIDEO':
       newOfflineEpisodes = {};
       id = action.payload.episode.id;
       newOfflineEpisodes[id] = state.offlineEpisodes[id]
@@ -420,25 +423,25 @@ export default (reducer = (state = initialState, action) => {
       newOfflineEpisodes[id].videoStatus = offlineDownloadStatus.downloading;
       return {
         ...state,
-        offlineEpisodes: { ...state.offlineEpisodes, ...newOfflineEpisodes }
+        offlineEpisodes: {...state.offlineEpisodes, ...newOfflineEpisodes},
       };
 
-    case "DATA_GET_OFFLINE_EPISODE":
+    case 'DATA_GET_OFFLINE_EPISODE':
       console.log(
-        "JG: in DATA_GET_OFFLINE_EPISODE, payload = ",
-        action.payload
+        'JG: in DATA_GET_OFFLINE_EPISODE, payload = ',
+        action.payload,
       );
       newOfflineEpisodes = {};
       id = action.payload.episode.id;
       newOfflineEpisodes[id] = !!state.offlineEpisodes[id]
         ? state.offlineEpisodes[id]
         : {};
-      if (action.payload.status === "ok") {
+      if (action.payload.status === 'ok') {
         newOfflineEpisodes[id] = !!state.offlineEpisodes[id]
           ? state.offlineEpisodes[id]
           : {};
 
-        if (action.payload.type == "video") {
+        if (action.payload.type == 'video') {
           newOfflineEpisodes[id].videoStatus = offlineDownloadStatus.downloaded;
           newOfflineEpisodes[id].videoUrl = action.payload.offline_url;
         } else {
@@ -446,8 +449,8 @@ export default (reducer = (state = initialState, action) => {
           newOfflineEpisodes[id].audioUrl = action.payload.offline_url;
         }
       } else {
-        console.log("JG: offline download error");
-        if (action.payload.type == "video") {
+        console.log('JG: offline download error');
+        if (action.payload.type == 'video') {
           newOfflineEpisodes[id].videoStatus =
             offlineDownloadStatus.notDownloaded;
         } else {
@@ -456,17 +459,17 @@ export default (reducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        offlineEpisodes: { ...state.offlineEpisodes, ...newOfflineEpisodes }
+        offlineEpisodes: {...state.offlineEpisodes, ...newOfflineEpisodes},
       };
 
-    case "DATA_REMOVE_OFFLINE_EPISODE":
+    case 'DATA_REMOVE_OFFLINE_EPISODE':
       newOfflineEpisodes = {};
       id = action.payload.episode.id;
       newOfflineEpisodes[id] = !!state.offlineEpisodes[id]
         ? state.offlineEpisodes[id]
         : {};
-      if (action.payload.status === "ok") {
-        if (action.payload.type === "video") {
+      if (action.payload.status === 'ok') {
+        if (action.payload.type === 'video') {
           newOfflineEpisodes[id].videoStatus =
             offlineDownloadStatus.notDownloaded;
         } else {
@@ -475,10 +478,10 @@ export default (reducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        offlineEpisodes: { ...state.offlineEpisodes, ...newOfflineEpisodes }
+        offlineEpisodes: {...state.offlineEpisodes, ...newOfflineEpisodes},
       };
 
-    case "DATA_REMOVE_CURRENTLY_DOWNLOADING_FILES":
+    case 'DATA_REMOVE_CURRENTLY_DOWNLOADING_FILES':
       newOfflineEpisodes = {};
       for (offlineEpisodeId in action.payload.offlineEpisodes) {
         newOfflineEpisodes[offlineEpisodeId] = !!state.offlineEpisodes[
@@ -503,25 +506,31 @@ export default (reducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        offlineEpisodes: { ...state.offlineEpisodes, ...newOfflineEpisodes }
+        offlineEpisodes: {...state.offlineEpisodes, ...newOfflineEpisodes},
       };
 
-    case "DATA_SHOW_MODAL":
+    case 'DATA_SHOW_MODAL':
       return {
         ...state,
         showModal: true,
         modalData: action.payload.data,
-        modalType: action.payload.type
+        modalType: action.payload.type,
       };
 
-    case "AUTH_LOG_OUT":
-      return { ...initialState, connection: state.connection };
-    case "persist/REHYDRATE":
+    case 'AUTH_LOG_OUT':
+      return {...initialState, connection: state.connection};
+    case 'persist/REHYDRATE':
       return {
         ...initialState,
         ...action.payload.data,
         isGettingEpisodes: false,
-        recentEpisodes: []
+        recentEpisodes: [],
+        playlist:
+          (action.payload.data.playlist &&
+            action.payload.data.playlist.filter(x => {
+              return !!x;
+            })) ||
+          [],
       };
 
     default:

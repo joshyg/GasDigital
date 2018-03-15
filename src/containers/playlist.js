@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,17 +10,18 @@ import {
   Alert,
   Platform,
   Image,
-  StatusBar
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { resetTo, navigateTo } from "../actions/navigation";
-import { removeFromPlaylist } from "../actions/data";
-import ListItemEpisode from "./list_item_episode";
-import Base from "./view_base";
-import { getChannels, getEpisodes, setValue } from "../actions/data";
-import { setPlayerValue, fetchAndPlayAudio } from "../actions/player";
-import { colors } from "../constants.js";
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
+import {removeFromPlaylist} from '../actions/data';
+import ListItemEpisode from './list_item_episode';
+import Base from './view_base';
+import {getChannels, getEpisodes, setValue} from '../actions/data';
+import {setPlayerValue, fetchAndPlayAudio} from '../actions/player';
+import {colors} from '../constants.js';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Playlist extends React.Component {
   constructor(props) {
@@ -38,11 +39,11 @@ class Playlist extends React.Component {
   componentDidMount() {}
 
   playAll() {
-    this.props.setPlayerValue("queue", this.props.playlist);
-    this.props.setPlayerValue("queueIndex", 0);
+    this.props.setPlayerValue('queue', this.props.playlist);
+    this.props.setPlayerValue('queueIndex', 0);
 
     let episode = this.props.playlist[0];
-    console.log("EJ::", episode);
+    console.log('EJ::', episode);
     if (!episode) {
       return;
     }
@@ -53,17 +54,17 @@ class Playlist extends React.Component {
       name: episode.name,
       episode_id: episode.id,
       series_id: episode.show_id,
-      audioUrl: episode.audioUrl
+      audioUrl: episode.audioUrl,
     };
-    console.log("JG: setting track to ", track);
-    this.props.setPlayerValue("isPlayingVideo", false);
-    this.props.setPlayerValue("videoMode", false);
+    console.log('JG: setting track to ', track);
+    this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.setPlayerValue('videoMode', false);
 
-    this.props.setPlayerValue("currentTrack", track);
+    this.props.setPlayerValue('currentTrack', track);
     if (!track.audioUrl) {
       this.props.fetchAndPlayAudio(episode.show_id, episode.id);
     } else {
-      this.props.setPlayerValue("isPlaying", true);
+      this.props.setPlayerValue('isPlaying', true);
     }
   }
 
@@ -72,12 +73,12 @@ class Playlist extends React.Component {
   }
 
   goToEpisode(item) {
-    console.log("JG: going to episode", item);
-    this.props.setValue("episode", item);
-    this.props.navigateTo("episode");
+    console.log('JG: going to episode', item);
+    this.props.setValue('episode', item);
+    this.props.navigateTo('episode');
   }
 
-  renderEpisode({ item }) {
+  renderEpisode({item}) {
     return (
       <ListItemEpisode
         item={item}
@@ -93,14 +94,11 @@ class Playlist extends React.Component {
   render() {
     return (
       <Base navigation={this.props.navigation}>
-        <View style={{ alignItems: "center" }}>
+        <View style={{alignItems: 'center'}}>
           {this.props.playlist && this.props.playlist.length > 0 ? (
             <TouchableOpacity style={styles.button} onPress={this.playAll}>
-              <Image
-                style={[styles.iconMarginRight]}
-                source={require("../../assets/icons/play-audio.png")}
-              />
-              <Text>Play All</Text>
+              <Icon name={'volume-up'} size={18} color={colors.blue} />
+              <Text style={styles.buttonText}>Play All</Text>
             </TouchableOpacity>
           ) : (
             <Text>Playlist empty!</Text>
@@ -122,7 +120,11 @@ class Playlist extends React.Component {
 function mapStateToProps(state) {
   return {
     user_id: state.auth.user_id,
-    playlist: state.data.playlist
+    playlist:
+      state.data.playlist &&
+      state.data.playlist.filter(x => {
+        return !!x;
+      }),
   };
 }
 
@@ -133,9 +135,9 @@ function mapDispatchToProps(dispatch) {
       navigateTo,
       setValue,
       setPlayerValue,
-      fetchAndPlayAudio
+      fetchAndPlayAudio,
     },
-    dispatch
+    dispatch,
   );
 }
 
@@ -144,32 +146,34 @@ export default connect(mapStateToProps, mapDispatchToProps)(Playlist);
 const styles = StyleSheet.create({
   title: {
     fontSize: 30,
-    color: "black",
-    textAlign: "left",
+    color: 'black',
+    textAlign: 'left',
     paddingLeft: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
   iconMarginRight: {
     height: 25,
     width: 25,
-    resizeMode: "contain",
-    marginRight: 20
+    resizeMode: 'contain',
+    marginRight: 20,
   },
   button: {
-    marginTop: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: colors.yellow,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 0,
+    marginBottom: 0,
+    marginHorizontal: 5,
+    borderRadius: 10,
     backgroundColor: colors.yellow,
     width: 170,
-    height: 45,
-    justifyContent: "center",
+    height: 40,
     padding: 12,
-    marginLeft: 15,
-    marginRight: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-    flexDirection: "row"
-  }
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+  },
+  buttonText: {
+    color: colors.blue,
+    fontFamily: 'Avenir',
+  },
 });
