@@ -17,130 +17,14 @@ import {bindActionCreators} from 'redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import {connectActionSheet} from '@expo/react-native-action-sheet';
 import {offlineDownloadStatus, colors} from '../constants';
-import {
-  setValue,
-  addFavorite,
-  removeFavorite,
-  addToPlaylist,
-  removeFromPlaylist,
-  getOfflineEpisode,
-  deleteOfflineEpisode,
-  displayOfflineEpisodeDownloading,
-} from '../actions/data';
+import ThreeDotButton from './three_dot_button';
 
 const {width} = Dimensions.get('window');
 
 @connectActionSheet
 class ListItemEpisode extends Component {
-  downloadOfflineEpisode = (episode, type) => {
-    // Immediately shows episode as downloading
-    this.props.displayOfflineEpisodeDownloading(episode, type);
-
-    // Starts downloading, and when promise is finished,
-    // shows episode is finished downloading
-    this.props.getOfflineEpisode(episode, type);
-  };
-
-  downloadOfflineAudio = episode => {
-    this.downloadOfflineEpisode(episode, 'audio');
-  };
-
-  downloadOfflineVideo = episode => {
-    this.downloadOfflineEpisode(episode, 'video');
-  };
-
-  deleteOfflineEpisode = (episode, type) => {
-    if (
-      this.props.isPlaying &&
-      this.props.currentTrack.episode_id == episode.id
-    ) {
-      Alert.alert(
-        'Forbidden',
-        'Cant delete download of currently playing track',
-      );
-      return;
-    }
-    let url;
-    if (type == 'audio') {
-      url =
-        this.props.offlineEpisodes[episode.id] &&
-        this.props.offlineEpisodes[episode.id].audioUrl;
-    } else {
-      url =
-        this.props.offlineEpisodes[episode.id] &&
-        this.props.offlineEpisodes[episode.id].videoUrl;
-    }
-    this.props.deleteOfflineEpisode(episode, url, type);
-  };
-
-  deleteOfflineAudio = episode => {
-    this.deleteOfflineEpisode(episode, 'audio');
-  };
-
-  deleteOfflineVideo = episode => {
-    this.deleteOfflineEpisode(episode, 'video');
-  };
-
-  removeFavorite = episode => {
-    this.props.setValue('isSettingFavorites', true);
-    this.props.removeFavorite(this.props.user_id, episode.id, episode.id);
-  };
-
-  addFavorite = episode => {
-    console.log('JG: add favorite episode = ', episode);
-    this.props.setValue('isSettingFavorites', true);
-    this.props.addFavorite(this.props.user_id, episode.id, episode.id, episode);
-  };
-
-  audioDownloaded = episode => {
-    let audioDownloadingState = offlineDownloadStatus.notDownloaded;
-    if (
-      !!this.props.offlineEpisodes[episode.id] &&
-      !!this.props.offlineEpisodes[episode.id].status
-    ) {
-      audioDownloadingState = this.props.offlineEpisodes[episode.id].status;
-    }
-    return audioDownloadingState == offlineDownloadStatus.downloaded;
-  };
-
-  episodeFavorited = episode => {
-    return episode.is_favourite || this.props.favoriteEpisodes[episode.id];
-  };
-
-  showActionSheetWithOptions = _ => {
-    let options = [];
-    let actions = [];
-    let {item} = this.props;
-    if (this.audioDownloaded(item)) {
-      options.push('Remove Audio Download');
-      actions.push(this.deleteOfflineAudio);
-    } else {
-      options.push('Download Audio');
-      actions.push(this.downloadOfflineAudio);
-    }
-    if (this.episodeFavorited(item)) {
-      options.push('Unfavorite');
-      actions.push(this.removeFavorite);
-    } else {
-      options.push('Favorite');
-      actions.push(this.addFavorite);
-    }
-    options.push('Cancel');
-    actions.push(() => {});
-    this.props.showActionSheetWithOptions(
-      {
-        options,
-        cancelButtonIndex: options.length - 1,
-      },
-      buttonIndex => {
-        actions[buttonIndex](item);
-      },
-    );
-  };
-
   render() {
     const {item} = this.props;
-
     let description = item && item.description;
     if (typeof description != 'string') {
       description = '';
@@ -150,15 +34,11 @@ class ListItemEpisode extends Component {
     }
     return (
       <View>
-        <TouchableOpacity
+        <ThreeDotButton
+          item={item}
+          size={30}
           style={{alignItems: 'flex-end', marginRight: 5}}
-          onPress={this.showActionSheetWithOptions}>
-          <Icon
-            name={'dots-three-horizontal'}
-            size={30}
-            color={colors.yellow}
-          />
-        </TouchableOpacity>
+        />
         <TouchableOpacity
           style={styles.container}
           onPress={() => {
@@ -195,28 +75,11 @@ class ListItemEpisode extends Component {
 }
 
 function mapStateToProps(state) {
-  return {
-    user_id: state.auth.user_id,
-    offlineEpisodes: state.data.offlineEpisodes,
-    favoriteEpisodes: state.data.favoriteEpisodes,
-    isSettingFavorites: state.data.isSettingFavorites,
-  };
+  return {};
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      setValue,
-      addFavorite,
-      removeFavorite,
-      addToPlaylist,
-      removeFromPlaylist,
-      getOfflineEpisode,
-      deleteOfflineEpisode,
-      displayOfflineEpisodeDownloading,
-    },
-    dispatch,
-  );
+  return bindActionCreators({}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListItemEpisode);

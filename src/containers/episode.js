@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Animated,
   Easing,
@@ -13,17 +13,17 @@ import {
   Alert,
   Platform,
   Image,
-  StatusBar
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { resetTo, navigateTo } from "../actions/navigation";
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
 import {
   fetchAndPlayAudio,
   togglePlayback,
-  setPlayerValue
-} from "../actions/player";
-import { setVideoTimerValue } from "../actions/player";
+  setPlayerValue,
+} from '../actions/player';
+import {setVideoTimerValue} from '../actions/player';
 import {
   addFavorite,
   removeFavorite,
@@ -32,22 +32,22 @@ import {
   getOfflineEpisode,
   deleteOfflineEpisode,
   displayOfflineEpisodeDownloading,
-  showModal
-} from "../actions/data";
-import Base from "./view_base";
-import Video from "./video_player";
+  showModal,
+} from '../actions/data';
+import Base from './view_base';
+import Video from './video_player';
 import {
   ENABLE_DOWNLOAD_VIDEO,
   DEBUG_PREMIUM,
   offlineDownloadStatus,
-  colors
-} from "../constants.js";
-import Orientation from "react-native-orientation";
-import ReactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
-import Chromecast from "react-native-google-cast";
-import KeepAwake from "react-native-keep-awake";
-import Icon from "react-native-vector-icons/FontAwesome";
+  colors,
+} from '../constants.js';
+import Orientation from 'react-native-orientation';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
+import Chromecast from 'react-native-google-cast';
+import KeepAwake from 'react-native-keep-awake';
+import Icon from 'react-native-vector-icons/FontAwesome';
 class Episode extends React.Component {
   constructor(props) {
     super(props);
@@ -62,9 +62,9 @@ class Episode extends React.Component {
     newFavoriteStatus: null,
     newOfflineStatus: null,
     inPlaylist: false,
-    orientation: "",
-    videoUrl: "",
-    spinValue: new Animated.Value(0)
+    orientation: '',
+    videoUrl: '',
+    spinValue: new Animated.Value(0),
   };
 
   pauseChromecast = async () => {
@@ -74,7 +74,7 @@ class Episode extends React.Component {
     let connected = await Chromecast.isConnected();
     if (connected) {
       Chromecast.togglePauseCast();
-      this.props.setPlayerValue("isPlayingChromecast", false);
+      this.props.setPlayerValue('isPlayingChromecast', false);
     }
   };
 
@@ -83,8 +83,8 @@ class Episode extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.setPlayerValue("isPlayingVideo", false);
-    this.props.setPlayerValue("videoMode", false);
+    this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.setPlayerValue('videoMode', false);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -92,23 +92,23 @@ class Episode extends React.Component {
       return e.id == nextProps.episode.id;
     });
     if (playlistIndex !== -1) {
-      this.setState({ inPlaylist: true });
+      this.setState({inPlaylist: true});
     } else {
-      this.setState({ inPlaylist: false });
+      this.setState({inPlaylist: false});
     }
   }
 
   componentDidMount() {
-    if (Platform.OS == "ios") {
+    if (Platform.OS == 'ios') {
       Orientation.getSpecificOrientation((err, orientation) => {
         console.log(`Current Device Orientation: ${orientation}`);
-        this.setState({ orientation });
+        this.setState({orientation});
       });
       Orientation.addSpecificOrientationListener(this.orientationDidChange);
     } else {
       Orientation.getOrientation((err, orientation) => {
         console.log(`Current Device Orientation: ${orientation}`);
-        this.setState({ orientation });
+        this.setState({orientation});
       });
     }
     Orientation.addOrientationListener(this.orientationDidChange);
@@ -117,27 +117,27 @@ class Episode extends React.Component {
       return e.id == this.props.episode.id;
     });
     if (playlistIndex !== -1) {
-      this.setState({ inPlaylist: true });
+      this.setState({inPlaylist: true});
     } else {
-      this.setState({ inPlaylist: false });
+      this.setState({inPlaylist: false});
     }
   }
 
   orientationDidChange = orientation => {
-    console.log("JG: episode setting orientation to ", orientation);
-    this.setState({ orientation });
+    console.log('JG: episode setting orientation to ', orientation);
+    this.setState({orientation});
     let toValue;
     let shouldRotate = false;
-    if (orientation.includes("PORTRAIT")) {
+    if (orientation.includes('PORTRAIT')) {
       toValue = 0;
       shouldRotate = true;
-    } else if (orientation == "LANDSCAPE-RIGHT") {
+    } else if (orientation == 'LANDSCAPE-RIGHT') {
       toValue = 1;
       shouldRotate = true;
-    } else if (orientation == "LANDSCAPE-LEFT") {
+    } else if (orientation == 'LANDSCAPE-LEFT') {
       toValue = -1;
       shouldRotate = true;
-    } else if (orientation == "LANDSCAPE") {
+    } else if (orientation == 'LANDSCAPE') {
       // android doesnt support specific orientation
       toValue = 1;
       shouldRotate = true;
@@ -146,7 +146,7 @@ class Episode extends React.Component {
       Animated.timing(this.state.spinValue, {
         toValue: toValue,
         duration: 500,
-        easing: Easing.ease
+        easing: Easing.ease,
       }).start();
     }
   };
@@ -167,7 +167,7 @@ class Episode extends React.Component {
     if (!series) {
       return func;
     }
-    let channel = series.link.split("cat=")[1];
+    let channel = series.link.split('cat=')[1];
     if (
       !this.props.channelEpisodeIds[channel] ||
       this.props.channelEpisodeIds[channel].length < 10
@@ -191,8 +191,8 @@ class Episode extends React.Component {
 
     return () => {
       Alert.alert(
-        "Unavailable",
-        "Must be a paid subscriber to acccess this content"
+        'Unavailable',
+        'Must be a paid subscriber to acccess this content',
       );
     };
   };
@@ -202,7 +202,7 @@ class Episode extends React.Component {
     let series = this.props.series
       ? this.props.series
       : this.props.channelsById[episode.show_id];
-    console.log("JG: series = ", series);
+    console.log('JG: series = ', series);
     let track = {
       uri: episode.dataUrl,
       download_uri: episode.downloadUrl,
@@ -212,31 +212,31 @@ class Episode extends React.Component {
       series_id: series && series.id,
       audioUrl: episode.audioUrl,
       seriesTitle: series && series.title,
-      episode: episode
+      episode: episode,
     };
-    this.props.setPlayerValue("queue", []);
-    this.props.setPlayerValue("queueIndex", 0);
-    this.props.setPlayerValue("isPlayingVideo", false);
-    this.props.setPlayerValue("videoMode", false);
-    this.props.setPlayerValue("chromecastMode", false);
-    this.props.setPlayerValue("liveMode", false);
-    this.props.setPlayerValue("currentTrack", track);
+    this.props.setPlayerValue('queue', []);
+    this.props.setPlayerValue('queueIndex', 0);
+    this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.setPlayerValue('videoMode', false);
+    this.props.setPlayerValue('chromecastMode', false);
+    this.props.setPlayerValue('liveMode', false);
+    this.props.setPlayerValue('currentTrack', track);
     if (!track.audioUrl && series.id) {
       this.props.fetchAndPlayAudio(series.id, episode.id);
     } else if (track.audioUrl) {
-      this.props.setPlayerValue("isPlaying", true);
+      this.props.setPlayerValue('isPlaying', true);
     } else {
       return;
     }
-    this.props.navigateTo("player_view");
+    this.props.navigateTo('player_view');
     this.pauseChromecast();
   };
 
   playVideo = () => {
     if (this.props.guest) {
       return Alert.alert(
-        "Unavailable",
-        "Must be a paid subscriber to acccess video"
+        'Unavailable',
+        'Must be a paid subscriber to acccess video',
       );
     }
     let episode = this.props.episode || {};
@@ -252,14 +252,14 @@ class Episode extends React.Component {
       series_id: series && series.id,
       seriesTitle: series && series.title,
       audioUrl: episode.audioUrl,
-      episode: episode
+      episode: episode,
     };
-    this.props.setPlayerValue("isPlaying", false);
-    this.props.setPlayerValue("chromecastMode", false);
-    this.props.setPlayerValue("liveMode", false);
-    this.props.setPlayerValue("isPlayingVideo", true);
-    this.props.setPlayerValue("videoMode", true);
-    this.props.setPlayerValue("currentVideo", video);
+    this.props.setPlayerValue('isPlaying', false);
+    this.props.setPlayerValue('chromecastMode', false);
+    this.props.setPlayerValue('liveMode', false);
+    this.props.setPlayerValue('isPlayingVideo', true);
+    this.props.setPlayerValue('videoMode', true);
+    this.props.setPlayerValue('currentVideo', video);
     this.pauseChromecast();
   };
 
@@ -282,42 +282,42 @@ class Episode extends React.Component {
       this.props.currentTrack.episode_id == this.props.episode.id
     ) {
       Alert.alert(
-        "Forbidden",
-        "Cant delete download of currently playing track"
+        'Forbidden',
+        'Cant delete download of currently playing track',
       );
       return;
     }
     this.props.deleteOfflineEpisode(
       this.props.episode,
-      type === "audio"
+      type === 'audio'
         ? this.props.offlineEpisodes[this.props.episode.id].audioUrl
         : this.props.offlineEpisodes[this.props.episode.id].videoUrl,
-      type
+      type,
     );
   };
 
   removeFavorite = () => {
-    this.setState({ newFavoriteStatus: false });
+    this.setState({newFavoriteStatus: false});
     this.props.removeFavorite(
       this.props.user_id,
       this.props.episode.id,
-      this.props.episode.id
+      this.props.episode.id,
     );
   };
 
   addFavorite = () => {
-    this.setState({ newFavoriteStatus: true });
+    this.setState({newFavoriteStatus: true});
     this.props.addFavorite(
       this.props.user_id,
       this.props.episode.id,
       this.props.episode.id,
-      this.props.episode
+      this.props.episode,
     );
   };
 
   onEndVideo = () => {
-    this.props.setPlayerValue("isPlayingVideo", false);
-    this.props.setPlayerValue("videoMode", false);
+    this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.setPlayerValue('videoMode', false);
   };
 
   onBuffer = meta => {};
@@ -335,7 +335,7 @@ class Episode extends React.Component {
   };
 
   onProgress = data => {
-    this.props.setPlayerValue("videoTimer", data);
+    this.props.setPlayerValue('videoTimer', data);
   };
 
   updateProgress() {
@@ -354,7 +354,7 @@ class Episode extends React.Component {
   getVideoUri = () => {
     let returnVal;
     let episode = this.props.episode || {};
-    if (this.state.videoUrl != "") {
+    if (this.state.videoUrl != '') {
       return this.state.videoUrl;
     }
     let episode_id = this.props.episode.id;
@@ -364,12 +364,12 @@ class Episode extends React.Component {
       offlineEpisode.videoStatus == offlineDownloadStatus.downloaded &&
       offlineEpisode.videoUrl
     ) {
-      returnVal = "file://" + offlineEpisode.videoUrl;
+      returnVal = 'file://' + offlineEpisode.videoUrl;
     } else {
       returnVal = episode.dataUrl;
     }
-    console.log("JG: url = ", returnVal);
-    this.setState({ videoUrl: returnVal });
+    console.log('JG: url = ', returnVal);
+    this.setState({videoUrl: returnVal});
     return returnVal;
   };
 
@@ -378,11 +378,11 @@ class Episode extends React.Component {
   };
 
   onTogglePlayback = paused => {
-    this.props.setPlayerValue("isPlayingVideo", !paused);
+    this.props.setPlayerValue('isPlayingVideo', !paused);
   };
 
   onToggleFullscreen = isFullscreen => {
-    this.props.setPlayerValue("isFullscreenVideo", isFullscreen);
+    this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
     if (isFullscreen) {
       Orientation.lockToLandscape();
     } else {
@@ -391,11 +391,11 @@ class Episode extends React.Component {
   };
 
   renderVideo() {
-    console.log("JG: rendering video");
+    console.log('JG: rendering video');
     return (
       <Video
-        source={{ uri: this.getVideoUri() }} // Can be a URL or a local file.
-        style={{ zIndex: 0 }}
+        source={{uri: this.getVideoUri()}} // Can be a URL or a local file.
+        style={{zIndex: 0}}
         ref={ref => {
           this.player = ref;
         }} // Store reference
@@ -460,11 +460,10 @@ class Episode extends React.Component {
         audioDownloadButton = (
           <TouchableOpacity
             key="audio"
-            onPress={this.downloadOffline.bind(this, "audio")}
-          >
+            onPress={this.downloadOffline.bind(this, 'audio')}>
             <Image
               style={styles.icon}
-              source={require("../../assets/icons/download-audio.png")}
+              source={require('../../assets/icons/download-audio.png')}
             />
           </TouchableOpacity>
         );
@@ -474,13 +473,13 @@ class Episode extends React.Component {
           <Image
             key="audio"
             style={styles.icon}
-            source={require("../../assets/icons/spinny.gif")}
+            source={require('../../assets/icons/spinny.gif')}
           />
         );
         break;
       case offlineDownloadStatus.downloaded:
         let iconStyle = styles.icon,
-          clickHandler = this.deleteOfflineEpisode.bind(this, "audio");
+          clickHandler = this.deleteOfflineEpisode.bind(this, 'audio');
         if (this.props.currentTrack.episode_id === episode.id) {
           iconStyle = styles.iconTranps;
           clickHandler = () => {};
@@ -490,7 +489,7 @@ class Episode extends React.Component {
             <Image
               key="audio"
               style={iconStyle}
-              source={require("../../assets/icons/checkmark.png")}
+              source={require('../../assets/icons/checkmark.png')}
             />
           </TouchableOpacity>
         );
@@ -502,11 +501,10 @@ class Episode extends React.Component {
           videoDownloadButton = (
             <TouchableOpacity
               key="video"
-              onPress={this.downloadOffline.bind(this, "video")}
-            >
+              onPress={this.downloadOffline.bind(this, 'video')}>
               <Image
                 style={styles.icon}
-                source={require("../../assets/icons/download-video.png")}
+                source={require('../../assets/icons/download-video.png')}
               />
             </TouchableOpacity>
           );
@@ -516,7 +514,7 @@ class Episode extends React.Component {
             <Image
               key="video"
               style={styles.icon}
-              source={require("../../assets/icons/spinny.gif")}
+              source={require('../../assets/icons/spinny.gif')}
             />
           );
           break;
@@ -524,11 +522,10 @@ class Episode extends React.Component {
           videoDownloadButton = (
             <TouchableOpacity
               key="video"
-              onPress={this.deleteOfflineEpisode.bind(this, "video")}
-            >
+              onPress={this.deleteOfflineEpisode.bind(this, 'video')}>
               <Image
                 style={styles.icon}
-                source={require("../../assets/icons/checkmark.png")}
+                source={require('../../assets/icons/checkmark.png')}
               />
             </TouchableOpacity>
           );
@@ -543,22 +540,20 @@ class Episode extends React.Component {
           <TouchableOpacity
             onPress={() => {
               this.props.removeFromPlaylist(this.props.episode);
-            }}
-          >
+            }}>
             <Image
               style={[styles.icon]}
-              source={require("../../assets/icons/minus.png")}
+              source={require('../../assets/icons/minus.png')}
             />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             onPress={() => {
               this.addToPlaylist();
-            }}
-          >
+            }}>
             <Image
               style={[styles.icon]}
-              source={require("../../assets/icons/plus.png")}
+              source={require('../../assets/icons/plus.png')}
             />
           </TouchableOpacity>
         )}
@@ -567,14 +562,14 @@ class Episode extends React.Component {
           <TouchableOpacity onPress={this.removeFavorite}>
             <Image
               style={[styles.icon]}
-              source={require("../../assets/icons/black_heart.png")}
+              source={require('../../assets/icons/black_heart.png')}
             />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={this.addFavorite}>
             <Image
               style={[styles.icon]}
-              source={require("../../assets/icons/blank_heart.png")}
+              source={require('../../assets/icons/blank_heart.png')}
             />
           </TouchableOpacity>
         )}
@@ -588,9 +583,8 @@ class Episode extends React.Component {
         <View style={styles.playButtons}>
           <TouchableOpacity
             style={styles.audioOnlyButton}
-            onPress={this.playAudioTrack}
-          >
-            <Icon name={"volume-up"} size={18} color={colors.blue} />
+            onPress={this.playAudioTrack}>
+            <Icon name={'volume-up'} size={18} color={colors.blue} />
             <Text style={styles.buttonText}> Audio</Text>
           </TouchableOpacity>
         </View>
@@ -599,11 +593,11 @@ class Episode extends React.Component {
     return (
       <View style={styles.playButtons}>
         <TouchableOpacity style={styles.button} onPress={this.playVideo}>
-          <Icon name={"video-camera"} size={18} color={colors.blue} />
+          <Icon name={'video-camera'} size={18} color={colors.blue} />
           <Text style={styles.buttonText}> Video</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={this.playAudioTrack}>
-          <Icon name={"volume-up"} size={18} color={colors.blue} />
+          <Icon name={'volume-up'} size={18} color={colors.blue} />
           <Text style={styles.buttonText}> Audio</Text>
         </TouchableOpacity>
       </View>
@@ -617,13 +611,13 @@ class Episode extends React.Component {
     }
 
     let description = episode.description;
-    if (typeof description != "string") {
-      description = "";
+    if (typeof description != 'string') {
+      description = '';
     }
     return (
       <View>
         {this.renderButtons()}
-        <Text>{"\n"}</Text>
+        <Text>{'\n'}</Text>
         <Text style={styles.title}>{episode.name}</Text>
         <Text style={styles.description}>{description}</Text>
       </View>
@@ -636,7 +630,7 @@ class Episode extends React.Component {
         <Image
           style={styles.episodeImage}
           source={{
-            uri: this.props.episode && this.props.episode.thumbnailUrl
+            uri: this.props.episode && this.props.episode.thumbnailUrl,
           }}
         />
       </View>
@@ -647,12 +641,11 @@ class Episode extends React.Component {
     return (
       <Base
         navigation={this.props.navigation}
-        threeDotItem={this.props.episode}
-      >
+        threeDotItem={this.props.episode}>
         {this.props.videoMode && <KeepAwake />}
         <ScrollView contentContainerStyle={styles.container}>
           {this.props.videoMode ? this.renderVideo() : this.renderImages()}
-          {(this.state.orientation.includes("PORTRAIT") ||
+          {(this.state.orientation.includes('PORTRAIT') ||
             !this.props.videoMode) &&
             this.renderDetails()}
         </ScrollView>
@@ -681,7 +674,7 @@ function mapStateToProps(state) {
     videoMode: state.player.videoMode,
     chromecast_devices: state.data.chromecast_devices,
     channelsById: state.data.channelsById,
-    favoriteEpisodes: state.data.favoriteEpisodes
+    favoriteEpisodes: state.data.favoriteEpisodes,
   };
 }
 
@@ -701,72 +694,72 @@ function mapDispatchToProps(dispatch) {
       deleteOfflineEpisode,
       displayOfflineEpisodeDownloading,
       setVideoTimerValue,
-      showModal
+      showModal,
     },
-    dispatch
+    dispatch,
   );
 }
 
 ReactMixin.onClass(Episode, TimerMixin);
 export default connect(mapStateToProps, mapDispatchToProps)(Episode);
-const { height, width } = Dimensions.get("window");
+const {height, width} = Dimensions.get('window');
 
 let buttonWidth = 164;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   imageContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   episodeImage: {
     height: 150,
     width: 150,
-    borderRadius: 10
+    borderRadius: 10,
   },
   description: {
     fontSize: 14,
     paddingLeft: 5,
     paddingRight: 5,
     color: colors.white,
-    fontFamily: "Avenir"
+    fontFamily: 'Avenir',
   },
   title: {
     fontSize: 18,
     marginBottom: 15,
     color: colors.white,
-    fontFamily: "Avenir"
+    fontFamily: 'Avenir',
   },
   icon: {
     height: 25,
     width: 25,
-    resizeMode: "contain"
+    resizeMode: 'contain',
   },
   iconTranps: {
     height: 25,
     width: 25,
-    resizeMode: "contain",
-    opacity: 0.35
+    resizeMode: 'contain',
+    opacity: 0.35,
   },
   iconMarginRight: {
     height: 25,
     width: 25,
-    resizeMode: "contain",
-    marginRight: 20
+    resizeMode: 'contain',
+    marginRight: 20,
   },
   options: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginBottom: 10,
-    width: width
+    width: width,
   },
   playButtons: {
-    flexDirection: "row",
-    justifyContent: "center"
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   button: {
     marginTop: 0,
@@ -776,16 +769,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.yellow,
     width: 100,
     height: 40,
-    justifyContent: "center",
+    justifyContent: 'center',
     padding: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-    flexDirection: "row"
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
   audioOnlyButton: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 0,
     marginBottom: 0,
     marginHorizontal: 5,
@@ -794,12 +787,12 @@ const styles = StyleSheet.create({
     width: 150,
     height: 40,
     padding: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex"
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
   },
   buttonText: {
     color: colors.blue,
-    fontFamily: "Avenir"
-  }
+    fontFamily: 'Avenir',
+  },
 });
