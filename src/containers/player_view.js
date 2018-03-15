@@ -1,21 +1,21 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Dimensions,
   Image,
   View,
   Alert,
-  ActionSheetIOS
-} from "react-native";
+  ActionSheetIOS,
+} from 'react-native';
 
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 
-import _ from "lodash/fp";
-import { setPlayerValue, playNext, setPlayback } from "../actions/player";
-import { navigateTo } from "../actions/navigation";
-import PlayerControls from "./player_controls";
-import Base from "./view_base";
+import _ from 'lodash/fp';
+import {setPlayerValue, playNext, setPlayback} from '../actions/player';
+import {navigateTo} from '../actions/navigation';
+import PlayerControls from './player_controls';
+import Base from './view_base';
 
 class PlayerView extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class PlayerView extends Component {
     } else {
       track = this.props.currentLiveVideo;
     }
-    this.props.setPlayerValue("playerHeader", track.name);
+    this.props.setPlayerValue('playerHeader', track.name);
     return track;
   };
 
@@ -60,13 +60,9 @@ class PlayerView extends Component {
     return (
       <Base
         navigation={this.props.navigation}
-        threeDotItem={this.getThreeDotItem()}
-      >
+        threeDotItem={this.getThreeDotItem()}>
         <View style={styles.container}>
-          <Image
-            style={styles.thumbnail}
-            source={{ uri: this.track().image }}
-          />
+          <Image style={styles.thumbnail} source={{uri: this.track().image}} />
           <PlayerControls
             chromecastMode={this.props.chromecastMode}
             liveMode={this.props.liveMode}
@@ -86,7 +82,7 @@ function mapStateToProps(state) {
     currentVideo: state.player.currentVideo,
     currentLiveVideo: state.player.currentLiveVideo,
     chromecastMode: state.player.chromecastMode,
-    liveMode: state.player.liveMode
+    liveMode: state.player.liveMode,
   };
 }
 
@@ -96,24 +92,24 @@ function mapDispatchToProps(dispatch) {
       playNext,
       setPlayback,
       navigateTo,
-      setPlayerValue
+      setPlayerValue,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerView);
 
-const { height, width } = Dimensions.get("window");
+const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   thumbnail: {
-    height: 300,
-    width: 300,
+    height: width >= 350 ? 300 : 200,
+    width: width >= 350 ? 300 : 200,
     marginBottom: 20,
-    borderRadius: 15
-  }
+    borderRadius: 15,
+  },
 });
