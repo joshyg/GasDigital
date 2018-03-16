@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,15 @@ import {
   StyleSheet,
   StatusBar,
   Dimensions,
-  Image
-} from "react-native";
-import SvgButton from "./svg_button";
-import PlayerControls from "../containers/player_controls";
-import ProgressSlider from "./progress_slider";
-import Svg from "./svg";
-import _ from "lodash/fp";
-import { colors } from "../constants";
+  Image,
+} from 'react-native';
+import SvgButton from './svg_button';
+import ProgressSlider from './progress_slider';
+import Svg from './svg';
+import _ from 'lodash/fp';
+import {colors} from '../constants';
 
-const { height, width } = Dimensions.get("window");
+const {height, width} = Dimensions.get('window');
 
 const playerClicked = function(props) {
   if (!props.track || !props.track.id) {
@@ -34,10 +33,9 @@ export default function Player(props) {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          props.navigateTo("player_view");
+          props.navigateTo('player_view');
         }}
-        style={styles.container}
-      >
+        style={styles.container}>
         {props.track &&
           props.timer.currentTime !== 0 && (
             <ProgressSlider
@@ -65,11 +63,11 @@ export default function Player(props) {
         {props.track && (
           <TouchableOpacity onPress={props.togglePlayback}>
             <Image
-              style={{ height: 35, width: 35 }}
+              style={{height: 35, width: 35}}
               source={
                 isPlaying
-                  ? require("../../assets/icons/pause_footer.png")
-                  : require("../../assets/icons/play_footer.png")
+                  ? require('../../assets/icons/pause_footer.png')
+                  : require('../../assets/icons/play_footer.png')
               }
             />
           </TouchableOpacity>
@@ -82,8 +80,7 @@ export default function Player(props) {
     <TouchableOpacity
       onPress={() => {
         return playerClicked(props);
-      }}
-    >
+      }}>
       {body}
     </TouchableOpacity>
   );
@@ -91,39 +88,39 @@ export default function Player(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     height: 50,
     width: width,
-    backgroundColor: "black",
+    backgroundColor: 'black',
     paddingRight: 10,
     paddingBottom: 10,
-    paddingTop: 10
+    paddingTop: 10,
   },
   marker: {
     height: 8,
     width: 8,
     borderRadius: 4,
-    backgroundColor: "#E8E8E8"
+    backgroundColor: '#E8E8E8',
   },
   pressedMarker: {
     height: 12,
     width: 12,
     borderRadius: 6,
-    backgroundColor: "#E8E8E8"
+    backgroundColor: '#E8E8E8',
   },
   none: {
     height: 0,
-    width: 0
+    width: 0,
   },
   trackStyle: {
     borderRadius: 0,
-    height: 2
+    height: 2,
   },
   title: {
     fontSize: 18,
-    color: "white",
-    width: width - 50
-  }
+    color: 'white',
+    width: width - 50,
+  },
 });
