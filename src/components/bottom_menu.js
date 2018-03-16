@@ -52,7 +52,6 @@ class BottomMenu extends React.Component {
   render() {
     const {width} = Dimensions.get('window');
     const activeItem = this.props.activeMenuItem;
-    console.log('JG: render bottom, liveNow = ', this.props.liveNow);
     return (
       <View style={styles.container}>
         <TouchableOpacity
