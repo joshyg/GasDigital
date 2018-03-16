@@ -255,7 +255,6 @@ export default (reducer = (state = initialState, action) => {
       };
 
     case 'DATA_GET_LIVE_SHOW':
-      console.log('JG: liveshow payload', action.payload);
       if (payloadError(action.payload)) {
         return {...state, liveShowMessage: 'error'};
       }
@@ -311,6 +310,7 @@ export default (reducer = (state = initialState, action) => {
 
     case 'DATA_GET_AUDIO':
     case 'PLAYER_PLAY_AUDIO':
+      console.log('JG: PLAYER_PLAY_AUDIO, ', action.payload);
       if (payloadError(action.payload)) {
         return {...state};
       }
@@ -355,7 +355,11 @@ export default (reducer = (state = initialState, action) => {
       };
 
     case 'DATA_GET_FAVORITES':
-      returnedEpisodes = action.payload.resp_data.data;
+      returnedEpisodes =
+        action.payload.resp_data && action.payload.resp_data.data;
+      if (!returnedEpisodes) {
+        return {...state};
+      }
       returnedEpisodeIds = returnedEpisodes.map(x => x.id);
       episodes = {};
       favoriteEpisodes = {};

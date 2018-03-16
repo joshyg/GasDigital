@@ -46,8 +46,10 @@ class ListItemEpisode extends Component {
           }}>
           <View
             style={[
-              this.props.playlistView ? {width: width - 50} : {width: width},
-              {marginLeft: 10},
+              {
+                width: width,
+                marginLeft: 5,
+              },
             ]}>
             <Text style={styles.title}>{item && item.name}</Text>
             <Text style={styles.description}>{description}</Text>
@@ -59,15 +61,6 @@ class ListItemEpisode extends Component {
               />
             )}
           </View>
-
-          {this.props.playlistView && (
-            <TouchableOpacity onPress={this.props.removeFromPlaylist}>
-              <Image
-                source={require('../../assets/icons/minus.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          )}
         </TouchableOpacity>
       </View>
     );

@@ -22,6 +22,7 @@ import {getChannels, getEpisodes, setValue} from '../actions/data';
 import {setPlayerValue, fetchAndPlayAudio} from '../actions/player';
 import {colors} from '../constants.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Chromecast from 'react-native-google-cast';
 
 class Playlist extends React.Component {
   constructor(props) {
@@ -37,6 +38,17 @@ class Playlist extends React.Component {
   componentWillReceiveProps(nextProps) {}
 
   componentDidMount() {}
+
+  pauseChromecast = async () => {
+    if (!this.props.isPlayingChromecast) {
+      return;
+    }
+    let connected = await Chromecast.isConnected();
+    if (connected) {
+      Chromecast.togglePauseCast();
+      this.props.setPlayerValue('isPlayingChromecast', false);
+    }
+  };
 
   playAll() {
     this.props.setPlayerValue('queue', this.props.playlist);
@@ -59,13 +71,16 @@ class Playlist extends React.Component {
     console.log('JG: setting track to ', track);
     this.props.setPlayerValue('isPlayingVideo', false);
     this.props.setPlayerValue('videoMode', false);
-
+    this.props.setPlayerValue('chromecastMode', false);
+    this.props.setPlayerValue('liveMode', false);
     this.props.setPlayerValue('currentTrack', track);
     if (!track.audioUrl) {
       this.props.fetchAndPlayAudio(episode.show_id, episode.id);
     } else {
       this.props.setPlayerValue('isPlaying', true);
     }
+    this.props.navigateTo('player_view');
+    this.pauseChromecast();
   }
 
   removeFromPlaylist(item) {
@@ -120,6 +135,7 @@ class Playlist extends React.Component {
 function mapStateToProps(state) {
   return {
     user_id: state.auth.user_id,
+    isPlayingChromecast: state.player.isPlayingChromecast,
     playlist:
       state.data.playlist &&
       state.data.playlist.filter(x => {
