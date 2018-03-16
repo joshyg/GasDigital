@@ -42,6 +42,7 @@ class Live extends React.Component {
       next_show_start_time: '',
       orientation: '',
       spinValue: new Animated.Value(0),
+      show: {},
     };
   }
 
@@ -175,7 +176,7 @@ class Live extends React.Component {
     let show = getLiveShow(props);
     let video;
     if (!show) {
-      this.setState({uri: ''});
+      this.setState({uri: '', show: {}});
       return;
     }
     if (DEBUG_LIVE_VIEW) {
@@ -286,6 +287,7 @@ class Live extends React.Component {
         chromecast_devices={this.props.chromecast_devices}
         onError={this.onError}
         orientation={this.props.orientation}
+        title={this.state.show.name}
       />
     );
   }

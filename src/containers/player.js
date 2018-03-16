@@ -25,6 +25,7 @@ import {
   playPrevious,
   fetchAndPlayAudio,
 } from '../actions/player';
+import {getLiveShow} from './helper_funcs';
 
 const EVENTS = [
   'playerProgress',
@@ -61,7 +62,6 @@ class Player extends React.Component {
     }
   };
   componentWillMount() {
-    console.log('JG: player mounted');
     this.onEnd = _.throttle(3000, this.onEnd);
     MusicControl.handleAudioInterruptions(true);
     MusicControl.on('play', () => {
@@ -190,6 +190,19 @@ class Player extends React.Component {
     } else {
       MusicControl.enableControl('previousTrack', false);
     }
+
+    if (!this.props.liveMode && nextProps.liveMode) {
+      let show = getLiveShow(nextProps);
+      let channel = this.props.channelsById[show.show_id];
+      if (channel) {
+        MusicControl.setNowPlaying({
+          title: channel.title,
+          artwork: channel.thumb,
+        });
+      }
+    } else if (this.props.liveMode && !nextProps.liveMode) {
+      this.setNowPlaying();
+    }
   }
 
   seek(time) {
@@ -213,18 +226,7 @@ class Player extends React.Component {
     this.seek(this.props.newTime + 15000);
   }
 
-  setNowPlaying(now) {
-    let image = this.props.currentTrack.image;
-    let name = this.props.currentTrack.name;
-    MusicControl.setNowPlaying({
-      title: name,
-      artwork: image,
-      playbackDuration: this.props.timer.duration,
-      elapsedPlaybackTime: now,
-    });
-  }
-
-  onLoad = data => {
+  setNowPlaying() {
     let episode_id = this.props.currentTrack.episode_id;
     let startTime = 0;
     if (this.props.episodeProgress && this.props.episodeProgress[episode_id]) {
@@ -233,8 +235,22 @@ class Player extends React.Component {
     }
 
     if (Platform.OS == 'ios') {
-      this.setNowPlaying(startTime);
+      if (!this.props.currentTrack) {
+        return;
+      }
+      let image = this.props.currentTrack.image;
+      let name = this.props.currentTrack.name;
+      MusicControl.setNowPlaying({
+        title: name,
+        artwork: image,
+        playbackDuration: this.props.timer.duration,
+        elapsedPlaybackTime: startTime,
+      });
     }
+  }
+
+  onLoad = data => {
+    this.setNowPlaying();
   };
 
   onProgress(data) {
@@ -341,7 +357,10 @@ function mapStateToProps(state) {
     queue: state.player.queue,
     queueIndex: state.player.queueIndex,
     episodeProgress: state.player.episodeProgress,
+    episodes: state.data.episodes,
+    recentEpisodeIds: state.data.recentEpisodeIds,
     channelsById: state.data.channelsById,
+    liveMode: state.player.liveMode,
     livePaused: state.player.livePaused,
   };
 }
