@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   ScrollView,
-  Dimensions
-} from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+  Dimensions,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-import _ from "lodash/fp";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { setActiveMenuItem, resetTo, navigateTo } from "../actions/navigation";
-import SvgIcon from "./svg_icons";
-import { iconNames, routeHeaders, colors, fonts } from "../constants";
+import _ from 'lodash/fp';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {setActiveMenuItem, resetTo, navigateTo} from '../actions/navigation';
+import Svg, {Circle} from 'react-native-svg';
+import {iconNames, routeHeaders, colors, fonts} from '../constants';
 
 class BottomMenu extends React.Component {
   setActiveMenu(item) {
@@ -28,93 +28,96 @@ class BottomMenu extends React.Component {
   }
 
   renderIcon(name, activeItem) {
+    let bigSize = 33;
+    let littleSize = 30;
     return (
       <Icon
         name={name}
-        size={iconNames[activeItem] == name ? 33 : 30}
-        color={iconNames[activeItem] == name ? "#fcf411" : "#8e8e93"}
+        size={iconNames[activeItem] == name ? bigSize : littleSize}
+        color={iconNames[activeItem] == name ? '#fcf411' : '#8e8e93'}
       />
     );
   }
 
+  renderRedCircle() {
+    return (
+      <View style={{position: 'absolute'}}>
+        <Svg height="30" width="30">
+          <Circle cx="27" cy="3" r="3" fill="red" />
+        </Svg>
+      </View>
+    );
+  }
+
   render() {
-    const { width } = Dimensions.get("window");
+    const {width} = Dimensions.get('window');
     const activeItem = this.props.activeMenuItem;
+    console.log('JG: render bottom, liveNow = ', this.props.liveNow);
     return (
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={this.setActiveMenu.bind(this, "homescreen")}
-        >
-          {this.renderIcon(iconNames["homescreen"], activeItem)}
+          onPress={this.setActiveMenu.bind(this, 'homescreen')}>
+          {this.renderIcon(iconNames['homescreen'], activeItem)}
           <Text
             style={[
-              styles.topMenuText,
-              activeItem === "homescreen" ? styles.selected : {}
-            ]}
-          >
-            {routeHeaders["homescreen"]}
+              styles.bottomMenuText,
+              activeItem === 'homescreen' ? styles.selected : {},
+            ]}>
+            {routeHeaders['homescreen']}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={this.setActiveMenu.bind(this, "live")}
-        >
-          {this.renderIcon(iconNames["live"], activeItem)}
+          onPress={this.setActiveMenu.bind(this, 'live')}>
+          {this.renderIcon(iconNames['live'], activeItem)}
+          {this.props.liveNow && this.renderRedCircle()}
           <Text
             style={[
-              styles.topMenuText,
-              activeItem === "live" ? styles.selected : {}
-            ]}
-          >
-            {routeHeaders["live"]}
+              styles.bottomMenuText,
+              activeItem === 'live' ? styles.selected : {},
+            ]}>
+            {routeHeaders['live']}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={this.setActiveMenu.bind(this, "search")}
-        >
-          {this.renderIcon(iconNames["search"], activeItem)}
+          onPress={this.setActiveMenu.bind(this, 'search')}>
+          {this.renderIcon(iconNames['search'], activeItem)}
           <Text
             style={[
-              styles.topMenuText,
-              activeItem === "search" ? styles.selected : {},
-              { marginTop: -3 }
-            ]}
-          >
-            {routeHeaders["search"]}
+              styles.bottomMenuText,
+              activeItem === 'search' ? styles.selected : {},
+            ]}>
+            {routeHeaders['search']}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={this.setActiveMenu.bind(this, "library")}
-        >
-          {this.renderIcon(iconNames["library"], activeItem)}
+          onPress={this.setActiveMenu.bind(this, 'library')}>
+          {this.renderIcon(iconNames['library'], activeItem)}
           <Text
             style={[
-              styles.topMenuText,
-              activeItem === "library" ? styles.selected : {}
-            ]}
-          >
-            {routeHeaders["library"]}
+              styles.bottomMenuText,
+              activeItem === 'library' ? styles.selected : {},
+            ]}>
+            {routeHeaders['library']}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={this.setActiveMenu.bind(this, "settings")}
-        >
-          {this.renderIcon(iconNames["settings"], activeItem)}
+          onPress={this.setActiveMenu.bind(this, 'settings')}>
+          {this.renderIcon(iconNames['settings'], activeItem)}
           <Text
             style={[
-              styles.topMenuText,
-              activeItem === "library" ? styles.selected : {}
-            ]}
-          >
-            {routeHeaders["settings"]}
+              styles.bottomMenuText,
+              activeItem === 'library' ? styles.selected : {},
+            ]}>
+            {routeHeaders['settings']}
           </Text>
         </TouchableOpacity>
       </View>
@@ -125,39 +128,38 @@ class BottomMenu extends React.Component {
 function mapStateToProps(state) {
   return {
     activeMenuItem: state.navigation.activeMenuItem,
-    liveNow: state.player.liveNow
+    liveNow: state.player.liveNow,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    { setActiveMenuItem, resetTo, navigateTo },
-    dispatch
-  );
+  return bindActionCreators({setActiveMenuItem, resetTo, navigateTo}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomMenu);
 
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: 'row',
     height: 54,
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     width: width,
-    backgroundColor: colors.footerBackground
+    backgroundColor: colors.footerBackground,
   },
   menuItem: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
   },
-  topMenuText: {
+  bottomMenuText: {
     fontSize: 10,
-    color: colors.grey1
+    color: colors.grey1,
+    bottom: 0,
   },
   selected: {
     color: colors.grey1,
-    fontWeight: "bold"
-  }
+    fontWeight: 'bold',
+  },
 });
