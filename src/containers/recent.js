@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,14 +10,14 @@ import {
   Alert,
   Platform,
   Image,
-  StatusBar
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { resetTo, navigateTo } from "../actions/navigation";
-import ListItemEpisode from "./list_item_episode";
-import Base from "./view_base";
-import { getChannels, getEpisodes, setValue } from "../actions/data";
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
+import ListItemEpisode from './list_item_episode';
+import Base from './view_base';
+import {getChannels, getEpisodes, setValue} from '../actions/data';
 
 class Home extends React.Component {
   constructor(props) {
@@ -35,12 +35,12 @@ class Home extends React.Component {
 
   goToEpisode = item => {
     let channel = this.props.channelsById[item.show_id];
-    this.props.setValue("episode", item);
-    this.props.setValue("series", channel);
-    this.props.navigateTo("episode");
+    this.props.setValue('episode', item);
+    this.props.setValue('series', channel);
+    this.props.navigateTo('episode');
   };
 
-  renderEpisode = ({ item }) => {
+  renderEpisode = ({item}) => {
     return <ListItemEpisode item={item} goToEpisode={this.goToEpisode} />;
   };
 
@@ -53,7 +53,7 @@ class Home extends React.Component {
 
   render() {
     return (
-      <Base navigation={this.props.navigation}>
+      <Base header="Recent Episodes" navigation={this.props.navigation}>
         <View style={styles.channelsContainer}>
           <FlatList
             data={this.recentEpisodes()}
@@ -74,7 +74,7 @@ function mapStateToProps(state) {
     user_id: state.auth.user_id,
     recentEpisodeIds: state.data.recentEpisodeIds,
     channelsById: state.data.channelsById,
-    episodes: state.data.episodes
+    episodes: state.data.episodes,
   };
 }
 
@@ -85,9 +85,9 @@ function mapDispatchToProps(dispatch) {
       navigateTo,
       getChannels,
       getEpisodes,
-      setValue
+      setValue,
     },
-    dispatch
+    dispatch,
   );
 }
 
@@ -95,13 +95,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Home);
 
 const styles = StyleSheet.create({
   channelsContainer: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   episodesContainer: {
-    alignItems: "flex-start"
+    alignItems: 'flex-start',
   },
   episodeRow: {
-    flexDirection: "row"
-  }
+    flexDirection: 'row',
+  },
 });

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,13 +10,13 @@ import {
   Alert,
   Platform,
   Image,
-  StatusBar
-} from "react-native";
+  StatusBar,
+} from 'react-native';
 
-import Base from "./view_base";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { colors } from "../constants.js";
+import Base from './view_base';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {colors} from '../constants.js';
 
 class About extends React.Component {
   constructor(props) {
@@ -26,11 +26,9 @@ class About extends React.Component {
 
   render() {
     return (
-      <Base navigation={this.props.navigation}>
+      <Base header="About Us" navigation={this.props.navigation}>
         <ScrollView>
-          <View
-            style={{ alignItems: "center", paddingLeft: 8, paddingRight: 8 }}
-          >
+          <View style={{alignItems: 'center', paddingLeft: 8, paddingRight: 8}}>
             <Text style={styles.text}>
               {
                 "Let's talk a bit about what makes GaS Digital different, and why we know you'll want to #PlugInFuelUp with us! First and foremost every podcast on the network will always be FREE. You don't have to pay a dime if you don't want to. The newest 10 episodes will always be on iTunes, Stitcher, Google Play, or even God-forbid on a Zune, you can listen to any of the shows on the network so let's just get that out of the way first! No money, not a single thin dime. Got it? Good.\n"
@@ -62,6 +60,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: colors.white,
-    fontFamily: "Avenir"
-  }
+    fontFamily: 'Avenir',
+  },
 });

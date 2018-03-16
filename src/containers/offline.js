@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,15 +10,15 @@ import {
   Alert,
   Platform,
   Image,
-  StatusBar
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { resetTo, navigateTo } from "../actions/navigation";
-import ListItemEpisode from "./list_item_episode";
-import Base from "./view_base";
-import { getChannels, getEpisodes, setValue } from "../actions/data";
-import { offlineDownloadStatus } from "../constants";
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
+import ListItemEpisode from './list_item_episode';
+import Base from './view_base';
+import {getChannels, getEpisodes, setValue} from '../actions/data';
+import {offlineDownloadStatus} from '../constants';
 
 class Offline extends React.Component {
   constructor(props) {
@@ -36,8 +36,8 @@ class Offline extends React.Component {
   componentDidMount() {}
 
   goToEpisode = item => {
-    this.props.setValue("episode", item);
-    this.props.navigateTo("episode");
+    this.props.setValue('episode', item);
+    this.props.navigateTo('episode');
   };
 
   onEndReached() {
@@ -50,7 +50,7 @@ class Offline extends React.Component {
     // this.props.getEpisodes(channel,this.props.user_id,pageNum);
   }
 
-  renderEpisode({ item }, spinny) {
+  renderEpisode({item}, spinny) {
     return (
       <ListItemEpisode
         item={item.episode}
@@ -90,7 +90,7 @@ class Offline extends React.Component {
       let uniqueOfflineEpisodes = offlineEps;
       // let uniqueOfflineEpisodes = _.uniq(offlineEps);
       for (let i = 0; i < uniqueOfflineEpisodes.length; i++) {
-        flatListItems.push({ episode: uniqueOfflineEpisodes[i] });
+        flatListItems.push({episode: uniqueOfflineEpisodes[i]});
       }
     }
     if (!!downloadingOfflineEps.length) {
@@ -99,12 +99,12 @@ class Offline extends React.Component {
       for (let i = 0; i < uniqueDownloadingEpisodes.length; i++) {
         flatListItems.push({
           episode: uniqueDownloadingEpisodes[i],
-          spinny: true
+          spinny: true,
         });
       }
     }
     return (
-      <Base navigation={this.props.navigation}>
+      <Base header="Offline" navigation={this.props.navigation}>
         <View style={styles.episodesContainer}>
           {!!flatListItems.length ? (
             <FlatList
@@ -128,7 +128,7 @@ function mapStateToProps(state) {
   return {
     user_id: state.auth.user_id,
     episodes: state.data.episodes,
-    offlineEpisodes: state.data.offlineEpisodes
+    offlineEpisodes: state.data.offlineEpisodes,
   };
 }
 
@@ -136,9 +136,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       navigateTo,
-      setValue
+      setValue,
     },
-    dispatch
+    dispatch,
   );
 }
 
@@ -146,13 +146,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Offline);
 
 const styles = StyleSheet.create({
   channelsContainer: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   episodesContainer: {
-    alignItems: "flex-start"
+    alignItems: 'flex-start',
   },
   episodeRow: {
-    flexDirection: "row"
-  }
+    flexDirection: 'row',
+  },
 });

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   Text,
@@ -10,19 +10,19 @@ import {
   Platform,
   Image,
   AsyncStorage,
-  StatusBar
-} from "react-native";
+  StatusBar,
+} from 'react-native';
 
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { navigateTo } from "../actions/navigation";
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {navigateTo} from '../actions/navigation';
 
-import { logOut } from "../actions/auth";
-import Base from "./view_base";
-import Svg from "../components/svg";
-var Fabric = require("react-native-fabric");
-var { Crashlytics } = Fabric;
-import { DEBUG_CRASH, colors } from "../constants";
+import {logOut} from '../actions/auth';
+import Base from './view_base';
+import Svg from '../components/svg';
+var Fabric = require('react-native-fabric');
+var {Crashlytics} = Fabric;
+import {DEBUG_CRASH, colors} from '../constants';
 
 class Settings extends React.Component {
   constructor(props) {
@@ -33,14 +33,14 @@ class Settings extends React.Component {
 
   forceCrash = () => {
     if (DEBUG_CRASH) {
-      console.log("Forcing crash!");
+      console.log('Forcing crash!');
       Crashlytics.crash();
     }
   };
 
   render() {
     return (
-      <Base navigation={this.props.navigation}>
+      <Base hideBackButton={true} navigation={this.props.navigation}>
         {/*
               <TouchableOpacity 
                 style={styles.menuItemLast} 
@@ -51,18 +51,16 @@ class Settings extends React.Component {
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => {
-            this.props.navigateTo("about");
+            this.props.navigateTo('about');
           }}
-          onLongPress={this.forceCrash}
-        >
+          onLongPress={this.forceCrash}>
           <Text style={styles.title}>About Us</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => {
             this.props.logOut();
-          }}
-        >
+          }}>
           <Text style={styles.title}>Log Out</Text>
         </TouchableOpacity>
       </Base>
@@ -78,26 +76,26 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       logOut,
-      navigateTo
+      navigateTo,
     },
-    dispatch
+    dispatch,
   );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);
-const { height, width } = Dimensions.get("window");
+const {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     color: colors.white,
-    textAlign: "left",
+    textAlign: 'left',
     paddingLeft: 20,
-    fontFamily: "Avenir"
+    fontFamily: 'Avenir',
   },
   menuItem: {
     padding: 10,
     paddingLeft: 0,
-    width: "100%"
-  }
+    width: '100%',
+  },
 });

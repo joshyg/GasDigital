@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,15 +10,15 @@ import {
   Alert,
   Platform,
   Image,
-  StatusBar
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { resetTo, navigateTo } from "../actions/navigation";
-import { addFavorite, removeFavorite, getFavorites } from "../actions/data";
-import ListItemEpisode from "./list_item_episode";
-import Base from "./view_base";
-import { getChannels, getEpisodes, setValue } from "../actions/data";
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
+import {addFavorite, removeFavorite, getFavorites} from '../actions/data';
+import ListItemEpisode from './list_item_episode';
+import Base from './view_base';
+import {getChannels, getEpisodes, setValue} from '../actions/data';
 
 class Favorites extends React.Component {
   constructor(props) {
@@ -38,8 +38,8 @@ class Favorites extends React.Component {
   componentDidMount() {}
 
   goToEpisode = item => {
-    this.props.setValue("episode", item);
-    this.props.navigateTo("episode");
+    this.props.setValue('episode', item);
+    this.props.navigateTo('episode');
   };
 
   onEndReached() {
@@ -52,7 +52,7 @@ class Favorites extends React.Component {
     // this.props.getEpisodes(channel,this.props.user_id,pageNum);
   }
 
-  renderEpisode({ item }) {
+  renderEpisode({item}) {
     return <ListItemEpisode item={item} goToEpisode={this.goToEpisode} />;
   }
 
@@ -64,9 +64,8 @@ class Favorites extends React.Component {
       }
     }
     return (
-      <Base navigation={this.props.navigation}>
+      <Base header="Favorites" navigation={this.props.navigation}>
         <View style={styles.episodesContainer}>
-          <Text style={styles.title}>Favorites</Text>
           <FlatList
             data={faves}
             renderItem={this.renderEpisode.bind(this)}
@@ -84,7 +83,7 @@ class Favorites extends React.Component {
 function mapStateToProps(state) {
   return {
     user_id: state.auth.user_id,
-    episodes: state.data.episodes
+    episodes: state.data.episodes,
   };
 }
 
@@ -95,9 +94,9 @@ function mapDispatchToProps(dispatch) {
       removeFavorite,
       addFavorite,
       navigateTo,
-      setValue
+      setValue,
     },
-    dispatch
+    dispatch,
   );
 }
 
@@ -105,20 +104,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Favorites);
 
 const styles = StyleSheet.create({
   channelsContainer: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   episodesContainer: {
-    alignItems: "flex-start"
+    alignItems: 'flex-start',
   },
   episodeRow: {
-    flexDirection: "row"
+    flexDirection: 'row',
   },
-  title: {
-    fontSize: 30,
-    color: "black",
-    textAlign: "left",
-    paddingLeft: 20,
-    marginBottom: 20
-  }
 });

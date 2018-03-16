@@ -151,7 +151,7 @@ class Library extends React.Component {
 
   render() {
     return (
-      <Base navigation={this.props.navigation}>
+      <Base hideBackButton={true} navigation={this.props.navigation}>
         <ScrollView>
           {this.renderList('Offline', this.getOfflineEpisodes(), 'offline')}
           {this.renderList('Favorites', this.state.faves, 'favorites')}

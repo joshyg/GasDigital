@@ -283,7 +283,7 @@ class Series extends React.Component {
   render() {
     const {height, width} = Dimensions.get('window');
     return (
-      <Base navigation={this.props.navigation}>
+      <Base header={this.state.channel} navigation={this.props.navigation}>
         <FlatList
           contentContainerStyle={styles.container}
           data={

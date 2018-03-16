@@ -129,13 +129,13 @@ class Base extends React.Component {
     return null;
   };
 
-  getPlayerHeader() {
-    if (!this.props.playerHeader) {
+  formatHeader(header) {
+    if (!header) {
       return '';
-    } else if (this.props.playerHeader.length <= 20) {
-      return this.props.playerHeader;
+    } else if (header.length <= 20) {
+      return header;
     } else {
-      return this.props.playerHeader.slice(0, 20) + '...';
+      return header.slice(0, 20) + '...';
     }
   }
 
@@ -146,6 +146,28 @@ class Base extends React.Component {
       this.props.navigation.state.routeName == 'episode'
     );
   };
+
+  renderTitle() {
+    let title;
+    if (
+      this.props.navigation.state.routeName == 'player_view' ||
+      this.props.navigation.state.routeName == 'episode'
+    ) {
+      title = this.formatHeader(this.props.playerHeader);
+    } else if (this.props.header) {
+      title = this.formatHeader(this.props.header);
+    } else {
+      title = routeHeaders[this.props.activeMenuItem];
+    }
+    console.log('JG: title = ', title);
+    return (
+      <View style={[styles.header]}>
+        <Text style={{color: '#fcf411', textAlign: 'center', fontSize: 18}}>
+          {title}
+        </Text>
+      </View>
+    );
+  }
 
   renderHeader = () => {
     if (
@@ -169,14 +191,7 @@ class Base extends React.Component {
               <View style={{width: 30}} />
             )}
           </View>
-          <View style={[styles.header]}>
-            <Text style={{color: '#fcf411', textAlign: 'center', fontSize: 18}}>
-              {this.props.navigation.state.routeName == 'player_view' ||
-              this.props.navigation.state.routeName == 'episode'
-                ? this.getPlayerHeader()
-                : routeHeaders[this.props.activeMenuItem]}
-            </Text>
-          </View>
+          {this.renderTitle()}
           {this.showThreeDots() && (
             <ThreeDotButton
               style={styles.threeDotsContainer}

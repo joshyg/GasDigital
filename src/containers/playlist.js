@@ -108,7 +108,7 @@ class Playlist extends React.Component {
 
   render() {
     return (
-      <Base navigation={this.props.navigation}>
+      <Base header="Playlist" navigation={this.props.navigation}>
         <View style={{alignItems: 'center'}}>
           {this.props.playlist && this.props.playlist.length > 0 ? (
             <TouchableOpacity style={styles.button} onPress={this.playAll}>
