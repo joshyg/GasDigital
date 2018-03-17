@@ -21,6 +21,8 @@ const initialState = {
   offlineEpisodes: {},
   liveShowMessage: '',
   page: 1,
+  episodeContext: '',
+  episodeContextIndex: 0,
 };
 import {Image} from 'react-native';
 

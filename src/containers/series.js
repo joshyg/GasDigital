@@ -30,7 +30,7 @@ import {
   deleteOfflineEpisode,
   displayOfflineEpisodeDownloading,
 } from '../actions/data';
-import ListItemEpisode from './list_item_episode';
+import EpisodeList from './episode_list';
 import {EPISODES_PER_PAGE, offlineDownloadStatus, colors} from '../constants';
 import {connectActionSheet} from '@expo/react-native-action-sheet';
 import Base from './view_base';
@@ -49,7 +49,6 @@ class Series extends React.Component {
       showBonus: false,
       showFullDescription: false,
     };
-    this.goToEpisode = this.goToEpisode.bind(this);
     this.fetchEpisodes = _.throttle(2000, this.fetchEpisodes);
     this.onEndReached = _.throttle(1000, this.onEndReached);
   }
@@ -60,6 +59,7 @@ class Series extends React.Component {
       return;
     }
     this.props.setValue('page', 1);
+    this.props.setValue('episodeContext', 'series');
 
     let channel = series.link.split('cat=')[1];
     this.setState({channel: channel});
@@ -176,11 +176,6 @@ class Series extends React.Component {
     }
   };
 
-  goToEpisode(item) {
-    this.props.setValue('episode', item);
-    this.props.navigateTo('episode');
-  }
-
   showFullDescription = () => {
     this.setState({showFullDescription: true});
   };
@@ -263,42 +258,22 @@ class Series extends React.Component {
     );
   };
 
-  renderEpisode({item, index}) {
-    return (
-      <View>
-        {index == 0 && this.renderHeader()}
-        <ListItemEpisode
-          item={item}
-          showActionSheetWithOptions={() => {
-            this.showActionSheetWithOptions(item);
-          }}
-          goToEpisode={() => {
-            this.goToEpisode(item);
-          }}
-        />
-      </View>
-    );
-  }
-
   render() {
     const {height, width} = Dimensions.get('window');
     return (
       <Base header={this.state.channel} navigation={this.props.navigation}>
-        <FlatList
-          contentContainerStyle={styles.container}
+        <EpisodeList
           data={
             this.state.showBonus
               ? this.state.bonusEpisodes
               : this.state.episodes
           }
-          renderItem={this.renderEpisode.bind(this)}
-          keyExtractor={(item, index) => {
-            return item.id + index;
-          }}
+          contentContainerStyle={styles.container}
           onEndReached={x => {
             this.onEndReached(x);
           }}
           onEndReachedThreshold={2}
+          renderHeader={this.renderHeader}
         />
       </Base>
     );

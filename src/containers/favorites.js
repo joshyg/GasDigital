@@ -16,7 +16,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {resetTo, navigateTo} from '../actions/navigation';
 import {addFavorite, removeFavorite, getFavorites} from '../actions/data';
-import ListItemEpisode from './list_item_episode';
+import EpisodeList from './episode_list';
 import Base from './view_base';
 import {getChannels, getEpisodes, setValue} from '../actions/data';
 
@@ -31,30 +31,12 @@ class Favorites extends React.Component {
 
   componentWillMount() {
     this.props.getFavorites(this.props.user_id);
+    this.props.setValue('episodeContext', 'favorites');
   }
 
   componentWillReceiveProps(nextProps) {}
 
   componentDidMount() {}
-
-  goToEpisode = item => {
-    this.props.setValue('episode', item);
-    this.props.navigateTo('episode');
-  };
-
-  onEndReached() {
-    // let channel = this.state.channel;
-    // let pageNum = this.state.pageDict[channel]+1;
-    // let channelPage = {}
-    // channelPage[channel] = pageNum;
-    // this.setState({pageDict: { ...this.state.pageDict, ...channelPage}});
-    // this.props.setValue('isGettingEpisodes', true);
-    // this.props.getEpisodes(channel,this.props.user_id,pageNum);
-  }
-
-  renderEpisode({item}) {
-    return <ListItemEpisode item={item} goToEpisode={this.goToEpisode} />;
-  }
 
   render() {
     let faves = [];
@@ -66,14 +48,7 @@ class Favorites extends React.Component {
     return (
       <Base header="Favorites" navigation={this.props.navigation}>
         <View style={styles.episodesContainer}>
-          <FlatList
-            data={faves}
-            renderItem={this.renderEpisode.bind(this)}
-            keyExtractor={(item, index) => {
-              return index;
-            }}
-            horizontal={false}
-          />
+          <EpisodeList data={faves} />
         </View>
       </Base>
     );

@@ -15,7 +15,7 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {resetTo, navigateTo} from '../actions/navigation';
-import ListItemEpisode from './list_item_episode';
+import EpisodeList from './episode_list';
 import Base from './view_base';
 import {getChannels, getEpisodes, setValue} from '../actions/data';
 
@@ -25,24 +25,13 @@ class Home extends React.Component {
     this.state = {};
   }
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.props.setValue('episodeContext', 'recent');
+  }
 
   componentWillReceiveProps(nextProps) {}
 
   componentDidMount() {}
-
-  onEndReached() {}
-
-  goToEpisode = item => {
-    let channel = this.props.channelsById[item.show_id];
-    this.props.setValue('episode', item);
-    this.props.setValue('series', channel);
-    this.props.navigateTo('episode');
-  };
-
-  renderEpisode = ({item}) => {
-    return <ListItemEpisode item={item} goToEpisode={this.goToEpisode} />;
-  };
 
   recentEpisodes = () => {
     let episodes = this.props.recentEpisodeIds.map(x => {
@@ -54,16 +43,11 @@ class Home extends React.Component {
   render() {
     return (
       <Base header="Recent Episodes" navigation={this.props.navigation}>
-        <View style={styles.channelsContainer}>
-          <FlatList
-            data={this.recentEpisodes()}
-            renderItem={this.renderEpisode}
-            keyExtractor={(item, index) => {
-              return item.id;
-            }}
-            horizontal={false}
-          />
-        </View>
+        <EpisodeList
+          data={this.recentEpisodes()}
+          contentContainerStyle={styles.channelsContainer}
+          style={{opacity: 1}}
+        />
       </Base>
     );
   }

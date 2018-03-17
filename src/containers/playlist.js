@@ -16,7 +16,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {resetTo, navigateTo} from '../actions/navigation';
 import {removeFromPlaylist} from '../actions/data';
-import ListItemEpisode from './list_item_episode';
+import EpisodeList from './episode_list';
 import Base from './view_base';
 import {getChannels, getEpisodes, setValue} from '../actions/data';
 import {setPlayerValue, fetchAndPlayAudio} from '../actions/player';
@@ -29,7 +29,6 @@ class Playlist extends React.Component {
     super(props);
     this.state = {};
 
-    this.goToEpisode = this.goToEpisode.bind(this);
     this.playAll = this.playAll.bind(this);
   }
 
@@ -83,29 +82,6 @@ class Playlist extends React.Component {
     this.pauseChromecast();
   }
 
-  removeFromPlaylist(item) {
-    this.props.removeFromPlaylist(item);
-  }
-
-  goToEpisode(item) {
-    console.log('JG: going to episode', item);
-    this.props.setValue('episode', item);
-    this.props.navigateTo('episode');
-  }
-
-  renderEpisode({item}) {
-    return (
-      <ListItemEpisode
-        item={item}
-        goToEpisode={this.goToEpisode}
-        playlistView={true}
-        removeFromPlaylist={() => {
-          this.props.removeFromPlaylist(item);
-        }}
-      />
-    );
-  }
-
   render() {
     return (
       <Base header="Playlist" navigation={this.props.navigation}>
@@ -118,14 +94,7 @@ class Playlist extends React.Component {
           ) : (
             <Text>Playlist empty!</Text>
           )}
-          <FlatList
-            data={this.props.playlist}
-            renderItem={this.renderEpisode.bind(this)}
-            keyExtractor={(item, index) => {
-              return index;
-            }}
-            horizontal={false}
-          />
+          <EpisodeList data={this.props.playlist} />
         </View>
       </Base>
     );

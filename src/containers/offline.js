@@ -15,7 +15,7 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {resetTo, navigateTo} from '../actions/navigation';
-import ListItemEpisode from './list_item_episode';
+import EpisodeList from './episode_list';
 import Base from './view_base';
 import {getChannels, getEpisodes, setValue} from '../actions/data';
 import {offlineDownloadStatus} from '../constants';
@@ -29,36 +29,13 @@ class Offline extends React.Component {
     };
   }
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.props.setValue('episodeContext', 'offline');
+  }
 
   componentWillReceiveProps(nextProps) {}
 
   componentDidMount() {}
-
-  goToEpisode = item => {
-    this.props.setValue('episode', item);
-    this.props.navigateTo('episode');
-  };
-
-  onEndReached() {
-    // let channel = this.state.channel;
-    // let pageNum = this.state.pageDict[channel]+1;
-    // let channelPage = {}
-    // channelPage[channel] = pageNum;
-    // this.setState({pageDict: { ...this.state.pageDict, ...channelPage}});
-    // this.props.setValue('isGettingEpisodes', true);
-    // this.props.getEpisodes(channel,this.props.user_id,pageNum);
-  }
-
-  renderEpisode({item}, spinny) {
-    return (
-      <ListItemEpisode
-        item={item.episode}
-        goToEpisode={this.goToEpisode}
-        spinny={!!item.spinny}
-      />
-    );
-  }
 
   render() {
     let flatListItems = [];
@@ -90,7 +67,7 @@ class Offline extends React.Component {
       let uniqueOfflineEpisodes = offlineEps;
       // let uniqueOfflineEpisodes = _.uniq(offlineEps);
       for (let i = 0; i < uniqueOfflineEpisodes.length; i++) {
-        flatListItems.push({episode: uniqueOfflineEpisodes[i]});
+        flatListItems.push(uniqueOfflineEpisodes[i]);
       }
     }
     if (!!downloadingOfflineEps.length) {
@@ -98,7 +75,7 @@ class Offline extends React.Component {
       // let uniqueDownloadingEpisodes = _.uniq(downloadingOfflineEps);
       for (let i = 0; i < uniqueDownloadingEpisodes.length; i++) {
         flatListItems.push({
-          episode: uniqueDownloadingEpisodes[i],
+          ...uniqueDownloadingEpisodes[i],
           spinny: true,
         });
       }
@@ -107,14 +84,7 @@ class Offline extends React.Component {
       <Base header="Offline" navigation={this.props.navigation}>
         <View style={styles.episodesContainer}>
           {!!flatListItems.length ? (
-            <FlatList
-              data={flatListItems}
-              renderItem={this.renderEpisode.bind(this)}
-              keyExtractor={(item, index) => {
-                return index;
-              }}
-              horizontal={false}
-            />
+            <EpisodeList data={flatListItems} />
           ) : (
             <Text>No offline content!</Text>
           )}
