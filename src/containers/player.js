@@ -362,6 +362,7 @@ function mapStateToProps(state) {
     channelsById: state.data.channelsById,
     liveMode: state.player.liveMode,
     livePaused: state.player.livePaused,
+    schedule: state.data.schedule,
   };
 }
 

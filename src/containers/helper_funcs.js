@@ -1,9 +1,14 @@
 import {DEBUG_LIVE_VIEW} from '../constants';
 moment = require('moment-timezone');
 export function getLiveShow(props) {
+  console.log('JG: in getLiveShow');
   if (DEBUG_LIVE_VIEW) {
     let show = props.episodes[props.recentEpisodeIds[0]];
     return show;
+  }
+  if (!props.schedule) {
+    console.log('JG: no schedule!! cant get live show!!');
+    return null;
   }
   const weekdays = [
     'Sunday',
@@ -27,21 +32,35 @@ export function getLiveShow(props) {
       continue;
     }
 
+    if (!show.start_time || !show.end_time) {
+      continue;
+    }
+
+    let show_start_time = show.start_time.split(':');
+    let show_end_time = show.end_time.split(':');
+
+    if (
+      !show_start_time ||
+      show_start_time.length < 2 ||
+      !show_end_time ||
+      show_end_time.length < 2
+    ) {
+      return null;
+    }
+
     let offset = 240;
     const start_hour =
-      parseInt(show.start_time.split(':')[0]) +
-      (date.utcOffset() + offset) / 60;
+      parseInt(show_start_time[0]) + (date.utcOffset() + offset) / 60;
     const start_min =
-      parseInt(show.start_time.split(':')[1]) +
-      (date.utcOffset() + offset) % 60;
+      parseInt(show_start_time[1]) + (date.utcOffset() + offset) % 60;
     let show_starts = moment(
       new Date(currentYear, currentMonth, currentDate, start_hour, start_min),
     );
 
     const end_hour =
-      parseInt(show.end_time.split(':')[0]) + (date.utcOffset() + offset) / 60;
+      parseInt(show_end_time[0]) + (date.utcOffset() + offset) / 60;
     const end_min =
-      parseInt(show.end_time.split(':')[1]) + (date.utcOffset() + offset) % 60;
+      parseInt(show_end_time[1]) + (date.utcOffset() + offset) % 60;
     let show_ends = moment(
       new Date(currentYear, currentMonth, currentDate, end_hour, end_min),
     );

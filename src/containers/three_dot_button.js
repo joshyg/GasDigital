@@ -185,6 +185,9 @@ class ThreeDotButton extends Component {
     let options = [];
     let actions = [];
     let {item} = this.props;
+    if (!item) {
+      return;
+    }
     if (this.audioDownloaded(item)) {
       options.push('Remove Audio Download');
       actions.push(this.deleteOfflineAudio);
@@ -221,6 +224,10 @@ class ThreeDotButton extends Component {
 
   render() {
     const {item} = this.props;
+
+    if (!item) {
+      return null;
+    }
 
     let description = item && item.description;
     if (typeof description != 'string') {

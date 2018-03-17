@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   BackHandler,
   Text,
@@ -8,54 +8,54 @@ import {
   TouchableOpacity,
   Image,
   StatusBar,
-  NetInfo
-} from "react-native";
-import _ from "lodash/fp";
-import ReactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { navigateTo, resetTo } from "../actions/navigation";
-import Base from "./view_base";
-import Home from "./home";
-import Player from "./player";
-import { deleteCurrentlyDownloadingFiles } from "../actions/data";
-const { height, width } = Dimensions.get("window");
-import { getSchedule, setValue } from "../actions/data";
-import { setPlayerValue } from "../actions/player";
-import Orientation from "react-native-orientation";
-import Chromecast from "./chromecast";
-import { getLiveShow } from "./helper_funcs";
-import { colors } from "../constants";
+  NetInfo,
+} from 'react-native';
+import _ from 'lodash/fp';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {navigateTo, resetTo} from '../actions/navigation';
+import Base from './view_base';
+import Home from './home';
+import Player from './player';
+import {deleteCurrentlyDownloadingFiles} from '../actions/data';
+const {height, width} = Dimensions.get('window');
+import {getSchedule, setValue} from '../actions/data';
+import {setPlayerValue} from '../actions/player';
+import Orientation from 'react-native-orientation';
+import Chromecast from './chromecast';
+import {getLiveShow} from './helper_funcs';
+import {colors} from '../constants';
 
 class App extends React.Component {
   componentWillMount() {
     NetInfo.getConnectionInfo().then(this.updateConnection);
-    NetInfo.addEventListener("connectionChange", this.updateConnection);
+    NetInfo.addEventListener('connectionChange', this.updateConnection);
     if (!this.props.videoMode && !this.props.liveMode) {
       Orientation.lockToPortrait();
     } else {
       Orientation.unlockAllOrientations();
     }
 
-    BackHandler.addEventListener("hardwareBackPress", () => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
       if (!this.props.routes || this.props.routes.length <= 2) {
         return true;
       }
       this.props.navigation.goBack();
       return false;
     });
-    this.props.setPlayerValue("isFullscreenVideo", false);
+    this.props.setPlayerValue('isFullscreenVideo', false);
     this.props.getSchedule();
-    this.props.setValue("gettingSchedule", true);
+    this.props.setValue('gettingSchedule', true);
     this.checkLiveThread();
   }
 
   checkLive = () => {
     if (getLiveShow(this.props)) {
-      this.props.setPlayerValue("liveNow", true);
+      this.props.setPlayerValue('liveNow', true);
     } else {
-      this.props.setPlayerValue("liveNow", false);
+      this.props.setPlayerValue('liveNow', false);
     }
   };
 
@@ -72,19 +72,19 @@ class App extends React.Component {
       // app was shut down.
       nextProps.deleteCurrentlyDownloadingFiles(nextProps.offlineEpisodes);
       NetInfo.getConnectionInfo().then(this.updateConnection);
-      if (this.props.navigation.state.routeName !== "episode") {
-        this.props.setPlayerValue("videoMode", false);
+      if (this.props.navigation.state.routeName !== 'episode') {
+        this.props.setPlayerValue('videoMode', false);
       }
-      if (this.props.navigation.state.routeName !== "live") {
-        this.props.setPlayerValue("liveMode", false);
+      if (this.props.navigation.state.routeName !== 'live') {
+        this.props.setPlayerValue('liveMode', false);
       }
-      this.props.setPlayerValue("chromecastMode", false);
+      this.props.setPlayerValue('chromecastMode', false);
     }
     if (
-      nextProps.navigation.state.routeName !== "live" &&
-      nextProps.navigation.state.routeName !== "episode"
+      nextProps.navigation.state.routeName !== 'live' &&
+      nextProps.navigation.state.routeName !== 'episode'
     ) {
-      this.props.setPlayerValue("isFullscreenVideo", false);
+      this.props.setPlayerValue('isFullscreenVideo', false);
     }
     if (
       !this.props.videoMode &&
@@ -104,37 +104,37 @@ class App extends React.Component {
   componentDidMount() {
     this.setTimeout(() => {
       if (this.loggedIn()) {
-        this.props.resetTo("homescreen");
+        this.props.resetTo('homescreen');
       } else {
-        this.props.resetTo("login");
+        this.props.resetTo('login');
       }
     }, 500);
   }
 
   componentWillUnmount() {
     NetInfo.removeEventListener(
-      "connectionChange",
-      this.props.updateConnectionInfo
+      'connectionChange',
+      this.props.updateConnectionInfo,
     );
-    BackHandler.removeEventListener("hardwareBackPress");
+    BackHandler.removeEventListener('hardwareBackPress');
   }
 
   updateConnection = connection => {
-    console.log("JG: in updateConnection, connection = ", connection);
+    console.log('JG: in updateConnection, connection = ', connection);
     connection = connection.type.toLowerCase();
     let wifiRE = new RegExp(/wi|vpn|eth/i);
-    if (connection.includes("mobile") || connection.includes("cell")) {
-      this.props.setValue("connection", "cell");
+    if (connection.includes('mobile') || connection.includes('cell')) {
+      this.props.setValue('connection', 'cell');
     } else if (wifiRE.test(connection)) {
-      this.props.setValue("connection", "wifi");
+      this.props.setValue('connection', 'wifi');
     } else {
-      this.props.setValue("connection", null);
+      this.props.setValue('connection', null);
     }
   };
 
   loggedIn = () => {
     return (
-      (this.props.user_id && this.props.user_id != "logged_out") ||
+      (this.props.user_id && this.props.user_id != 'logged_out') ||
       this.props.guest
     );
   };
@@ -160,7 +160,7 @@ function mapStateToProps(state) {
     routes: state.navigation.routes,
     episodes: state.data.episodes,
     recentEpisodeIds: state.data.recentEpisodeIds,
-    schedule: state.data.schedule
+    schedule: state.data.schedule,
   };
 }
 
@@ -172,9 +172,9 @@ function mapDispatchToProps(dispatch) {
       setValue,
       setPlayerValue,
       getSchedule,
-      deleteCurrentlyDownloadingFiles
+      deleteCurrentlyDownloadingFiles,
     },
-    dispatch
+    dispatch,
   );
 }
 
@@ -183,10 +183,10 @@ ReactMixin.onClass(App, TimerMixin);
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     height: height,
     width: width,
-    backgroundColor: colors.bodyBackground
-  }
+    backgroundColor: colors.bodyBackground,
+  },
 });
