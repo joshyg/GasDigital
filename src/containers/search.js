@@ -35,6 +35,7 @@ class Search extends React.Component {
 
   componentDidMount() {
     this.props.setValue('episodeContext', 'search');
+    this.props.setValue('series', {});
   }
 
   search = text => {

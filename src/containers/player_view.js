@@ -12,7 +12,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import _ from 'lodash/fp';
-import {setPlayerValue, playNext, setPlayback} from '../actions/player';
+import {setPlayerValue, setPlayback} from '../actions/player';
 import {navigateTo} from '../actions/navigation';
 import PlayerControls from './player_controls';
 import Base from './view_base';
@@ -89,7 +89,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      playNext,
       setPlayback,
       navigateTo,
       setPlayerValue,

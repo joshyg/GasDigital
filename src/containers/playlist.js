@@ -32,7 +32,9 @@ class Playlist extends React.Component {
     this.playAll = this.playAll.bind(this);
   }
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.props.setValue('episodeContext', 'offline');
+  }
 
   componentWillReceiveProps(nextProps) {}
 

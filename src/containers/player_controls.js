@@ -8,7 +8,6 @@ import {bindActionCreators} from 'redux';
 import {navigateTo} from '../actions/navigation';
 import {
   togglePlayback,
-  playNext,
   playPrevious,
   setCurrentTime,
   setPlayerValue,
@@ -83,6 +82,7 @@ class PlayerControlsContainer extends Component {
       episode_id: episode.id,
       series_id: episode.show_id,
       audioUrl: episode.audioUrl,
+      episode: episode,
     };
     this.props.setPlayerValue('isPlayingVideo', false);
     this.props.setPlayerValue('videoMode', false);
@@ -272,7 +272,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       togglePlayback,
-      playNext,
       playPrevious,
       setCurrentTime,
       navigateTo,

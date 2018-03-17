@@ -27,6 +27,7 @@ class Home extends React.Component {
 
   componentWillMount() {
     this.props.setValue('episodeContext', 'recent');
+    this.props.setValue('series', {});
   }
 
   componentWillReceiveProps(nextProps) {}

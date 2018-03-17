@@ -65,6 +65,7 @@ class Episode extends React.Component {
     orientation: '',
     videoUrl: '',
     spinValue: new Animated.Value(0),
+    channel: '',
   };
 
   pauseChromecast = async () => {
@@ -79,6 +80,13 @@ class Episode extends React.Component {
   };
 
   componentWillMount() {
+    let series = this.props.series;
+    // better to give away episode for free in error case
+    // than deny a paying user
+    if (series && series.link) {
+      let channel = series.link.split('cat=')[1];
+      this.setState({channel});
+    }
     this.updateProgress();
   }
 
@@ -164,10 +172,10 @@ class Episode extends React.Component {
     let series = this.props.series;
     // better to give away episode for free in error case
     // than deny a paying user
-    if (!series) {
+    if (!this.state.channel) {
       return func;
     }
-    let channel = series.link.split('cat=')[1];
+    let channel = this.state.channel;
     if (
       !this.props.channelEpisodeIds[channel] ||
       this.props.channelEpisodeIds[channel].length < 10
@@ -196,6 +204,58 @@ class Episode extends React.Component {
       );
     };
   };
+  setQueue() {
+    if (this.props.episodeContext == 'series') {
+      // series is list of ids
+      this.props.setPlayerValue(
+        'queue',
+        this.props.channelEpisodeIds[this.state.channel].map(
+          x => this.props.episodes[x],
+        ),
+      );
+      this.props.setPlayerValue('queueIndex', this.props.episodeContextIndex);
+    } else if (this.props.episodeContext == 'recent') {
+      // recent episodes is list of ids
+      this.props.setPlayerValue(
+        'queue',
+        this.props.recentEpisodeIds.map(x => this.props.episodes[x]),
+      );
+      this.props.setPlayerValue('queueIndex', this.props.episodeContextIndex);
+    } else if (this.props.episodeContext == 'playlist') {
+      this.props.setPlayerValue('queue', this.props.playlist);
+      this.props.setPlayerValue('queueIndex', this.props.episodeContextIndex);
+    } else if (this.props.episodeContext == 'offline') {
+      // offline episodes is dict of episodes
+      let episodes = [];
+      for (let id in this.props.offlineEpisodes) {
+        if (this.props.episodes[id]) {
+          episodes.push(this.props.episodes[id]);
+        }
+      }
+      this.props.setPlayerValue('queue', episodes);
+      this.props.setPlayerValue('queueIndex', this.props.episodeContextIndex);
+    } else if (this.props.episodeContext == 'search') {
+      // search results is list of ids
+      this.props.setPlayerValue(
+        'queue',
+        this.props.searchResults.map(x => this.props.episodes[x]),
+      );
+      this.props.setPlayerValue('queueIndex', this.props.episodeContextIndex);
+    } else if (this.props.episodeContext == 'favorites') {
+      // fav episodes is dict of episodes
+      let episodes = [];
+      for (let id in this.props.favoriteEpisodes) {
+        if (this.props.episodes[id]) {
+          episodes.push(this.props.episodes[id]);
+        }
+      }
+      this.props.setPlayerValue('queue', episodes);
+      this.props.setPlayerValue('queueIndex', this.props.episodeContextIndex);
+    } else {
+      this.props.setPlayerValue('queue', []);
+      this.props.setPlayerValue('queueIndex', 0);
+    }
+  }
 
   playAudioTrack = () => {
     let episode = this.props.episode || {};
@@ -214,8 +274,7 @@ class Episode extends React.Component {
       seriesTitle: series && series.title,
       episode: episode,
     };
-    this.props.setPlayerValue('queue', []);
-    this.props.setPlayerValue('queueIndex', 0);
+    this.setQueue();
     this.props.setPlayerValue('isPlayingVideo', false);
     this.props.setPlayerValue('videoMode', false);
     this.props.setPlayerValue('chromecastMode', false);
@@ -659,7 +718,6 @@ function mapStateToProps(state) {
     user_id: state.auth.user_id,
     guest: state.auth.guest,
     episode: state.data.episode,
-    favorites: state.data.favorites,
     series: state.data.series,
     playlist: state.data.playlist,
     offlineEpisodes: state.data.offlineEpisodes,
@@ -675,6 +733,14 @@ function mapStateToProps(state) {
     chromecast_devices: state.data.chromecast_devices,
     channelsById: state.data.channelsById,
     favoriteEpisodes: state.data.favoriteEpisodes,
+    episodeContext: state.data.episodeContext,
+    episodeContextIndex: state.data.episodeContextIndex,
+    playlist:
+      state.data.playlist &&
+      state.data.playlist.filter(x => {
+        return !!x;
+      }),
+    searchResults: state.data.searchResults,
   };
 }
 

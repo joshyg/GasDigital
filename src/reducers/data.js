@@ -346,12 +346,12 @@ export default (reducer = (state = initialState, action) => {
       episode = _.cloneDeep(state.episodes[removeFaveId]);
       episode.is_favourite = false;
       episodes = {};
-      favoriteEpisodes = {};
+      favoriteEpisodes = _.cloneDeep(state.favoriteEpisodes);
       episodes[removeFaveId] = episode;
-      favoriteEpisodes[removeFaveId] = null;
+      delete favoriteEpisodes[removeFaveId];
       return {
         ...state,
-        favoriteEpisodes: {...state.favoriteEpisodes, ...favoriteEpisodes},
+        favoriteEpisodes: {...favoriteEpisodes},
         isSettingFavorites: false,
         episodes: {...state.episodes, ...episodes},
       };
@@ -369,6 +369,8 @@ export default (reducer = (state = initialState, action) => {
         let episode = returnedEpisodes[i];
         if (!state.episodes[episode.id]) {
           episodes[episode.id] = episode;
+        } else {
+          episodes[episode.id] = _.cloneDeep(state.episodes[episode.id]);
         }
       }
       for (id in returnedEpisodeIds) {

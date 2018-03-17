@@ -39,16 +39,16 @@ class Favorites extends React.Component {
   componentDidMount() {}
 
   render() {
-    let faves = [];
-    for (ep in this.props.episodes) {
-      if (this.props.episodes[ep].is_favourite) {
-        faves.push(this.props.episodes[ep]);
+    let episodes = [];
+    for (let id in this.props.favoriteEpisodes) {
+      if (this.props.episodes[id]) {
+        episodes.push(this.props.episodes[id]);
       }
     }
     return (
       <Base header="Favorites" navigation={this.props.navigation}>
         <View style={styles.episodesContainer}>
-          <EpisodeList data={faves} />
+          <EpisodeList data={episodes} />
         </View>
       </Base>
     );
@@ -59,6 +59,7 @@ function mapStateToProps(state) {
   return {
     user_id: state.auth.user_id,
     episodes: state.data.episodes,
+    favoriteEpisodes: state.data.favoriteEpisodes,
   };
 }
 
