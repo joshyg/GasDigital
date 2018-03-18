@@ -18,7 +18,7 @@ import {resetTo, navigateTo} from '../actions/navigation';
 import EpisodeList from './episode_list';
 import Base from './view_base';
 import {getChannels, getEpisodes, setValue} from '../actions/data';
-import {offlineDownloadStatus} from '../constants';
+import {colors, offlineDownloadStatus} from '../constants';
 
 class Offline extends React.Component {
   constructor(props) {
@@ -86,7 +86,7 @@ class Offline extends React.Component {
           {!!flatListItems.length ? (
             <EpisodeList data={flatListItems} />
           ) : (
-            <Text>No offline content!</Text>
+            <Text style={styles.emptyListText}>No offline content!</Text>
           )}
         </View>
       </Base>
@@ -115,12 +115,20 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Offline);
 
 const styles = StyleSheet.create({
+  emptyListText: {
+    fontSize: 14,
+    fontFamily: 'Avenir',
+    color: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
   channelsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   episodesContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   episodeRow: {
     flexDirection: 'row',

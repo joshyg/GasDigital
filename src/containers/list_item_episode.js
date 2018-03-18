@@ -97,6 +97,10 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: 'Avenir',
     fontWeight: '300',
+    marginRight: 10,
+    textAlign: 'justify',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   icon: {
     height: 20,

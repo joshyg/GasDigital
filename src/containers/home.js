@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,13 +10,13 @@ import {
   Alert,
   Platform,
   Image,
-  StatusBar
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { resetTo, navigateTo } from "../actions/navigation";
-import ListItemSeries from "./list_item_series";
-import Base from "./view_base";
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
+import ListItemSeries from './list_item_series';
+import Base from './view_base';
 import {
   getSchedule,
   getBonusContent,
@@ -24,21 +24,21 @@ import {
   getFavorites,
   getChannels,
   getEpisodes,
-  setValue
-} from "../actions/data";
-import _ from "lodash/fp";
-import resolveAssetSource from "react-native/Libraries/Image/resolveAssetSource";
-import ReactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
-import { setPlayerValue } from "../actions/player";
-import { colors, ENABLE_PREFETCH } from "../constants";
+  setValue,
+} from '../actions/data';
+import _ from 'lodash/fp';
+import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
+import ReactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
+import {setPlayerValue} from '../actions/player';
+import {colors, ENABLE_PREFETCH} from '../constants';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channel: "",
-      pageDict: {}
+      channel: '',
+      pageDict: {},
     };
     this.goToSeries = this.goToSeries.bind(this);
     this.prefetchEpisodes = _.throttle(2000, this.prefetchEpisodes);
@@ -50,7 +50,7 @@ class Home extends React.Component {
     this.props.getRecentVideos(this.props.user_id, 20);
     this.props.getFavorites(this.props.user_id);
     this.prefetchEpisodes(this.props);
-    this.props.setPlayerValue("videoMode", false);
+    this.props.setPlayerValue('videoMode', false);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -59,7 +59,7 @@ class Home extends React.Component {
       if (
         !nextProps.routes ||
         nextProps.routes.length <= 2 ||
-        nextProps.routes[nextProps.routes.length - 1].routeName != "series"
+        nextProps.routes[nextProps.routes.length - 1].routeName != 'series'
       ) {
         this.prefetchEpisodes(this.props);
       }
@@ -74,12 +74,12 @@ class Home extends React.Component {
     }
     for (ch in props.channels) {
       let channel = props.channels[ch];
-      let channelName = channel.link.split("cat=")[1];
+      let channelName = channel.link.split('cat=')[1];
       if (
         !this.props.channelEpisodeIds[channelName] ||
         this.props.channelEpisodeIds[channelName].length == 0
       ) {
-        props.setValue("isGettingEpisodes", true);
+        props.setValue('isGettingEpisodes', true);
         this.props.getEpisodes(channelName, channel.id, this.props.user_id);
         this.props.getBonusContent(channelName, channel.id);
         break;
@@ -90,24 +90,24 @@ class Home extends React.Component {
   goToSeries(item) {
     if (item.all_recent) {
       this.props.getRecentVideos(this.props.user_id);
-      this.props.navigateTo("recent");
+      this.props.navigateTo('recent');
     } else {
-      this.props.setValue("series", item);
-      this.props.navigateTo("series");
+      this.props.setValue('series', item);
+      this.props.navigateTo('series');
     }
   }
 
   goToEpisode(item) {
-    console.log("JG: going to episode", item);
-    this.props.setValue("episode", item);
-    this.props.navigateTo("episode");
+    console.log('JG: going to episode', item);
+    this.props.setValue('episode', item);
+    this.props.navigateTo('episode');
   }
 
-  renderChannel({ item }) {
+  renderChannel({item}) {
     return <ListItemSeries item={item} goToSeries={this.goToSeries} />;
   }
 
-  renderRow({ item }) {
+  renderRow({item}) {
     return (
       <FlatList
         data={item}
@@ -123,7 +123,7 @@ class Home extends React.Component {
   channels = () => {
     let channels = _.cloneDeep(this.props.channels);
     let recentImage = resolveAssetSource(
-      require("../../assets/images/recent-icon.png")
+      require('../../assets/images/recent-icon.png'),
     );
     // let recentImage = null
     if (!channels) {
@@ -131,10 +131,10 @@ class Home extends React.Component {
     }
     if (!this.props.guest) {
       channels.unshift({
-        id: "all_recent",
+        id: 'all_recent',
         all_recent: true,
-        title: "All Recent",
-        thumb: recentImage.uri
+        title: 'All Recent',
+        thumb: recentImage.uri,
       });
     }
     return channels;
@@ -182,7 +182,7 @@ function mapStateToProps(state) {
     channels: state.data.channels,
     channelEpisodeIds: state.data.channelEpisodeIds,
     isGettingEpisodes: state.data.isGettingEpisodes,
-    routes: state.navigation.routes
+    routes: state.navigation.routes,
   };
 }
 
@@ -198,9 +198,9 @@ function mapDispatchToProps(dispatch) {
       setPlayerValue,
       getBonusContent,
       getSchedule,
-      getFavorites
+      getFavorites,
     },
-    dispatch
+    dispatch,
   );
 }
 
@@ -209,14 +209,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(Home);
 
 const styles = StyleSheet.create({
   channelsContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.bodyBackground
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bodyBackground,
   },
   episodesContainer: {
-    alignItems: "flex-start"
+    alignItems: 'flex-start',
   },
   episodeRow: {
-    flexDirection: "row"
-  }
+    flexDirection: 'row',
+  },
 });

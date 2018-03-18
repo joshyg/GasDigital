@@ -19,6 +19,7 @@ import {addFavorite, removeFavorite, getFavorites} from '../actions/data';
 import EpisodeList from './episode_list';
 import Base from './view_base';
 import {getChannels, getEpisodes, setValue} from '../actions/data';
+import {colors} from '../constants';
 
 class Favorites extends React.Component {
   constructor(props) {
@@ -48,7 +49,11 @@ class Favorites extends React.Component {
     return (
       <Base header="Favorites" navigation={this.props.navigation}>
         <View style={styles.episodesContainer}>
-          <EpisodeList data={episodes} />
+          {episodes.length ? (
+            <EpisodeList data={episodes} />
+          ) : (
+            <Text style={styles.emptyListText}>No favorited items!</Text>
+          )}
         </View>
       </Base>
     );
@@ -84,9 +89,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   episodesContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   episodeRow: {
     flexDirection: 'row',
+  },
+  emptyListText: {
+    fontSize: 14,
+    fontFamily: 'Avenir',
+    color: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
   },
 });

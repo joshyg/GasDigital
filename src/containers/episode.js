@@ -797,6 +797,9 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     color: colors.white,
     fontFamily: 'Avenir',
+    textAlign: 'justify',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 18,

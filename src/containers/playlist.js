@@ -94,7 +94,7 @@ class Playlist extends React.Component {
               <Text style={styles.buttonText}>Play All</Text>
             </TouchableOpacity>
           ) : (
-            <Text>Playlist empty!</Text>
+            <Text style={styles.emptyListText}>Playlist empty!</Text>
           )}
           <EpisodeList data={this.props.playlist} />
         </View>
@@ -162,5 +162,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.blue,
     fontFamily: 'Avenir',
+  },
+  emptyListText: {
+    fontSize: 14,
+    fontFamily: 'Avenir',
+    color: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
   },
 });

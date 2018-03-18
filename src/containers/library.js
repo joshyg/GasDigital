@@ -124,29 +124,41 @@ class Library extends React.Component {
     );
   }
 
+  emptyMessages = {
+    offline: 'No downloaded items',
+    favorites: 'No favorited items',
+    playlist: 'No items in playlist',
+  };
+
   renderList(title, data, dest) {
+    let listNotEmpty = data && data.length && data.length > 0;
     return (
-      <View style={styles.listContainer}>
+      <View
+        style={listNotEmpty ? styles.listContainer : styles.emptyListContainer}>
         <TouchableOpacity
           style={{marginLeft: 10}}
           onPress={() => this.goToPage(dest)}>
           <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
-        <FlatList
-          data={
-            data &&
-            data.filter(x => {
-              return !!x;
-            })
-          }
-          renderItem={({item, index}) => {
-            return this.renderEpisode({item, index}, title);
-          }}
-          keyExtractor={(item, index) => {
-            return index;
-          }}
-          horizontal={true}
-        />
+        {listNotEmpty ? (
+          <FlatList
+            data={
+              data &&
+              data.filter(x => {
+                return !!x;
+              })
+            }
+            renderItem={({item, index}) => {
+              return this.renderEpisode({item, index}, title);
+            }}
+            keyExtractor={(item, index) => {
+              return index;
+            }}
+            horizontal={true}
+          />
+        ) : (
+          <Text style={styles.emptyListText}>{this.emptyMessages[dest]}</Text>
+        )}
       </View>
     );
   }
@@ -210,6 +222,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir',
     fontWeight: 'bold',
     color: colors.yellow,
+  },
+  emptyListContainer: {
+    paddingHorizontal: 8,
+    height: 120,
+  },
+  emptyListText: {
+    fontSize: 14,
+    fontFamily: 'Avenir',
+    color: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
   },
   episodeImage: {
     width: 126,

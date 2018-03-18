@@ -342,6 +342,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     color: colors.white,
     fontFamily: 'Avenir',
+    textAlign: 'justify',
   },
   selected: {
     marginTop: 0,
