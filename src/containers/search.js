@@ -49,7 +49,6 @@ class Search extends React.Component {
   };
 
   render() {
-    console.log('JG: this.state', this.state);
     return (
       <Base navigation={this.props.navigation}>
         <TextInput
@@ -63,7 +62,9 @@ class Search extends React.Component {
         <Text>{'\n'}</Text>
         {this.props.searchResults.length > 0 && !this.state.textEmpty ? (
           <View style={styles.episodesContainer}>
-            <EpisodeList data={this.props.searchResults} />
+            <EpisodeList
+              data={this.props.searchResults.map(x => this.props.episodes[x])}
+            />
           </View>
         ) : (
           <View style={styles.noResultsStyle}>
