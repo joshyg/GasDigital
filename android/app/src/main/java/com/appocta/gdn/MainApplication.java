@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.googlecast.GoogleCastPackage;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new VectorIconsPackage(),
             new KCKeepAwakePackage(),
             new GoogleCastPackage(),

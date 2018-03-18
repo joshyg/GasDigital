@@ -19,6 +19,7 @@
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTEventEmitter.h>
 #import "Orientation.h" // <--- import
+#import "SplashScreen.h"  // here
 
 @implementation GSDEventEmitter
 
@@ -70,6 +71,8 @@ RCT_EXPORT_MODULE();
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [SplashScreen show];  // here
   return YES;
 }
 

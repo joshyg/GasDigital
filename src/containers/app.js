@@ -27,9 +27,11 @@ import Orientation from 'react-native-orientation';
 import Chromecast from './chromecast';
 import {getLiveShow} from './helper_funcs';
 import {colors} from '../constants';
+import SplashScreen from 'react-native-splash-screen';
 
 class App extends React.Component {
   componentWillMount() {
+    console.log('JG: App mounting');
     NetInfo.getConnectionInfo().then(this.updateConnection);
     NetInfo.addEventListener('connectionChange', this.updateConnection);
     if (!this.props.videoMode && !this.props.liveMode) {
@@ -49,7 +51,13 @@ class App extends React.Component {
     this.props.getSchedule();
     this.props.setValue('gettingSchedule', true);
     this.checkLiveThread();
+    // do stuff while splash screen is shown
+    // After having done stuff (such as async tasks) hide the splash screen
+    console.log('JG: hide splashscreen!');
+    SplashScreen.hide();
   }
+
+  componentDidMount() {}
 
   checkLive = () => {
     if (getLiveShow(this.props)) {
