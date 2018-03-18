@@ -30,6 +30,7 @@ import TimerMixin from 'react-timer-mixin';
 import KeepAwake from 'react-native-keep-awake';
 import {getLiveShow} from './helper_funcs';
 import {colors} from '../constants';
+import Immersive from 'react-native-immersive';
 
 moment = require('moment-timezone');
 
@@ -43,7 +44,10 @@ class Live extends React.Component {
       orientation: '',
       spinValue: new Animated.Value(0),
       show: {},
+      isFullscreen: false,
     };
+    Immersive.addImmersiveListener(this.restoreImmersive);
+    Immersive.removeImmersiveListener(this.restoreImmersive);
   }
 
   componentWillMount() {
@@ -69,6 +73,20 @@ class Live extends React.Component {
     }
     this.props.setPlayerValue('isFullscreenVideo', false);
   }
+
+  setImmersive = isFullscreen => {
+    if (Platform.OS != 'android') {
+      return;
+    }
+    Immersive.setImmersive(isFullscreen);
+  };
+
+  restoreImmersive = () => {
+    console.log('Immersive State Changed!');
+    if (this.state.isFullscreenVideo) {
+      this.setImmersive(true);
+    }
+  };
 
   orientationDidChange = orientation => {
     this.setState({orientation});
@@ -254,6 +272,8 @@ class Live extends React.Component {
     } else {
       Orientation.lockToPortrait();
     }
+    this.setState({isFullscreen});
+    this.setImmersive(isFullscreen);
   };
 
   renderVideo() {

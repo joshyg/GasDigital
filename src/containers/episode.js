@@ -48,6 +48,8 @@ import TimerMixin from 'react-timer-mixin';
 import Chromecast from 'react-native-google-cast';
 import KeepAwake from 'react-native-keep-awake';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Immersive from 'react-native-immersive';
+
 class Episode extends React.Component {
   constructor(props) {
     super(props);
@@ -56,6 +58,9 @@ class Episode extends React.Component {
     this.downloadOffline = this.trackAvailable(this.downloadOffline);
     this.addToPlaylist = this.trackAvailable(this.addToPlaylist);
     this.updateProgress = this.updateProgress.bind(this);
+
+    Immersive.addImmersiveListener(this.restoreImmersive);
+    Immersive.removeImmersiveListener(this.restoreImmersive);
   }
 
   state = {
@@ -66,6 +71,7 @@ class Episode extends React.Component {
     videoUrl: '',
     spinValue: new Animated.Value(0),
     channel: '',
+    isFullscreen: false,
   };
 
   pauseChromecast = async () => {
@@ -401,7 +407,7 @@ class Episode extends React.Component {
     this.props.setPlayerValue('videoTimer', data);
   };
 
-  updateProgress() {
+  updateProgress = () => {
     this.setInterval(() => {
       if (this.props.isPlayingVideo && this.player) {
         let data = {};
@@ -410,7 +416,7 @@ class Episode extends React.Component {
         this.props.setVideoTimerValue(data);
       }
     }, 8000);
-  }
+  };
 
   onVideoError = err => {};
 
@@ -444,6 +450,20 @@ class Episode extends React.Component {
     this.props.setPlayerValue('isPlayingVideo', !paused);
   };
 
+  setImmersive = isFullscreen => {
+    if (Platform.OS != 'android') {
+      return;
+    }
+    Immersive.setImmersive(isFullscreen);
+  };
+
+  restoreImmersive = () => {
+    console.log('Immersive State Changed!');
+    if (this.state.isFullscreenVideo) {
+      this.setImmersive(true);
+    }
+  };
+
   onToggleFullscreen = isFullscreen => {
     this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
     if (isFullscreen) {
@@ -451,6 +471,8 @@ class Episode extends React.Component {
     } else {
       Orientation.lockToPortrait();
     }
+    this.setState({isFullscreen});
+    this.setImmersive(isFullscreen);
   };
 
   renderVideo() {
