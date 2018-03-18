@@ -36,20 +36,21 @@ export default function ListItemSeries(props) {
 }
 
 console.log('JG: width = ', width);
+const iconWidth = width >= 400 ? 170 : width >= 375 ? 150 : 130;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 150,
+    height: iconWidth,
     width: width / 2,
     paddingBottom: 10,
-    marginTop: 10,
+    marginTop: width > 400 ? 15 : 10,
     marginBottom: 10,
     alignItems: 'center',
     backgroundColor: colors.bodyBackground,
   },
   thumbnail: {
-    width: width >= 375 ? 150 : 130,
-    height: width >= 375 ? 150 : 130,
+    width: iconWidth,
+    height: iconWidth,
     marginLeft: 15,
     borderRadius: 15,
   },
