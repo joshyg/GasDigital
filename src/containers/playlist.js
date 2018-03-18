@@ -33,7 +33,7 @@ class Playlist extends React.Component {
   }
 
   componentWillMount() {
-    this.props.setValue('episodeContext', 'offline');
+    this.props.setValue('episodeContext', 'playlist');
   }
 
   componentWillReceiveProps(nextProps) {}

@@ -262,6 +262,8 @@ class Episode extends React.Component {
     let series = this.props.series
       ? this.props.series
       : this.props.channelsById[episode.show_id];
+    let series_id = (series && series.id) || '';
+    let offlineEpisode = this.props.offlineEpisodes[episode.id];
     console.log('JG: series = ', series);
     let track = {
       uri: episode.dataUrl,
@@ -269,10 +271,11 @@ class Episode extends React.Component {
       image: episode.thumbnailUrl,
       name: episode.name,
       episode_id: episode.id,
-      series_id: series && series.id,
-      audioUrl: episode.audioUrl,
       seriesTitle: series && series.title,
-      episode: episode,
+      audioUrl: episode.audioUrl,
+      offlineUrl: offlineEpisode && offlineEpisode.audioUrl,
+      series_id,
+      episode,
     };
     this.setQueue();
     this.props.setPlayerValue('isPlayingVideo', false);
@@ -280,8 +283,9 @@ class Episode extends React.Component {
     this.props.setPlayerValue('chromecastMode', false);
     this.props.setPlayerValue('liveMode', false);
     this.props.setPlayerValue('currentTrack', track);
-    if (!track.audioUrl && series.id) {
-      this.props.fetchAndPlayAudio(series.id, episode.id);
+    console.log('JG: setting track to ', track);
+    if (!track.audioUrl && !track.offlineUrl) {
+      this.props.fetchAndPlayAudio(series_id, episode.id);
     } else if (track.audioUrl) {
       this.props.setPlayerValue('isPlaying', true);
     } else {

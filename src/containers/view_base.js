@@ -159,7 +159,6 @@ class Base extends React.Component {
     } else {
       title = routeHeaders[this.props.activeMenuItem];
     }
-    console.log('JG: title = ', title);
     return (
       <View style={[styles.header]}>
         <Text style={{color: '#fcf411', textAlign: 'center', fontSize: 18}}>

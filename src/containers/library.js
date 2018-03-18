@@ -63,7 +63,6 @@ class Library extends React.Component {
     let flatListItems = [];
     let offlineEps = [];
     for (offlineEpId in this.props.offlineEpisodes) {
-      console.log('JG: offlineEp = ', this.props.episodes[offlineEpId]);
       // Add downloading audio files
       if (
         this.props.offlineEpisodes[offlineEpId].status ==
@@ -92,7 +91,6 @@ class Library extends React.Component {
   }
 
   getEpisodeSeriesName(episode) {
-    console.log('JG: getEpisodeSeriesName, episode = ', episode);
     if (!episode) {
       return '';
     }
@@ -107,11 +105,13 @@ class Library extends React.Component {
     return seriesName;
   }
 
-  renderEpisode({item}, spinny) {
+  renderEpisode({item, index}, title) {
     return (
       <TouchableOpacity
         style={styles.episodeContainer}
         onPress={() => {
+          this.props.setValue('episodeContext', title.toLowerCase());
+          this.props.setValue('episodeContextIndex', index);
           this.goToEpisode(item);
         }}>
         <Image
@@ -139,7 +139,9 @@ class Library extends React.Component {
               return !!x;
             })
           }
-          renderItem={this.renderEpisode.bind(this)}
+          renderItem={({item, index}) => {
+            return this.renderEpisode({item, index}, title);
+          }}
           keyExtractor={(item, index) => {
             return index;
           }}
