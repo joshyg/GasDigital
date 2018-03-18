@@ -46,8 +46,10 @@ class Live extends React.Component {
       show: {},
       isFullscreen: false,
     };
-    Immersive.addImmersiveListener(this.restoreImmersive);
-    Immersive.removeImmersiveListener(this.restoreImmersive);
+    if (Platform.OS == 'android') {
+      Immersive.addImmersiveListener(this.restoreImmersive);
+      Immersive.removeImmersiveListener(this.restoreImmersive);
+    }
   }
 
   componentWillMount() {

@@ -59,8 +59,10 @@ class Episode extends React.Component {
     this.addToPlaylist = this.trackAvailable(this.addToPlaylist);
     this.updateProgress = this.updateProgress.bind(this);
 
-    Immersive.addImmersiveListener(this.restoreImmersive);
-    Immersive.removeImmersiveListener(this.restoreImmersive);
+    if (Platform.OS == 'android') {
+      Immersive.addImmersiveListener(this.restoreImmersive);
+      Immersive.removeImmersiveListener(this.restoreImmersive);
+    }
   }
 
   state = {
