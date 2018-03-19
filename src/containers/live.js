@@ -97,16 +97,20 @@ class Live extends React.Component {
     if (orientation.includes('PORTRAIT')) {
       toValue = 0;
       shouldRotate = true;
+      this.setImmersive(false);
     } else if (orientation == 'LANDSCAPE-RIGHT') {
       toValue = 1;
       shouldRotate = true;
+      this.setImmersive(true);
     } else if (orientation == 'LANDSCAPE-LEFT') {
       toValue = -1;
       shouldRotate = true;
+      this.setImmersive(true);
     } else if (orientation == 'LANDSCAPE') {
       // android doesnt support specific orientation
       toValue = 1;
       shouldRotate = true;
+      this.setImmersive(true);
     }
     if (shouldRotate) {
       console.log('JG: rotating to ', toValue);

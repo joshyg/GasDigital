@@ -95,6 +95,8 @@ class Episode extends React.Component {
       let channel = series.link.split('cat=')[1];
       this.setState({channel});
     }
+    let header = this.props.episode && this.props.episode.name;
+    this.props.setPlayerValue('playerHeader', header);
     this.updateProgress();
   }
 
@@ -147,16 +149,20 @@ class Episode extends React.Component {
     if (orientation.includes('PORTRAIT')) {
       toValue = 0;
       shouldRotate = true;
+      this.setImmersive(false);
     } else if (orientation == 'LANDSCAPE-RIGHT') {
       toValue = 1;
       shouldRotate = true;
+      this.setImmersive(true);
     } else if (orientation == 'LANDSCAPE-LEFT') {
       toValue = -1;
       shouldRotate = true;
+      this.setImmersive(true);
     } else if (orientation == 'LANDSCAPE') {
       // android doesnt support specific orientation
       toValue = 1;
       shouldRotate = true;
+      this.setImmersive(true);
     }
     if (shouldRotate) {
       Animated.timing(this.state.spinValue, {

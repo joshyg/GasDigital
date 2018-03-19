@@ -1089,23 +1089,16 @@ export default class VideoPlayer extends Component {
     let screenHeight = this.state.isFullscreen
       ? height
       : this.props.live ? height : height / 3;
-    let statusBarHeight =
-      Platform.OS == 'android' &&
-      !this.state.isFullscreen &&
-      this.props.orientation.includes('PORTRAIT')
-        ? 24
-        : 0;
+    let statusBarHeight = Platform.OS == 'android' ? 25 : 0;
+    let navBarHeight = Platform.OS == 'android' ? 48 : 0;
+    let fullHeight = height + statusBarHeight + navBarHeight;
     const videoHeight = this.props.spinValue.interpolate({
       inputRange: [-1, 0, 1],
-      outputRange: [
-        width - statusBarHeight,
-        screenHeight,
-        width - statusBarHeight,
-      ],
+      outputRange: [width, screenHeight, width],
     });
     const videoWidth = this.props.spinValue.interpolate({
       inputRange: [-1, 0, 1],
-      outputRange: [height, width, height],
+      outputRange: [fullHeight, width, fullHeight],
     });
     return (
       <Animated.View style={[{height: videoHeight, width: videoWidth}]}>
