@@ -1,102 +1,102 @@
-import _ from "lodash/fp";
+import _ from 'lodash/fp';
 
-import { NavigationActions, StackNavigator } from "react-navigation";
+import {NavigationActions, StackNavigator} from 'react-navigation';
 
-import App from "../containers/app";
-import Home from "../containers/home";
-import Recent from "../containers/recent";
-import Login from "../containers/login";
-import Search from "../containers/search";
-import Episode from "../containers/episode";
-import Series from "../containers/series";
-import Live from "../containers/live";
-import Library from "../containers/library";
-import Settings from "../containers/settings";
-import PlayerView from "../containers/player_view";
-import Playlist from "../containers/playlist";
-import Favorites from "../containers/favorites";
-import Offline from "../containers/offline";
-import About from "../containers/about";
+import App from '../containers/app';
+import Home from '../containers/home';
+import Recent from '../containers/recent';
+import Login from '../containers/login';
+import Search from '../containers/search';
+import Episode from '../containers/episode';
+import Series from '../containers/series';
+import Live from '../containers/live';
+import Library from '../containers/library';
+import Settings from '../containers/settings';
+import PlayerView from '../containers/player_view';
+import Playlist from '../containers/playlist';
+import Favorites from '../containers/favorites';
+import Offline from '../containers/offline';
+import About from '../containers/about';
 
 const navigationOptions = {
-  gesturesEnabled: true
+  gesturesEnabled: true,
 };
 
 const RouteConfig = {
   app: {
     screen: App,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   homescreen: {
     screen: Home,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   recent: {
     screen: Recent,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   search: {
     screen: Search,
-    navigationOptions: navigationOptions
+    navigationOptions: {gesturesEnabled: false},
   },
   library: {
     screen: Library,
-    navigationOptions: navigationOptions
+    navigationOptions: {gesturesEnabled: false},
   },
   login: {
     screen: Login,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   episode: {
     screen: Episode,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   series: {
     screen: Series,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   favorites: {
     screen: Favorites,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   offline: {
     screen: Offline,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   live: {
     screen: Live,
-    navigationOptions: { gesturesEnabled: false }
+    navigationOptions: {gesturesEnabled: false},
   },
   settings: {
     screen: Settings,
-    navigationOptions: navigationOptions
+    navigationOptions: {gesturesEnabled: false},
   },
   player_view: {
     screen: PlayerView,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   playlist: {
     screen: Playlist,
-    navigationOptions: navigationOptions
+    navigationOptions: navigationOptions,
   },
   about: {
     screen: About,
-    navigationOptions: navigationOptions
-  }
+    navigationOptions: navigationOptions,
+  },
 };
 
 export const AppNavigator = StackNavigator(RouteConfig, {
-  initialRouteName: "app",
-  headerMode: "none"
+  initialRouteName: 'app',
+  headerMode: 'none',
 });
 const initialNavState = AppNavigator.router.getStateForAction(
-  AppNavigator.router.getActionForPathAndParams("app")
+  AppNavigator.router.getActionForPathAndParams('app'),
 );
 const initialState = {
   ...initialNavState,
   scene: {},
   toRoute: null, // String: Name of the scene we are navigating to.
-  activeMenuItem: "homescreen"
+  activeMenuItem: 'homescreen',
 };
 
 export default (reducer = (state = initialState, action) => {
@@ -107,25 +107,25 @@ export default (reducer = (state = initialState, action) => {
       // dont allow user to nav down to first screen, which is app.js
       if (state.routes.length <= 2) {
         return AppNavigator.router.getStateForAction(
-          NavigationActions.navigate({ routeName: "homescreen" }),
-          state
+          NavigationActions.navigate({routeName: 'homescreen'}),
+          state,
         );
       }
       return AppNavigator.router.getStateForAction(action, state);
 
-    case "CLEAR_NAV_DATA":
+    case 'CLEAR_NAV_DATA':
       return {
         ...nextState,
-        data: null
+        data: null,
       };
 
-    case "SET_NAV_DATA":
+    case 'SET_NAV_DATA':
       return {
         ...nextState,
-        data: action.payload
+        data: action.payload,
       };
 
-    case "NAVIGATE_TO":
+    case 'NAVIGATE_TO':
       // prevent a view from being loaded multiple times in the case 'of a person tapping very fast
       let topRoute = state.routes[state.routes.length - 1];
       if (
@@ -137,43 +137,43 @@ export default (reducer = (state = initialState, action) => {
       return AppNavigator.router.getStateForAction(
         NavigationActions.navigate({
           routeName: action.payload.scene,
-          params: action.payload.data
+          params: action.payload.data,
         }),
         {
           ...nextState,
           toRoute: action.payload.scene,
-          data: action.payload.data
-        }
+          data: action.payload.data,
+        },
       );
 
-    case "SET_ACTIVE_MENU_ITEM":
+    case 'SET_ACTIVE_MENU_ITEM':
       return {
         ...nextState,
-        activeMenuItem: action.payload
+        activeMenuItem: action.payload,
       };
 
-    case "NAVIGATE_RESET_TO":
+    case 'NAVIGATE_RESET_TO':
       if (nextState.routes.length <= 1) {
         return AppNavigator.router.getStateForAction(
-          NavigationActions.navigate({ routeName: action.payload }),
-          nextState
+          NavigationActions.navigate({routeName: action.payload}),
+          nextState,
         );
       }
       tempState = AppNavigator.router.getStateForAction(
-        NavigationActions.back({ key: state.routes[1].key }),
-        nextState
+        NavigationActions.back({key: state.routes[1].key}),
+        nextState,
       );
       return AppNavigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: action.payload }),
-        tempState
+        NavigationActions.navigate({routeName: action.payload}),
+        tempState,
       );
 
-    case "persist/REHYDRATE":
+    case 'persist/REHYDRATE':
       let persistedNavState =
         (action.payload && action.payload.navigation) || {};
       return {
         ...initialState,
-        activeMenuItem: "homescreen"
+        activeMenuItem: 'homescreen',
       };
 
     default:
