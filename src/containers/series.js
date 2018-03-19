@@ -171,8 +171,9 @@ class Series extends React.Component {
     );
     this.setState({page: pageNum});
     if (!this.props.guest) {
+      let series_id = (this.props.series && this.props.series.id) || '';
       this.props.setValue('isGettingEpisodes', true);
-      this.props.getEpisodes(channel, this.props.user_id, pageNum);
+      this.props.getEpisodes(channel, series_id, this.props.user_id, pageNum);
     }
   };
 

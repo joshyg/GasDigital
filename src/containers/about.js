@@ -61,5 +61,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.white,
     fontFamily: 'Avenir',
+    textAlign: 'justify',
   },
 });

@@ -253,7 +253,6 @@ export function setValue(key, value) {
 }
 
 export function getRSS(cat, url) {
-  console.log('JG: grabbing rss ', url);
   let payload = DataApi.getRSS(cat, url);
   return {
     type: 'DATA_GET_RSS',
