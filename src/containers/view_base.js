@@ -1,204 +1,319 @@
 import React from 'react';
-import ReactMixin from 'react-mixin';
-import TimerMixin from 'react-timer-mixin';
-import {BackHandler, Text, StyleSheet, View, Dimensions, Platform, Image, StatusBar, TouchableOpacity } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { navigateTo, resetTo, back } from '../actions/navigation';
+import {
+  BackHandler,
+  Text,
+  StyleSheet,
+  View,
+  Dimensions,
+  Platform,
+  Image,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {navigateTo, resetTo, back} from '../actions/navigation';
 import BottomMenu from '../components/bottom_menu';
 import PlayerFooter from './player_footer';
-const { height, width } = Dimensions.get('window');
-import { colors, fonts } from '../constants';
+const {height, width} = Dimensions.get('window');
+import {routeHeaders, colors, fonts, offlineDownloadStatus} from '../constants';
 import Orientation from 'react-native-orientation';
 import Modal from './modal.js';
-import { setPlayerValue } from '../actions/player';
+import {setPlayerValue} from '../actions/player';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
+import {connectActionSheet} from '@expo/react-native-action-sheet';
+import {
+  setValue,
+  addFavorite,
+  removeFavorite,
+  getOfflineEpisode,
+  deleteOfflineEpisode,
+  displayOfflineEpisodeDownloading,
+} from '../actions/data';
+import ThreeDotButton from './three_dot_button';
 
-//FIXME: this component will be used to instantiate top/bottom menu
+@connectActionSheet
 class Base extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          orientation: ''
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      orientation: '',
+    };
+  }
 
+  backHandler = () => {
+    if (!this.props.routes || this.props.routes.length <= 2) {
+      return false;
     }
+    this.props.navigation.goBack();
+    return true;
+  };
 
-    backHandler = () => {
-      if ( !this.props.routes || this.props.routes.length <= 2 ) {
-        return false;
-      }
-      this.props.navigation.goBack();
-      return true;
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.backHandler);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      (this.props.user_id != 'logged_out' &&
+        nextProps.user_id == 'logged_out') ||
+      (this.props.guest && !nextProps.guest)
+    ) {
+      this.props.resetTo('login');
     }
+  }
 
-    componentWillMount() {
-      BackHandler.addEventListener('hardwareBackPress', this.backHandler);
-    }
-
-    componentWillReceiveProps(nextProps) {
-      if ( this.props.user_id != 'logged_out' && nextProps.user_id == 'logged_out' ||
-           this.props.guest && ! nextProps.guest) {
-        this.props.resetTo('login');
-      }
-    }
-
-    componentDidMount() {
-      Orientation.getOrientation((err, orientation) => {
-        console.log(`Current Device Orientation: ${orientation}`);
-        this.setState({orientation});
-        this.props.setPlayerValue('orientation', orientation);
-      });
-      Orientation.addOrientationListener(this.orientationDidChange);
-    }
-
-
-    componentWillUnmount() {
-      BackHandler.removeEventListener('hardwareBackPress',this.backHandler);
-    }
-
-    landscapeVideo = () => {
-      return ( this.props.videoMode || this.props.liveMode ) && 
-        this.state.orientation != "PORTRAIT" &&
-        this.state.orientation != "PORTRAITUPSIDEDOWN";
-    }
-
-
-    orientationDidChange = (orientation) => {
-      console.log('JG: setting orientation to ', orientation);
+  componentDidMount() {
+    Orientation.getOrientation((err, orientation) => {
+      console.log(`Current Device Orientation: ${orientation}`);
       this.setState({orientation});
       this.props.setPlayerValue('orientation', orientation);
-    }
+    });
+    Orientation.addOrientationListener(this.orientationDidChange);
+  }
 
-    showPlayer() {
-      if ( this.props.currentTrack && ! this.props.chromecastMode &&
-           Object.keys(this.props.currentTrack).length == 0 ) {
-        return false;
-      }
-      return this.props.navigation.state.routeName !== 'player_view' &&
-             this.props.navigation.state.routeName !== 'live' &&
-             ! this.props.videoMode && 
-             ( !! this.props.currentTrack || this.props.chromecastMode ) ;
-    }
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.backHandler);
+  }
 
-    showMenu() {
-      return this.props.navigation.state.routeName !== 'player_view' &&
-             !this.landscapeVideo() &&
-             ! ( this.props.isFullscreenVideo && 
-               this.props.navigation.state.routeName === 'episode');
-    }
+  landscapeVideo = () => {
+    return (
+      (this.props.videoMode || this.props.liveMode) &&
+      this.state.orientation != 'PORTRAIT' &&
+      this.state.orientation != 'PORTRAITUPSIDEDOWN'
+    );
+  };
 
-    renderOfflineHeader = () => {
-      if ( ! this.props.connection  && ! this.landscapeVideo() ) {
-        return (
-          <View style={styles.offlineHeader}>
-              <Text style={styles.offlineText}>
-                  {"Phone is Offline"}
-              </Text>
-          </View>
-        );
-      }
-      return null;
-    }
+  orientationDidChange = orientation => {
+    console.log('JG: setting orientation to ', orientation);
+    this.setState({orientation});
+    this.props.setPlayerValue('orientation', orientation);
+  };
 
-    renderHeader = () => {
-      if ( ! this.landscapeVideo() && ! this.props.isFullscreenVideo &&
-           this.props.navigation.state.routeName != 'live' ||
-           this.props.navigation.state.routeName == 'player_view' ) {
-        return (
-          <View style={[styles.header]} >
-            {!this.props.hideBackButton ? 
-              <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
-                  <Image style={styles.backButton}  source={require('../../assets/icons/back.png')}/>
+  showPlayer() {
+    if (
+      this.props.currentTrack &&
+      !this.props.chromecastMode &&
+      Object.keys(this.props.currentTrack).length == 0
+    ) {
+      return false;
+    }
+    return (
+      this.props.navigation.state.routeName !== 'player_view' &&
+      this.props.navigation.state.routeName !== 'live' &&
+      !this.props.videoMode &&
+      (!!this.props.currentTrack || this.props.chromecastMode)
+    );
+  }
+
+  showMenu() {
+    return (
+      this.props.navigation.state.routeName !== 'player_view' &&
+      !this.landscapeVideo() &&
+      !(
+        this.props.isFullscreenVideo &&
+        this.props.navigation.state.routeName === 'episode'
+      )
+    );
+  }
+
+  renderOfflineHeader = () => {
+    if (!this.props.connection && !this.landscapeVideo()) {
+      return (
+        <View style={styles.offlineHeader}>
+          <Text style={styles.offlineText}>{'Phone is Offline'}</Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
+  formatHeader(header) {
+    if (!header) {
+      return '';
+    } else if (header.length <= 20) {
+      return header;
+    } else {
+      return header.slice(0, 20) + '...';
+    }
+  }
+
+  showThreeDots = () => {
+    return (
+      (this.props.navigation.state.routeName == 'player_view' &&
+        !this.props.liveMode) ||
+      this.props.navigation.state.routeName == 'episode'
+    );
+  };
+
+  renderTitle() {
+    let title;
+    if (
+      this.props.navigation.state.routeName == 'player_view' ||
+      this.props.navigation.state.routeName == 'episode'
+    ) {
+      title = this.formatHeader(this.props.playerHeader);
+    } else if (this.props.header) {
+      title = this.formatHeader(this.props.header);
+    } else {
+      title = routeHeaders[this.props.activeMenuItem];
+    }
+    return (
+      <View style={[styles.header]}>
+        <Text style={{color: '#fcf411', textAlign: 'center', fontSize: 18}}>
+          {title}
+        </Text>
+      </View>
+    );
+  }
+
+  renderHeader = () => {
+    if (
+      (!this.landscapeVideo() &&
+        !this.props.isFullscreenVideo &&
+        this.props.navigation.state.routeName != 'live' &&
+        this.props.navigation.state.routeName != 'search') ||
+      this.props.navigation.state.routeName == 'player_view'
+    ) {
+      return (
+        <View>
+          <View style={styles.backButtonContainer}>
+            {!this.props.hideBackButton ? (
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.goBack();
+                }}>
+                <Icon name="chevron-left" size={24} color="#fcf411" />
               </TouchableOpacity>
-              :
-              <View style={{width: 30}}/>
-            }
-            <Image resizeMode={'contain'} style={{height: 40, width: 150}} source={require('../../assets/images/logo.png')}/>
-            <TouchableOpacity onPress={()=>{this.props.navigateTo('settings')}}>
-                <Image style={{height: 30, width: 30}}  source={require('../../assets/icons/settings.png')}/>
-            </TouchableOpacity>
-          </View>
-        );
-      }
-    }
-
-
-    render() {
-        return (
-          <View style={styles.container}>
-          {this.renderOfflineHeader()}
-          {this.renderHeader()}
-
-            <View style={styles.body}>
-                {this.props.children}
-            </View>
-
-            {this.showPlayer() && (
-                <PlayerFooter navigation={this.props.navigation} />
+            ) : (
+              <View style={{width: 30}} />
             )}
-
-            {this.showMenu() && (
-            <BottomMenu
-                navigation={this.props.navigation}
-                close={() => {this.props.toggleMenu();}}
-                navigateTo={this.props.navigateTo}
-                />
-            )}
-            <Modal navigation={this.props.navigation}/>
           </View>
-        );
+          {this.renderTitle()}
+          {this.showThreeDots() && (
+            <ThreeDotButton
+              style={styles.threeDotsContainer}
+              size={30}
+              item={this.props.threeDotItem}
+            />
+          )}
+        </View>
+      );
     }
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.renderOfflineHeader()}
+        {this.renderHeader()}
+
+        <View style={styles.body}>{this.props.children}</View>
+
+        {this.showPlayer() && (
+          <PlayerFooter navigation={this.props.navigation} />
+        )}
+
+        {this.showMenu() && (
+          <BottomMenu
+            navigation={this.props.navigation}
+            close={() => {
+              this.props.toggleMenu();
+            }}
+            navigateTo={this.props.navigateTo}
+          />
+        )}
+        <Modal navigation={this.props.navigation} />
+      </View>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-      videoMode: state.player.videoMode,
-      liveMode: state.player.liveMode,
-      currentTrack: state.player.currentTrack,
-      user_id: state.auth.user_id,
-      guest: state.auth.guest,
-      connection: state.data.connection,
-      routes: state.navigation.routes,
-      isFullscreenVideo: state.player.isFullscreenVideo,
-      chromecastMode: state.player.chromecastMode
-    };
+  return {
+    videoMode: state.player.videoMode,
+    liveMode: state.player.liveMode,
+    currentTrack: state.player.currentTrack,
+    user_id: state.auth.user_id,
+    guest: state.auth.guest,
+    connection: state.data.connection,
+    routes: state.navigation.routes,
+    isFullscreenVideo: state.player.isFullscreenVideo,
+    chromecastMode: state.player.chromecastMode,
+    activeMenuItem: state.navigation.activeMenuItem,
+    playerHeader: state.player.playerHeader,
+    offlineEpisodes: state.data.offlineEpisodes,
+    favoriteEpisodes: state.data.favoriteEpisodes,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({
-        navigateTo,
-        resetTo,
-        back,
-        setPlayerValue,
-    }, dispatch);
+  return bindActionCreators(
+    {
+      navigateTo,
+      resetTo,
+      back,
+      setPlayerValue,
+      setValue,
+      addFavorite,
+      removeFavorite,
+      getOfflineEpisode,
+      deleteOfflineEpisode,
+      displayOfflineEpisodeDownloading,
+    },
+    dispatch,
+  );
 }
 
-ReactMixin.onClass(Base, TimerMixin);
 export default connect(mapStateToProps, mapDispatchToProps)(Base);
-
 
 const playerHeight = 50;
 
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: colors.bodyBackground,
   },
   header: {
-      paddingTop: 10,
-      paddingLeft: 10,
-      paddingRight: 10,
-      width: width,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: 52,
-      marginBottom: 10
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    width: width,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 52,
+    marginBottom: 10,
+    backgroundColor: colors.headerBackground,
+  },
+  backButtonContainer: {
+    paddingTop: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 52,
+    marginBottom: 10,
+    backgroundColor: colors.headerBackground,
+    zIndex: 5,
+    position: 'absolute',
+  },
+  threeDotsContainer: {
+    paddingTop: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 52,
+    marginBottom: 20,
+    backgroundColor: colors.headerBackground,
+    zIndex: 5,
+    position: 'absolute',
+    right: 0,
   },
   body: {
-      flex: 1,
-      position: 'relative',
+    flex: 1,
+    position: 'relative',
+    backgroundColor: colors.bodyBackground,
   },
   backButton: {
     height: 20,
@@ -207,7 +322,7 @@ const styles = StyleSheet.create({
   offlineHeader: {
     backgroundColor: colors.red,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   offlineText: {
     justifyContent: 'center',
@@ -215,6 +330,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     color: colors.white,
     fontSize: 12,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 });

@@ -1,126 +1,131 @@
 import React from 'react';
-import {Text, StyleSheet, ScrollView, TouchableOpacity, View,Dimensions, FlatList, Alert, Platform, Image, StatusBar } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { resetTo, navigateTo } from '../actions/navigation';
-import { removeFromPlaylist } from '../actions/data';
-import ListItemEpisode from './list_item_episode';
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  View,
+  Dimensions,
+  FlatList,
+  Alert,
+  Platform,
+  Image,
+  StatusBar,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {resetTo, navigateTo} from '../actions/navigation';
+import {removeFromPlaylist} from '../actions/data';
+import EpisodeList from './episode_list';
 import Base from './view_base';
-import { getChannels, getEpisodes, setValue } from '../actions/data';
-import { setPlayerValue, fetchAndPlayAudio } from '../actions/player';
-import { colors } from '../constants.js';
-
+import {getChannels, getEpisodes, setValue} from '../actions/data';
+import {setPlayerValue, fetchAndPlayAudio} from '../actions/player';
+import {colors} from '../constants.js';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Chromecast from 'react-native-google-cast';
 
 class Playlist extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
+  constructor(props) {
+    super(props);
+    this.state = {};
 
-      }
+    this.playAll = this.playAll.bind(this);
+  }
 
-      this.goToEpisode = this.goToEpisode.bind(this);
-      this.playAll = this.playAll.bind(this)
+  componentWillMount() {
+    this.props.setValue('episodeContext', 'playlist');
+  }
+
+  componentWillReceiveProps(nextProps) {}
+
+  componentDidMount() {}
+
+  pauseChromecast = async () => {
+    if (!this.props.isPlayingChromecast) {
+      return;
     }
-
-    componentWillMount(){
+    let connected = await Chromecast.isConnected();
+    if (connected) {
+      Chromecast.togglePauseCast();
+      this.props.setPlayerValue('isPlayingChromecast', false);
     }
+  };
 
-    componentWillReceiveProps(nextProps) {
+  playAll() {
+    this.props.setPlayerValue('queue', this.props.playlist);
+    this.props.setPlayerValue('queueIndex', 0);
 
+    let episode = this.props.playlist[0];
+    console.log('EJ::', episode);
+    if (!episode) {
+      return;
     }
-
-    componentDidMount() {
-
+    let track = {
+      uri: episode.dataUrl,
+      download_uri: episode.downloadUrl,
+      image: episode.thumbnailUrl,
+      name: episode.name,
+      episode_id: episode.id,
+      series_id: episode.show_id,
+      audioUrl: episode.audioUrl,
+    };
+    console.log('JG: setting track to ', track);
+    this.props.setPlayerValue('isPlayingVideo', false);
+    this.props.setPlayerValue('videoMode', false);
+    this.props.setPlayerValue('chromecastMode', false);
+    this.props.setPlayerValue('liveMode', false);
+    this.props.setPlayerValue('currentTrack', track);
+    if (!track.audioUrl) {
+      this.props.fetchAndPlayAudio(episode.show_id, episode.id);
+    } else {
+      this.props.setPlayerValue('isPlaying', true);
     }
+    this.props.navigateTo('player_view');
+    this.pauseChromecast();
+  }
 
-
-    playAll(){
-      this.props.setPlayerValue('queue',this.props.playlist);
-      this.props.setPlayerValue('queueIndex', 0);
-
-      let episode = this.props.playlist[0];
-      console.log("EJ::",episode)
-      if ( ! episode ) {
-        return;
-      }
-      let track = {
-        uri: episode.dataUrl,
-        download_uri: episode.downloadUrl,
-        image: episode.thumbnailUrl,
-        name: episode.name,
-        episode_id: episode.id,
-        series_id: episode.show_id,
-        audioUrl: episode.audioUrl
-      }
-      console.log('JG: setting track to ', track);
-      this.props.setPlayerValue('isPlayingVideo', false);
-      this.props.setPlayerValue('videoMode', false);
-
-      this.props.setPlayerValue('currentTrack', track);
-      if ( ! track.audioUrl ) {
-        this.props.fetchAndPlayAudio( episode.show_id, episode.id);
-      } else {
-        this.props.setPlayerValue('isPlaying', true);
-      }
-    }
-
-    removeFromPlaylist(item){
-      this.props.removeFromPlaylist(item);
-    }
-
-    goToEpisode(item) {
-    	console.log('JG: going to episode', item );
-    	this.props.setValue('episode',item);
-    	this.props.navigateTo('episode');
-    }
-
-    renderEpisode({item}) {
-        return (
-        	<ListItemEpisode item={item}
-        		goToEpisode={this.goToEpisode}
-            playlistView={true}
-            removeFromPlaylist={()=>{this.props.removeFromPlaylist(item)}}
-            />
-        );
-    }
-
-    render() {
-      return (
-        <Base navigation={this.props.navigation}>
-          <View style={{alignItems: 'center'}}>
-            {this.props.playlist && this.props.playlist.length > 0  ? (
+  render() {
+    return (
+      <Base header="Playlist" navigation={this.props.navigation}>
+        <View style={{alignItems: 'center'}}>
+          {this.props.playlist && this.props.playlist.length > 0 ? (
             <TouchableOpacity style={styles.button} onPress={this.playAll}>
-              <Image style={[styles.iconMarginRight]} source={require('../../assets/icons/play-audio.png')}/>
-              <Text>Play All</Text>
+              <Icon name={'volume-up'} size={18} color={colors.blue} />
+              <Text style={styles.buttonText}>Play All</Text>
             </TouchableOpacity>
-            ) : (<Text>Playlist empty!</Text>)}
-            <FlatList
-              data={this.props.playlist}
-              renderItem={this.renderEpisode.bind(this)}
-              keyExtractor={(item, index) => { return index }}
-              horizontal={false}
-            />
-            </View>
-        </Base>
-      );
-    }
+          ) : (
+            <Text style={styles.emptyListText}>Playlist empty!</Text>
+          )}
+          <EpisodeList data={this.props.playlist} />
+        </View>
+      </Base>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-	    user_id: state.auth.user_id,
-	    playlist: state.data.playlist
-    };
+  return {
+    user_id: state.auth.user_id,
+    isPlayingChromecast: state.player.isPlayingChromecast,
+    playlist:
+      state.data.playlist &&
+      state.data.playlist.filter(x => {
+        return !!x;
+      }),
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({
-        removeFromPlaylist,
-        navigateTo,
-        setValue,
-        setPlayerValue,
-        fetchAndPlayAudio,
-    }, dispatch);
+  return bindActionCreators(
+    {
+      removeFromPlaylist,
+      navigateTo,
+      setValue,
+      setPlayerValue,
+      fetchAndPlayAudio,
+    },
+    dispatch,
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playlist);
@@ -133,27 +138,37 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     marginBottom: 20,
   },
-    iconMarginRight: {
+  iconMarginRight: {
     height: 25,
     width: 25,
     resizeMode: 'contain',
     marginRight: 20,
   },
   button: {
-      marginTop: 10,
-      marginBottom: 10,
-      borderWidth: 1,
-      borderColor: colors.yellow,
-      backgroundColor: colors.yellow,
-      width: 170,
-      height: 45,
-      justifyContent: 'center',
-      padding: 12,
-      marginLeft: 15,
-      marginRight: 15,
-      alignItems: 'center',
-      justifyContent: 'center',
-      display: 'flex',
-      flexDirection: 'row',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 0,
+    marginBottom: 0,
+    marginHorizontal: 5,
+    borderRadius: 10,
+    backgroundColor: colors.yellow,
+    width: 170,
+    height: 40,
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+  },
+  buttonText: {
+    color: colors.blue,
+    fontFamily: 'Avenir',
+  },
+  emptyListText: {
+    fontSize: 14,
+    fontFamily: 'Avenir',
+    color: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
   },
 });

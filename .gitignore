@@ -57,3 +57,6 @@ android/app/src/main/assets/crashlytics-build.properties
 
 
 ios/Pods/
+
+#android assets
+android/app/src/main/res/draw*

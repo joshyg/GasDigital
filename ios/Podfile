@@ -2,4 +2,8 @@ target 'GasDigitalRN' do
   pod 'google-cast-sdk', '2.10.4.1'
   pod 'react-native-keep-awake', :path => '../node_modules/react-native-keep-awake'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
 end

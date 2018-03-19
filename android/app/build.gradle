@@ -123,7 +123,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 13
-        versionName "11.3"
+        versionName "11.5"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -184,6 +184,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-immersive')
+    compile project(':react-native-splash-screen')
+    compile project(':react-native-vector-icons')
     compile project(':react-native-keep-awake')
     compile project(':react-native-google-cast')
     compile project(':react-native-fabric')
