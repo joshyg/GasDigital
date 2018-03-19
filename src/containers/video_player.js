@@ -20,7 +20,6 @@ import _ from 'lodash';
 import SvgIcon from '../components/svg_icons';
 import {colors} from '../constants.js';
 import Orientation from 'react-native-orientation';
-
 const {height, width} = Dimensions.get('window');
 
 export default class VideoPlayer extends Component {
@@ -1090,7 +1089,12 @@ export default class VideoPlayer extends Component {
     let screenHeight = this.state.isFullscreen
       ? height
       : this.props.live ? height : height / 3;
-    let statusBarHeight = Platform.OS == 'android' ? 25 : 0;
+    let statusBarHeight =
+      Platform.OS == 'android' &&
+      !this.state.isFullscreen &&
+      this.props.orientation.includes('PORTRAIT')
+        ? 24
+        : 0;
     const videoHeight = this.props.spinValue.interpolate({
       inputRange: [-1, 0, 1],
       outputRange: [

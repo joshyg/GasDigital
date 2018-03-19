@@ -467,14 +467,14 @@ class Episode extends React.Component {
   };
 
   onToggleFullscreen = isFullscreen => {
+    this.setImmersive(isFullscreen);
+    this.setState({isFullscreen});
     this.props.setPlayerValue('isFullscreenVideo', isFullscreen);
     if (isFullscreen) {
       Orientation.lockToLandscape();
     } else {
       Orientation.lockToPortrait();
     }
-    this.setState({isFullscreen});
-    this.setImmersive(isFullscreen);
   };
 
   renderVideo() {
@@ -506,6 +506,7 @@ class Episode extends React.Component {
         disableBack={true}
         disableVolume={true}
         spinValue={this.state.spinValue}
+        orientation={this.state.orientation || ''}
         episode={this.props.episode}
         episodeVideoProgress={this.props.episodeVideoProgress}
         live={false}

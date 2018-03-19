@@ -301,6 +301,7 @@ class Live extends React.Component {
         disableVolume={true}
         disableSeekbar={true}
         spinValue={this.state.spinValue}
+        orientation={this.state.orientation || ''}
         episode={this.getEpisodeInfo}
         live={true}
         onToggleFullscreen={this.onToggleFullscreen}
