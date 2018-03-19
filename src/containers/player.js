@@ -65,15 +65,7 @@ class Player extends React.Component {
     this.onEnd = _.throttle(3000, this.onEnd);
     MusicControl.handleAudioInterruptions(true);
     MusicControl.on('play', () => {
-      // FIXME: I noticed the following behavior on my
-      // headphones: there is one button, ios triggers togglePlayPause,
-      // but android only triggeres play each time.  Not sure if all
-      // phones/headphones behave this way, but will assume for now they do.
-      if (Platform.OS == 'ios') {
-        this.props.setPlayerValue('isPlaying', true);
-      } else {
-        this.togglePlayPause();
-      }
+      this.togglePlayPause();
     });
 
     // on iOS this event will also be triggered by audio router change events
