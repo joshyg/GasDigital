@@ -28,7 +28,10 @@ class EpisodeList extends React.Component {
 
   goToEpisode = (item, index) => {
     if (item && item.show_id && this.props.channelsById[item.show_id]) {
-      let channel = this.props.channelsById[item.show_id];
+      let series = this.props.channelsById[item.show_id];
+      if (series) {
+        this.props.setValue('series', series);
+      }
     }
     this.props.setValue('episodeContextIndex', index);
     this.props.setValue('episode', item);

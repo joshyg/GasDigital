@@ -278,7 +278,6 @@ class Episode extends React.Component {
       : this.props.channelsById[episode.show_id];
     let series_id = (series && series.id) || '';
     let offlineEpisode = this.props.offlineEpisodes[episode.id];
-    console.log('JG: series = ', series);
     let track = {
       uri: episode.dataUrl,
       download_uri: episode.downloadUrl,

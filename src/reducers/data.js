@@ -4,6 +4,7 @@ const initialState = {
   channels: [],
   schedule: [],
   channelsById: {},
+  channelsByTitle: {},
   rssFeedsById: {},
   lastChannelFetchTime: {},
   episodes: {},
@@ -46,6 +47,7 @@ export default (reducer = (state = initialState, action) => {
     channels,
     channelFetchTime,
     channelsById,
+    channelsByTitle,
     rssFeedsById,
     episode,
     episodes,
@@ -74,10 +76,12 @@ export default (reducer = (state = initialState, action) => {
           });
       }
       channelsById = {};
+      channelsByTitle = {};
       for (ch in channels) {
         channelsById[channels[ch].id] = channels[ch];
+        channelsByTitle[channels[ch].title] = channels[ch];
       }
-      return {...state, channelsById, channels};
+      return {...state, channelsById, channelsByTitle, channels};
 
     case 'DATA_GET_SCHEDULE':
       if (payloadError(action.payload)) {
@@ -191,6 +195,10 @@ export default (reducer = (state = initialState, action) => {
       returnedEpisodes = action.payload.resp_data.data;
       for (i in returnedEpisodes) {
         let episode = returnedEpisodes[i];
+        if (!episode.show_id) {
+          let channel = state.channelsByTitle[episode.categories];
+          episode.show_id = channel && channel.id;
+        }
 
         Image.prefetch(episode.thumbnailUrl)
           .then(_ => {})

@@ -33,7 +33,7 @@ export default function PlayerControlsComponent(props) {
   let HIT_SLOP = 15;
 
   let trackName = '';
-  if (track.name && track.name.length < 20) {
+  if (track.name && track.name.length <= 20) {
     trackName = track.name;
   } else if (track.name && track.name.length > 20) {
     trackName = track.name.slice(0, 20) + '...';
