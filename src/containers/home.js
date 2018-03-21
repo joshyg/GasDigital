@@ -121,14 +121,33 @@ class Home extends React.Component {
   }
 
   channels = () => {
-    let channels = _.cloneDeep(this.props.channels);
+    let channelsInList = {};
+    let channels = [];
+    if (!this.props.guest) {
+      for (ep_id of this.props.recentEpisodeIds) {
+        let ep = this.props.episodes[ep_id];
+        if (ep && ep.show_id && !channelsInList[ep.show_id]) {
+          series = this.props.channelsById[ep.show_id];
+          if (series) {
+            channels.push(series);
+            channelsInList[series.id] = true;
+          }
+        }
+      }
+    }
+    let allChannels = _.cloneDeep(this.props.channels);
+    if (!allChannels) {
+      allChannels = [];
+    }
+    for (ch of allChannels) {
+      if (ch && !channelsInList[ch.id]) {
+        channels.push(ch);
+        channelsInList[ch.id] = true;
+      }
+    }
     let recentImage = resolveAssetSource(
       require('../../assets/images/recent-icon.png'),
     );
-    // let recentImage = null
-    if (!channels) {
-      channels = [];
-    }
     if (!this.props.guest) {
       channels.unshift({
         id: 'all_recent',
@@ -180,9 +199,12 @@ function mapStateToProps(state) {
     user_id: state.auth.user_id,
     guest: state.auth.guest,
     channels: state.data.channels,
+    channelsById: state.data.channelsById,
     channelEpisodeIds: state.data.channelEpisodeIds,
     isGettingEpisodes: state.data.isGettingEpisodes,
     routes: state.navigation.routes,
+    recentEpisodeIds: state.data.recentEpisodeIds,
+    episodes: state.data.episodes,
   };
 }
 
