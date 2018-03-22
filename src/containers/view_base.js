@@ -156,8 +156,8 @@ class Base extends React.Component {
       title = this.formatHeader(this.props.playerHeader);
     } else if (this.props.header) {
       title = this.formatHeader(this.props.header);
-    } else if (this.props.activeMenuItem == 'homescreen' && this.props.guest) {
-      title = 'Non-Member';
+    } else if (this.props.activeMenuItem == 'homescreen') {
+      title = this.props.guest ? 'Non-Member' : 'Gas Digital Network';
     } else {
       title = routeHeaders[this.props.activeMenuItem];
     }

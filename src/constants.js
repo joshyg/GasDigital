@@ -43,7 +43,7 @@ export const iconNames = {
 };
 
 export const routeHeaders = {
-  homescreen: 'Gas Digital Network',
+  homescreen: 'Listen',
   live: 'Live',
   search: 'Search',
   library: 'Library',
