@@ -147,6 +147,12 @@ class PlayerControlsContainer extends Component {
     }
   };
 
+  onPressPlayerRate = () => {
+    let nextRate =
+      this.props.playerRate == 1 ? 1.5 : this.props.playerRate == 1.5 ? 2 : 1;
+    this.props.setPlayerValue('playerRate', nextRate);
+  };
+
   seekForwardFifteen = () => {
     let timer = this.props.chromecastMode
       ? this.props.videoTimer
@@ -246,6 +252,7 @@ class PlayerControlsContainer extends Component {
         seekBackFifteen={this.seekBackFifteen}
         chromecastMode={this.props.chromecastMode}
         liveMode={this.props.liveMode}
+        onPressPlayerRate={this.onPressPlayerRate}
       />
     );
   }
@@ -266,6 +273,7 @@ function mapStateToProps(state) {
     queueIndex: state.player.queueIndex,
     chromecastMode: state.player.chromecastMode,
     liveMode: state.player.liveMode,
+    playerRate: state.player.playerRate,
   };
 }
 

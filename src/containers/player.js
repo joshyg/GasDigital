@@ -313,7 +313,7 @@ class Player extends React.Component {
     }
 
     let paused = this.isPaused(this.props);
-    let playerRate = 1; // TODO: Add variable play rate
+    let playerRate = this.props.playerRate || 1; // TODO: Add variable play rate
     return (
       <MediaPlayer
         ref={AUDIO_REF}
@@ -355,6 +355,7 @@ function mapStateToProps(state) {
     liveMode: state.player.liveMode,
     livePaused: state.player.livePaused,
     schedule: state.data.schedule,
+    playerRate: state.player.playerRate,
   };
 }
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,10 @@ import {
   StyleSheet,
   StatusBar,
   Dimensions,
-  Image
-} from "react-native";
-import Slider from "@ptomasroos/react-native-multi-slider";
-import { colors, fonts } from "../constants";
+  Image,
+} from 'react-native';
+import Slider from '@ptomasroos/react-native-multi-slider';
+import {colors, fonts} from '../constants';
 
 export default class ProgressSlider extends Component {
   constructor(props) {
@@ -19,7 +19,7 @@ export default class ProgressSlider extends Component {
 
   render() {
     const props = this.props;
-    const { height, width } = Dimensions.get("window");
+    const {height, width} = Dimensions.get('window');
 
     const touchTarget = props.isFooter || !props.canSet ? 0 : 60;
 
@@ -34,8 +34,8 @@ export default class ProgressSlider extends Component {
         max={Math.floor(props.timer.playableDuration)}
         values={[Math.floor(props.timer.currentTime)]}
         sliderLength={props.isFooter ? width : width - 60}
-        selectedStyle={{ backgroundColor: colors.yellow }}
-        unselectedStyle={{ backgroundColor: "grey" }}
+        selectedStyle={{backgroundColor: colors.yellow}}
+        unselectedStyle={{backgroundColor: 'grey'}}
         markerStyle={props.canSet ? this.styles.marker : this.styles.none}
         pressedMarkerStyle={this.styles.pressedMarker}
         containerStyle={this.styles.sliderContainer}
@@ -43,7 +43,7 @@ export default class ProgressSlider extends Component {
           height: touchTarget,
           width: touchTarget,
           borderRadius: 0,
-          slipDisplacement: 0
+          slipDisplacement: 0,
         }}
         trackStyle={this.styles.trackStyle}
         onValuesChangeStart={() => {
@@ -59,19 +59,19 @@ export default class ProgressSlider extends Component {
   }
   styles = StyleSheet.create({
     sliderContainer: {
-      position: "absolute",
+      position: 'absolute',
       marginHorizontal: this.props.isFooter ? 0 : 30,
-      top: 0
+      top: 0,
     },
     marker: {
       height: 11,
       width: 11,
       borderRadius: 5,
-      backgroundColor: colors.blue
+      backgroundColor: colors.blue,
     },
     none: {
       height: 0,
-      width: 0
-    }
+      width: 0,
+    },
   });
 }

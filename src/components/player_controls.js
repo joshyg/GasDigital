@@ -59,6 +59,14 @@ export default function PlayerControlsComponent(props) {
         <Text style={styles.timeText}>{props.progressTime}</Text>
         <Text style={styles.timeText}>{track.length}</Text>
       </View>
+      <TouchableOpacity
+        style={styles.playerRateStyle}
+        onPress={props.onPressPlayerRate}>
+        <Text style={styles.playerRateTextStyle}>
+          {props.playerRate}
+          {'X'}
+        </Text>
+      </TouchableOpacity>
 
       <View
         style={[
@@ -155,7 +163,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   timeText: {
-    fontSize: 10,
+    fontSize: 15,
+    color: colors.white,
+    fontFamily: 'Avenir',
+  },
+  playerRateStyle: {
+    position: 'absolute',
+    alignItems: 'flex-end',
+    marginTop: 10,
+    right: 30,
+    backgroundColor: 'transparent',
+  },
+  playerRateTextStyle: {
+    marginLeft: 10,
+    fontSize: 15,
     color: colors.white,
     fontFamily: 'Avenir',
   },

@@ -9,6 +9,7 @@ const initialState = {
   episodeProgress: {},
   episodeVideoProgress: {},
   videoTimer: {},
+  playerRate: 1,
 };
 
 export default (reducer = (state = initialState, action) => {
