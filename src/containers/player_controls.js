@@ -113,6 +113,7 @@ class PlayerControlsContainer extends Component {
       episode_id: episode.id,
       series_id: episode.show_id,
       audioUrl: episode.audioUrl,
+      episode: episode,
     };
     this.props.setPlayerValue('isPlayingVideo', false);
     this.props.setPlayerValue('videoMode', false);
