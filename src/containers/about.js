@@ -31,12 +31,15 @@ class About extends React.Component {
           <View style={{alignItems: 'center', paddingLeft: 8, paddingRight: 8}}>
             <Text style={styles.text}>
               {
-                "Let's talk a bit about what makes GaS Digital different, and why we know you'll want to #PlugInFuelUp with us! First and foremost every podcast on the network will always be FREE. You don't have to pay a dime if you don't want to. The newest 10 episodes will always be on iTunes, Stitcher, Google Play, or even God-forbid on a Zune, you can listen to any of the shows on the network so let's just get that out of the way first! No money, not a single thin dime. Got it? Good.\n"
+                'We’re fans of entertainment, first and foremost. As such, it’s our mission to bring you the very best content. Our growing brand already includes comedy, music, sports, politics; and it’s all out there for free.\n'
               }
-            </Text>
-            <Text style={styles.text}>
+              {'\n'}
               {
-                "Now if you are someone who wants to WATCH THE VIDEO VERSION LIVE as it happens, partake in our CHAT ROOM or FORUMS, have access to COMMERCIAL FREE episodes, and download the podcast THE DAY IT'S RECORDED you will want to sign up for GaS Digital Membership! Membership is just $7 per month and you will have access to all of our shows and exclusive bonus content not available anywhere else. If you use a promo code for your favorite show you not only will be supporting their show directly but you will also save $1 off of membership and you get a two week FREE TRIAL!"
+                'So why subscribe? All that free content is not released until five days after it’s recorded, and it’s only the beginning of what we offer. For only $7 a month, you get full access to the videos - live and commercial free, as they air. You can join the live chat during the shows and post in the forums, both great ways to connect with other fans AND the hosts of the shows. You get the whole catalogue of archives, over 1,000 hours of your favorite shows, which are not available to the public and can be accessed via our RSS feed, by download, by our Alexa Skill, and Android/iOS app (currently in beta). Speaking of, there is a ton of bonus content created specially for our members only! Plus, if you subscribe with your favorite show’s promo code, you save $1 monthly.\n'
+              }
+              {'\n'}
+              {
+                'If you’re still not sure about subscribing, you get a free 14 day trial with that bonus code, and if you don’t love it, cancel at the end of the trial. No harm, no foul. We’re artists, we love what we do, and we want you to love it too.\n'
               }
             </Text>
           </View>
