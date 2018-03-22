@@ -381,7 +381,7 @@ export default (reducer = (state = initialState, action) => {
           episodes[episode.id] = _.cloneDeep(state.episodes[episode.id]);
         }
       }
-      for (id in returnedEpisodeIds) {
+      for (id of returnedEpisodeIds) {
         if (!episodes[id]) continue;
         episodes[id].is_favourite = true;
         favoriteEpisodes[id] = episodes[id];

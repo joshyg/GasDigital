@@ -84,7 +84,7 @@ class Library extends React.Component {
   getEpisodeName(episode) {
     if (!episode) {
       return '';
-    } else if (episode.name.length > 15) {
+    } else if (episode.name && episode.name.length > 15) {
       return episode.name.slice(0, 14) + '...';
     }
     return episode.name;
