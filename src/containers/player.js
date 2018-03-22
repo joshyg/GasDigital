@@ -282,6 +282,10 @@ class Player extends React.Component {
     // let duration = parseInt(this.props.timer.duration);
     // let currentTime = parseInt(this.props.timer.currentTime);
     // if ( duration - currentTime < 10 || duration < 10 ) {
+    if (!this.hasNext(this.props) || !this.props.continuousPlay) {
+      this.props.setPlayerValue('isPlaying', false);
+      return;
+    }
     this.props.setPlayerValue('queueIndex', this.props.queueIndex + 1);
     let episode = this.props.queue[this.props.queueIndex + 1] || {};
     let series = this.props.channelsById[episode.show_id];
@@ -299,12 +303,12 @@ class Player extends React.Component {
     this.props.setPlayerValue('isPlayingVideo', false);
     this.props.setPlayerValue('videoMode', false);
     this.props.setPlayerValue('currentTrack', track);
+    console.log('JG: onEnd, set track to ', track);
     if (!track.audioUrl) {
       this.props.fetchAndPlayAudio(episode.show_id, episode.id);
     } else {
       this.props.setPlayerValue('isPlaying', true);
     }
-    // }
   };
 
   render() {
@@ -356,6 +360,7 @@ function mapStateToProps(state) {
     livePaused: state.player.livePaused,
     schedule: state.data.schedule,
     playerRate: state.player.playerRate,
+    continuousPlay: state.player.continuousPlay,
   };
 }
 

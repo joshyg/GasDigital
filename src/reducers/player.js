@@ -10,6 +10,7 @@ const initialState = {
   episodeVideoProgress: {},
   videoTimer: {},
   playerRate: 1,
+  continuousPlay: true,
 };
 
 export default (reducer = (state = initialState, action) => {

@@ -11,6 +11,7 @@ import {
   Image,
   AsyncStorage,
   StatusBar,
+  Switch,
 } from 'react-native';
 
 import {connect} from 'react-redux';
@@ -23,6 +24,7 @@ import Svg from '../components/svg';
 var Fabric = require('react-native-fabric');
 var {Crashlytics} = Fabric;
 import {DEBUG_CRASH, colors} from '../constants';
+import {setPlayerValue} from '../actions/player';
 
 class Settings extends React.Component {
   constructor(props) {
@@ -36,6 +38,10 @@ class Settings extends React.Component {
       console.log('Forcing crash!');
       Crashlytics.crash();
     }
+  };
+
+  toggleContinuousPlay = () => {
+    this.props.setPlayerValue('continuousPlay', !this.props.continuousPlay);
   };
 
   render() {
@@ -63,13 +69,23 @@ class Settings extends React.Component {
           }}>
           <Text style={styles.title}>Log Out</Text>
         </TouchableOpacity>
+        <View style={styles.switch}>
+          <Text style={styles.title}>Continuous Play</Text>
+          <Switch
+            onValueChange={this.toggleContinuousPlay}
+            value={this.props.continuousPlay}
+            onTintColor={colors.yellow}
+          />
+        </View>
       </Base>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    continuousPlay: state.player.continuousPlay,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -77,6 +93,7 @@ function mapDispatchToProps(dispatch) {
     {
       logOut,
       navigateTo,
+      setPlayerValue,
     },
     dispatch,
   );
@@ -97,5 +114,12 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 0,
     width: '100%',
+  },
+  switch: {
+    padding: 10,
+    paddingLeft: 0,
+    width: '100%',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
 });
