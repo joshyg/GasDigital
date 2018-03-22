@@ -496,8 +496,8 @@ class Episode extends React.Component {
         muted={false}
         paused={!this.props.isPlayingVideo} // Pauses playback entirely.
         onTogglePlayback={this.onTogglePlayback}
-        playInBackground={false} // Audio continues to play when app entering background.
-        playWhenInactive={false} // [iOS] Video continues to play when control or notification center are shown.
+        playInBackground={true} // Audio continues to play when app entering background.
+        playWhenInactive={true} // [iOS] Video continues to play when control or notification center are shown.
         progressUpdateInterval={250.0} // [iOS] Interval to fire onProgress (default to ~250ms)
         onLoad={() => {
           this.onLoad();
