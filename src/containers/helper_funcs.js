@@ -1,11 +1,5 @@
-import {DEBUG_LIVE_VIEW} from '../constants';
 moment = require('moment-timezone');
 export function getLiveShow(props) {
-  console.log('JG: in getLiveShow');
-  if (DEBUG_LIVE_VIEW) {
-    let show = props.episodes[props.recentEpisodeIds[0]];
-    return show;
-  }
   if (!props.schedule) {
     console.log('JG: no schedule!! cant get live show!!');
     return null;

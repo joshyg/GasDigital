@@ -52,8 +52,12 @@ class BottomMenu extends React.Component {
   render() {
     const {width} = Dimensions.get('window');
     const activeItem = this.props.activeMenuItem;
+    let containerStyle = [styles.container];
+    if (activeItem == 'live') {
+      containerStyle.push({backgroundColor: 'black'});
+    }
     return (
-      <View style={styles.container}>
+      <View style={containerStyle}>
         <TouchableOpacity
           style={styles.menuItem}
           onPress={this.setActiveMenu.bind(this, 'homescreen')}>

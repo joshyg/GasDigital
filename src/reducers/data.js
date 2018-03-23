@@ -1,5 +1,5 @@
 import _ from 'lodash/fp';
-import {offlineDownloadStatus} from '../constants';
+import {DEBUG_LIVE_VIEW, offlineDownloadStatus} from '../constants';
 const initialState = {
   channels: [],
   schedule: [],
@@ -88,6 +88,27 @@ export default (reducer = (state = initialState, action) => {
         return {...state, isGettingSchedule: false};
       }
       let schedule = action.payload.resp_data.data;
+      if (DEBUG_LIVE_VIEW) {
+        const weekdays = [
+          'Sunday',
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+        ];
+        for (day of weekdays) {
+          schedule.push({
+            day,
+            start_time: '00:00',
+            end_time: '23:59',
+            show_id: '92',
+            show_name: 'The Real Ass Podcast',
+          });
+        }
+      }
+      console.log('JG: SCHEDULE = ', schedule);
       return {...state, schedule, isGettingSchedule: false};
 
     case 'DATA_GET_EPISODES':

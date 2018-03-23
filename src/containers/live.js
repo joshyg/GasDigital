@@ -23,7 +23,7 @@ import {showModal, getSchedule, setValue} from '../actions/data';
 import {setPlayerValue} from '../actions/player';
 import Video from './video_player';
 import Orientation from 'react-native-orientation';
-import {DEBUG_LIVE_VIEW} from '../constants';
+import {DEBUG_LIVE_VIEW, DEBUG_LIVE_URL} from '../constants';
 import Chromecast from 'react-native-google-cast';
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
@@ -203,33 +203,24 @@ class Live extends React.Component {
       this.setState({uri: '', show: {}});
       return;
     }
+    let channel = this.props.channelsById[show.show_id];
+    let uri = channel.hd_live_url;
     if (DEBUG_LIVE_VIEW) {
-      this.setState({
-        uri: show.dataUrl,
-        show: show,
-      });
-      let video = {
-        uri: show.dataUrl,
-        image: show.thumbnailUrl,
-        name: show.name,
-      };
-    } else {
-      let channel = this.props.channelsById[show.show_id];
-      let uri = channel.hd_live_url;
-      this.setState({
-        uri: uri,
-        channel: channel,
-        show: {
-          name: channel.title,
-          thumbnailUrl: channel.thumb,
-        },
-      });
-      video = {
-        uri: uri,
-        image: channel.thumb,
-        name: channel.title,
-      };
+      uri = DEBUG_LIVE_URL;
     }
+    this.setState({
+      uri: uri,
+      channel: channel,
+      show: {
+        name: channel.title,
+        thumbnailUrl: channel.thumb,
+      },
+    });
+    video = {
+      uri: uri,
+      image: channel.thumb,
+      name: channel.title,
+    };
     this.props.setPlayerValue('currentLiveVideo', video);
     this.props.setPlayerValue('isPlaying', false);
     this.props.setPlayerValue('liveMode', true);
@@ -295,8 +286,6 @@ class Live extends React.Component {
         paused={this.props.chromecastMode || this.props.livePaused}
         playInBackground={true} // Audio continues to play when app entering background.
         playWhenInactive={true} // [iOS] Video continues to play when control or notification center are shown.
-        progressUpdateInterval={250.0} // [iOS] Interval to fire onProgress (default to ~250ms)
-        //onProgress={this.onProgress}
         resizeMode="contain"
         disableFullscreenControls={false}
         disableTimer={true}

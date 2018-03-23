@@ -56,6 +56,8 @@ export const ENABLE_DOWNLOAD_VIDEO = false;
 export const DEBUG_PREMIUM = false;
 export const DEBUG_CRASH = false;
 export const DEBUG_LIVE_VIEW = false;
+export const DEBUG_LIVE_URL =
+  'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
 export const DEBUG_MODAL = false;
 export const DEBUG_NO_ANDROID_SVGS = false;
 export const EPISODES_PER_PAGE = 30;
