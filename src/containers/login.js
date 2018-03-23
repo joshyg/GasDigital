@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {resetTo} from '../actions/navigation';
+import {setActiveMenuItem, resetTo} from '../actions/navigation';
 import {logIn, logInAsGuest, setAuthValue} from '../actions/auth';
 import Base from './view_base';
 import {colors} from '../constants';
@@ -55,6 +55,7 @@ class Login extends React.Component {
       nextProps.guest
     ) {
       this.props.resetTo('homescreen');
+      this.props.setActiveMenuItem('homescreen');
     }
     if (!this.props.loginError && nextProps.loginError) {
       Alert.alert('Login Error', 'Invalid Email/Password');
@@ -127,6 +128,7 @@ function mapDispatchToProps(dispatch) {
       getRecentVideos,
       setAuthValue,
       getSchedule,
+      setActiveMenuItem,
     },
     dispatch,
   );

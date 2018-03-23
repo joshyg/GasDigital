@@ -31,7 +31,7 @@ import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 import ReactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import {setPlayerValue} from '../actions/player';
-import {colors, ENABLE_PREFETCH} from '../constants';
+import {colors, FETCH_FAVES_FROM_SERVER, ENABLE_PREFETCH} from '../constants';
 
 class Home extends React.Component {
   constructor(props) {
@@ -48,7 +48,9 @@ class Home extends React.Component {
     this.props.getSchedule();
     this.props.getChannels(this.props.user_id);
     this.props.getRecentVideos(this.props.user_id, 20);
-    this.props.getFavorites(this.props.user_id);
+    if (FETCH_FAVES_FROM_SERVER && !this.props.guest) {
+      this.props.getFavorites(this.props.user_id);
+    }
     this.prefetchEpisodes(this.props);
     this.props.setPlayerValue('videoMode', false);
   }
@@ -98,7 +100,6 @@ class Home extends React.Component {
   }
 
   goToEpisode(item) {
-    console.log('JG: going to episode', item);
     this.props.setValue('episode', item);
     this.props.navigateTo('episode');
   }

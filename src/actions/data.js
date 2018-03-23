@@ -3,6 +3,7 @@ import * as OfflineApi from '../api/offline_api';
 import {EPISODES_PER_PAGE} from '../constants';
 
 export function getChannels(user_id = 0) {
+  console.log('JG: in getChannels');
   const request = DataApi.GetData('web.php', {
     fun: 'shows',
     user_id: user_id,

@@ -63,3 +63,4 @@ export const DEBUG_NO_ANDROID_SVGS = false;
 export const EPISODES_PER_PAGE = 30;
 export const ENABLE_PREFETCH = false;
 export const APP_VERSION = 2.0;
+export const FETCH_FAVES_FROM_SERVER = false;
