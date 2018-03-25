@@ -18,6 +18,7 @@ import Base from './view_base';
 import {colors} from '../constants';
 import Orientation from 'react-native-orientation';
 import {getSchedule, getChannels, getRecentVideos} from '../actions/data';
+import CheckBox from 'react-native-checkbox';
 
 const {height, width} = Dimensions.get('window');
 
@@ -31,6 +32,12 @@ class Login extends React.Component {
   }
 
   componentWillMount() {
+    if (this.props.remember_me) {
+      this.setState({
+        email: this.props.user_email,
+        password: this.props.password,
+      });
+    }
     if (
       (this.props.user_id && this.props.user_id != 'logged_out') ||
       this.props.guest
@@ -65,6 +72,11 @@ class Login extends React.Component {
 
   logIn = () => {
     this.props.logIn(this.state.email, this.state.password);
+    if (this.props.remember_me) {
+      this.props.setAuthValue('password', this.state.password);
+    } else {
+      this.props.setAuthValue('password', '');
+    }
   };
 
   logInAsGuest = () => {
@@ -82,6 +94,7 @@ class Login extends React.Component {
         <TextInput
           style={styles.textInput}
           onChangeText={x => this.setState({email: x})}
+          value={this.state.email}
           autoCapitalize={'none'}
           underlineColorAndroid={'transparent'}
           placeholder={'email'}
@@ -90,6 +103,7 @@ class Login extends React.Component {
         <TextInput
           style={styles.textInput}
           onChangeText={x => this.setState({password: x})}
+          value={this.state.password}
           underlineColorAndroid={'transparent'}
           placeholder={'password'}
           type="TextInput"
@@ -103,6 +117,14 @@ class Login extends React.Component {
             <Text style={styles.buttonText}>Guest</Text>
           </TouchableOpacity>
         </View>
+        <CheckBox
+          label="Remember Me"
+          checked={this.props.remember_me}
+          onChange={checked => {
+            let remember_me = !checked;
+            this.props.setAuthValue('remember_me', remember_me);
+          }}
+        />
       </View>
     );
   }
@@ -115,6 +137,9 @@ function mapStateToProps(state) {
     reduxRehydrated: state.storage.loaded,
     loginError: state.auth.loginError,
     guest: state.auth.guest,
+    user_email: state.auth.user_email,
+    password: state.auth.password,
+    remember_me: state.auth.remember_me,
   };
 }
 
@@ -140,6 +165,7 @@ const styles = StyleSheet.create({
   loginButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginBottom: 10,
   },
   button: {
     marginTop: 10,

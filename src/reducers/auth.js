@@ -7,11 +7,13 @@ const initialState = {
   user_id: 'logged_out',
   guest: false,
   loginError: false,
+  email: '',
+  password: '',
+  remember_me: false,
 };
 export default (reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'AUTH_LOG_IN':
-      console.log("JG: 'AUTH_LOG_IN, action.payload = ", action.payload);
       var error = action.payload.error;
       if (error) {
         console.log('JG: login error: ', error, action.payload);
@@ -37,6 +39,7 @@ export default (reducer = (state = initialState, action) => {
       }
       console.log('User logged in to server.', action.payload);
       return {
+        ...state,
         display_name: action.payload.display_name,
         user_id: action.payload.user_id,
         user_email: action.payload.user_email,
@@ -48,6 +51,7 @@ export default (reducer = (state = initialState, action) => {
     case 'AUTH_LOG_IN_AS_GUEST':
       console.log('JG: User logged in to server as guest');
       return {
+        ...state,
         display_name: 'guest',
         user_id: 0,
         user_email: 'guest@gdn.com',
@@ -61,7 +65,12 @@ export default (reducer = (state = initialState, action) => {
       return {...state, ...action.payload};
 
     case 'AUTH_LOG_OUT':
-      return {...initialState};
+      return {
+        ...initialState,
+        remember_me: state.remember_me,
+        user_email: state.user_email,
+        password: state.password,
+      };
 
     case 'persist/REHYDRATE':
       console.log('persist rehydrate, auth data = ', action.payload.auth);
