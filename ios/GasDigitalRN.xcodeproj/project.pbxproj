@@ -952,6 +952,8 @@
 				FA7545EA3D3F44629A4D4BD5 /* libRCTVideo.a */,
 				E3700E79D73744389CA1827C /* libRCTOrientation.a */,
 				596042F55024403697299B27 /* libCodePush.a */,
+				F77FBD0856864575913C3F7D /* libSMXCrashlytics.a */,
+				6277C8737F18467EACDF50AB /* libGoogleCast.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
