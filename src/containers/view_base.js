@@ -274,6 +274,7 @@ const playerHeight = 50;
 let headerPaddingTop = height >= 800 ? 30 : 10;
 let headerHeight = height >= 800 ? 72 : 52;
 let backButtonPaddingTop = height >= 800 ? 40 : 20;
+let threeDotPaddingTop = height >= 800 ? 40 : 20;
 
 const styles = StyleSheet.create({
   container: {
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   threeDotsContainer: {
-    paddingTop: 20,
+    paddingTop: threeDotPaddingTop,
     paddingLeft: 10,
     paddingRight: 10,
     height: 52,
