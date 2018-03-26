@@ -107,7 +107,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);
 
-let inputMarginTop = height >= 800 ? 35 : 10;
+let inputMarginTop = height >= 800 ? 35 : 20;
 const styles = StyleSheet.create({
   inputContainer: {
     margin: 10,
