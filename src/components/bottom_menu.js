@@ -142,11 +142,13 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(BottomMenu);
 
 const {width, height} = Dimensions.get('window');
+let containerHeight = height >= 800 ? 69 : 54;
+let menuMarginBottom = height >= 800 ? 10 : 5;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 54,
+    height: containerHeight,
     justifyContent: 'space-around',
     width: width,
     backgroundColor: colors.footerBackground,
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
   menuItem: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: menuMarginBottom,
   },
   bottomMenuText: {
     fontSize: 10,

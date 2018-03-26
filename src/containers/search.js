@@ -22,6 +22,7 @@ import _ from 'underscore';
 import EpisodeList from './episode_list';
 import {colors} from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
+const {height, width} = Dimensions.get('window');
 
 class Search extends React.Component {
   constructor(props) {
@@ -106,10 +107,11 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);
 
+let inputMarginTop = height >= 800 ? 35 : 10;
 const styles = StyleSheet.create({
   inputContainer: {
     margin: 10,
-    marginTop: 25,
+    marginTop: inputMarginTop,
     paddingLeft: 10,
     paddingRight: 10,
     height: 36,

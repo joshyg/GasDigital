@@ -271,6 +271,9 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Base);
 
 const playerHeight = 50;
+let headerPaddingTop = height >= 800 ? 30 : 10;
+let headerHeight = height >= 800 ? 72 : 52;
+let backButtonPaddingTop = height >= 800 ? 40 : 20;
 
 const styles = StyleSheet.create({
   container: {
@@ -280,19 +283,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bodyBackground,
   },
   header: {
-    paddingTop: 10,
+    paddingTop: headerPaddingTop,
     paddingLeft: 10,
     paddingRight: 10,
     width: width,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 52,
+    height: headerHeight,
     marginBottom: 10,
     backgroundColor: colors.headerBackground,
   },
   backButtonContainer: {
-    paddingTop: 20,
+    paddingTop: backButtonPaddingTop,
     paddingLeft: 10,
     paddingRight: 10,
     height: 52,
