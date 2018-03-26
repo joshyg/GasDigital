@@ -19,7 +19,7 @@ import {addFavorite, removeFavorite, getFavorites} from '../actions/data';
 import EpisodeList from './episode_list';
 import Base from './view_base';
 import {getChannels, getEpisodes, setValue} from '../actions/data';
-import {colors} from '../constants';
+import {colors, FETCH_FAVES_FROM_SERVER} from '../constants';
 
 class Favorites extends React.Component {
   constructor(props) {
@@ -31,7 +31,9 @@ class Favorites extends React.Component {
   }
 
   componentWillMount() {
-    this.props.getFavorites(this.props.user_id);
+    if (FETCH_FAVES_FROM_SERVER && !this.props.guest) {
+      this.props.getFavorites(this.props.user_id);
+    }
     this.props.setValue('episodeContext', 'favorites');
   }
 
@@ -65,6 +67,7 @@ function mapStateToProps(state) {
     user_id: state.auth.user_id,
     episodes: state.data.episodes,
     favoriteEpisodes: state.data.favoriteEpisodes,
+    guest: state.auth.guest,
   };
 }
 

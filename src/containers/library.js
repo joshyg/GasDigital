@@ -23,12 +23,18 @@ import {
   setValue,
 } from '../actions/data';
 import {logOut} from '../actions/auth';
-import {colors, offlineDownloadStatus} from '../constants';
+import {
+  colors,
+  FETCH_FAVES_FROM_SERVER,
+  offlineDownloadStatus,
+} from '../constants';
 
 class Library extends React.Component {
   componentWillMount() {
     this.props.setValue('isGettingFavorites', true);
-    this.props.getFavorites(this.props.user_id);
+    if (FETCH_FAVES_FROM_SERVER && !this.props.guest) {
+      this.props.getFavorites(this.props.user_id);
+    }
     this.setState({
       faves: this.getFaves(),
     });
@@ -185,6 +191,7 @@ function mapStateToProps(state) {
     user_id: state.auth.user_id,
     channelsById: state.data.channelsById,
     playlist: state.data.playlist,
+    guest: state.auth.guest,
   };
 }
 
