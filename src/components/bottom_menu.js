@@ -53,7 +53,7 @@ class BottomMenu extends React.Component {
     const {width} = Dimensions.get('window');
     const activeItem = this.props.activeMenuItem;
     let containerStyle = [styles.container];
-    if (activeItem == 'live') {
+    if (activeItem == 'live' && this.props.liveNow) {
       containerStyle.push({backgroundColor: 'black'});
     }
     return (
