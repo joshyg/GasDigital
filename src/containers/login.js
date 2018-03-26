@@ -119,7 +119,7 @@ class Login extends React.Component {
         </View>
         <CheckBox
           label="Remember Me"
-          checked={this.props.remember_me}
+          checked={this.props.remember_me || false}
           onChange={checked => {
             let remember_me = !checked;
             this.props.setAuthValue('remember_me', remember_me);
@@ -161,6 +161,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
+let paddingTop = height > 480 ? 120 : 20;
 const styles = StyleSheet.create({
   loginButtons: {
     flexDirection: 'row',
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
-    paddingTop: 120,
+    paddingTop: paddingTop,
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
