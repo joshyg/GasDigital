@@ -16,6 +16,7 @@ const initialState = {
   playlist: [],
   searchResults: [],
   isGettingEpisodes: false,
+  isGettingBonusEpisodes: false,
   isGettingSchedule: false,
   isGettingFavorites: false,
   isSettingFavorites: false,
@@ -240,7 +241,7 @@ export default (reducer = (state = initialState, action) => {
 
     case 'DATA_GET_BONUS_CONTENT':
       if (payloadError(action.payload)) {
-        return {...state, isGettingEpisodes: false};
+        return {...state, isGettingBonusEpisodes: false};
       }
       link = action.payload.req_data.category;
       show_id = action.payload.req_data.show_id;
@@ -282,7 +283,7 @@ export default (reducer = (state = initialState, action) => {
           ...channelEpisodeIds,
         },
         episodes: {...state.episodes, ...episodes},
-        isGettingEpisodes: false,
+        isGettingBonusEpisodes: false,
       };
 
     case 'DATA_GET_LIVE_SHOW':

@@ -110,6 +110,7 @@ class Series extends React.Component {
       return;
     }
     props.setValue('isGettingEpisodes', true);
+    props.setValue('isGettingBonusEpisodes', true);
     props.getEpisodes(channel, series_id, this.props.user_id, page);
     props.getBonusContent(channel, series_id);
   }
@@ -117,6 +118,8 @@ class Series extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (
       (this.props.isGettingEpisodes && !nextProps.isGettingEpisodes) ||
+      (this.props.isGettingBonusEpisodes &&
+        !nextProps.isGettingBonusEpisodes) ||
       this.props.page != nextProps.page
     ) {
       let series = this.props.series;
@@ -291,6 +294,7 @@ function mapStateToProps(state) {
     episodes: state.data.episodes,
     channelEpisodeIds: state.data.channelEpisodeIds,
     isGettingEpisodes: state.data.isGettingEpisodes,
+    isGettingBonusEpisodes: state.data.isGettingBonusEpisodes,
     channelBonusEpisodeIds: state.data.channelBonusEpisodeIds,
     lastChannelFetchTime: state.data.lastChannelFetchTime,
     page: state.data.page,
