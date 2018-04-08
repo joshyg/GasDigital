@@ -235,7 +235,7 @@ class Player extends React.Component {
       MusicControl.setNowPlaying({
         title: name,
         artwork: image,
-        playbackDuration: this.props.timer.duration,
+        playbackDuration: this.props.timer.playableDuration,
         elapsedPlaybackTime: startTime,
       });
     }
@@ -247,7 +247,12 @@ class Player extends React.Component {
 
   onProgress(data) {
     if (!this.props.isSettingTime) {
-      this.props.setPlayerValue('timer', data);
+      this.props.setPlayerValue('timer', {
+        ...data,
+        playableDuration: this.props.currentTrack.duration
+          ? this.props.currentTrack.duration
+          : data.playableDuration,
+      });
     }
   }
 

@@ -289,6 +289,7 @@ class Episode extends React.Component {
       offlineUrl: offlineEpisode && offlineEpisode.audioUrl,
       series_id,
       episode,
+      duration: episode.duration || 0,
     };
     this.setQueue();
     this.props.setPlayerValue('isPlayingVideo', false);
@@ -411,7 +412,12 @@ class Episode extends React.Component {
   };
 
   onProgress = data => {
-    this.props.setPlayerValue('videoTimer', data);
+    this.props.setPlayerValue('videoTimer', {
+      ...data,
+      playableDuration: this.props.currentTrack.duration
+        ? this.props.currentTrack.duration
+        : data.playableDuration,
+    });
   };
 
   updateProgress = () => {
