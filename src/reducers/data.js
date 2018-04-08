@@ -41,6 +41,19 @@ payloadError = payload => {
   return false;
 };
 
+uniquifyList = list => {
+  // uniquify
+  let uniqueList = [];
+  let iDsDict = {};
+  for (iD of list) {
+    if (!iDsDict[iD]) {
+      iDsDict[iD] = true;
+      uniqueList.push(iD);
+    }
+  }
+  return uniqueList;
+};
+
 export default (reducer = (state = initialState, action) => {
   let link,
     show_id,
@@ -162,6 +175,9 @@ export default (reducer = (state = initialState, action) => {
       if (page == 1) {
         channelFetchTime[link] = Date.now() / 1000;
       }
+
+      channelEpisodeIds[link] = uniquifyList(channelEpisodeIds[link]);
+
       return {
         ...state,
         channelEpisodeIds: {...state.channelEpisodeIds, ...channelEpisodeIds},
@@ -245,19 +261,22 @@ export default (reducer = (state = initialState, action) => {
       }
       link = action.payload.req_data.category;
       show_id = action.payload.req_data.show_id;
+      page = action.payload.req_data.page;
       returnedEpisodes = action.payload.resp_data.result.objects.item;
       if (!returnedEpisodes) {
-        return {...state, isGettingEpisodes: false};
+        return {...state, isGettingBonusEpisodes: false};
       }
       returnedEpisodeIds = returnedEpisodes.map(x => x.id);
       channelEpisodeIds = {};
-      if (!state.channelBonusEpisodeIds[link] || page == 0) {
+      if (!state.channelBonusEpisodeIds[link] || page <= 1) {
         channelEpisodeIds[link] = returnedEpisodeIds;
       } else {
         channelEpisodeIds[link] = _.cloneDeep(
           state.channelBonusEpisodeIds[link],
         );
-        channelEpisodeIds[link].concat(returnedEpisodeIds);
+        channelEpisodeIds[link] = channelEpisodeIds[link].concat(
+          returnedEpisodeIds,
+        );
       }
 
       episodes = {};
@@ -275,6 +294,8 @@ export default (reducer = (state = initialState, action) => {
           episodes[episode.id].show_id = show_id;
         }
       }
+
+      channelEpisodeIds[link] = uniquifyList(channelEpisodeIds[link]);
 
       return {
         ...state,

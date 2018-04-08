@@ -88,11 +88,18 @@ export function gettingEpisodes() {
   };
 }
 
-export function getBonusContent(title, show_id = '') {
+export function getBonusContent(
+  title,
+  show_id = '',
+  pagenumber = 1,
+  perpage = EPISODES_PER_PAGE,
+) {
   const request = DataApi.GetData('web.php', {
     fun: 'getBonus',
     category: title,
     show_id,
+    perpage,
+    pagenumber,
   });
   return {
     type: 'DATA_GET_BONUS_CONTENT',

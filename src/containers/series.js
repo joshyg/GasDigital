@@ -44,6 +44,7 @@ class Series extends React.Component {
       channel: '',
       bonusEpisodes: [],
       page: 1,
+      bonusPage: 1,
       perpage: EPISODES_PER_PAGE,
       hasBonus: false,
       showBonus: false,
@@ -59,12 +60,13 @@ class Series extends React.Component {
       return;
     }
     this.props.setValue('page', 1);
+    this.props.setValue('bonusPage', 1);
     this.props.setValue('episodeContext', 'series');
 
     let channel = series.link.split('cat=')[1];
     this.setState({channel: channel});
     // if channel episodes not empty, throttle
-    // requests to once per 5 min on mount
+    // requests to once per 30s on mount
     if (
       !this.props.channelEpisodeIds ||
       !this.props.channelEpisodeIds[channel] ||
@@ -112,7 +114,7 @@ class Series extends React.Component {
     props.setValue('isGettingEpisodes', true);
     props.setValue('isGettingBonusEpisodes', true);
     props.getEpisodes(channel, series_id, this.props.user_id, page);
-    props.getBonusContent(channel, series_id);
+    props.getBonusContent(channel, series_id, page);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -127,7 +129,6 @@ class Series extends React.Component {
         return;
       }
       let channel = series.link.split('cat=')[1];
-      this.props.getBonusContent(channel);
       this.setState({channel: channel});
       if (nextProps.channelEpisodeIds[channel]) {
         let channelEpisodes = nextProps.channelEpisodeIds[channel].map(x => {
@@ -161,22 +162,30 @@ class Series extends React.Component {
 
   onEndReached = ({distanceFromEnd}) => {
     let channel = this.state.channel;
-    let pageNum = 1;
-    if (this.state.episodes && this.state.episodes.length) {
-      pageNum = 1 + Math.floor(this.state.episodes.length / EPISODES_PER_PAGE);
-    }
-    console.log(
-      'JG: onEndReached page/props.page = ',
-      pageNum,
-      this.props.page,
-      ' distance from end = ',
-      distanceFromEnd,
-    );
-    this.setState({page: pageNum});
-    if (!this.props.guest) {
-      let series_id = (this.props.series && this.props.series.id) || '';
-      this.props.setValue('isGettingEpisodes', true);
-      this.props.getEpisodes(channel, series_id, this.props.user_id, pageNum);
+    if (!this.state.showBonus) {
+      let pageNum = 1;
+      if (this.state.episodes && this.state.episodes.length) {
+        pageNum =
+          1 + Math.floor(this.state.episodes.length / EPISODES_PER_PAGE);
+      }
+      this.setState({page: pageNum});
+      if (!this.props.guest) {
+        let series_id = (this.props.series && this.props.series.id) || '';
+        this.props.setValue('isGettingEpisodes', true);
+        this.props.getEpisodes(channel, series_id, this.props.user_id, pageNum);
+      }
+    } else {
+      let pageNum = 1;
+      if (this.state.bonusEpisodes && this.state.bonusEpisodes.length) {
+        pageNum =
+          1 + Math.floor(this.state.bonusEpisodes.length / EPISODES_PER_PAGE);
+      }
+      this.setState({bonusPage: pageNum});
+      if (!this.props.guest) {
+        let series_id = (this.props.series && this.props.series.id) || '';
+        this.props.setValue('isGettingBonusEpisodes', true);
+        this.props.getBonusContent(channel, series_id, pageNum);
+      }
     }
   };
 
