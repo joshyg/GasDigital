@@ -21,6 +21,7 @@ import SvgIcon from '../components/svg_icons';
 import {colors} from '../constants.js';
 import Orientation from 'react-native-orientation';
 const {height, width} = Dimensions.get('window');
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class VideoPlayer extends Component {
   constructor(props) {
@@ -115,6 +116,10 @@ export default class VideoPlayer extends Component {
         opacity: new Animated.Value(1),
       },
       topControl: {
+        marginTop: new Animated.Value(0),
+        opacity: new Animated.Value(1),
+      },
+      middleControl: {
         marginTop: new Animated.Value(0),
         opacity: new Animated.Value(1),
       },
@@ -297,6 +302,8 @@ export default class VideoPlayer extends Component {
     Animated.parallel([
       Animated.timing(this.animations.topControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: -100}),
+      Animated.timing(this.animations.middleControl.opacity, {toValue: 0}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: -100}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: -100,
@@ -313,6 +320,8 @@ export default class VideoPlayer extends Component {
     Animated.parallel([
       Animated.timing(this.animations.topControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: 0}),
+      Animated.timing(this.animations.middleControl.opacity, {toValue: 1}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: 0}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: 0,
@@ -908,9 +917,6 @@ export default class VideoPlayer extends Component {
    * Render bottom control group and wrap it in a holder
    */
   renderBottomControls() {
-    const playPauseControl = !this.props.disablePlayPause
-      ? this.renderPlayPause()
-      : this.renderNullControl();
     const timerControl = !this.props.disableTimer
       ? this.renderTimer()
       : this.renderNullControl();
@@ -942,7 +948,6 @@ export default class VideoPlayer extends Component {
               styles.controls.bottomControlGroup,
               {marginBottom: controlMarginBottom},
             ]}>
-            {playPauseControl}
             {this.renderTitle()}
             {timerControl}
           </View>
@@ -990,13 +995,37 @@ export default class VideoPlayer extends Component {
    * Render the play/pause button and show the respective icon
    */
   renderPlayPause() {
-    let source =
-      this.state.paused === true
-        ? require('../../node_modules/react-native-video-controls/./assets/img/play.png')
-        : require('../../node_modules/react-native-video-controls/./assets/img/pause.png');
     return this.renderControl(
-      <Image source={source} />,
+      <Icon
+        name={this.state.paused ? 'play' : 'pause'}
+        size={60}
+        color={colors.white}
+      />,
       this.methods.togglePlayPause,
+      styles.controls.playPause,
+    );
+  }
+
+  renderBackFifteen() {
+    return this.renderControl(
+      <Icon name={'backward'} size={30} color={colors.white} />,
+      _ => {
+        const time = this.calculateTimeFromSeekerPosition();
+        this.seekTo(Math.max(time - 15, 0));
+        this.setControlTimeout();
+      },
+      styles.controls.playPause,
+    );
+  }
+
+  renderForwardFifteen() {
+    return this.renderControl(
+      <Icon name={'forward'} size={30} color={colors.white} />,
+      _ => {
+        const time = this.calculateTimeFromSeekerPosition();
+        this.seekTo(time + 15);
+        this.setControlTimeout();
+      },
       styles.controls.playPause,
     );
   }
@@ -1057,6 +1086,30 @@ export default class VideoPlayer extends Component {
         </View>
       );
     }
+    return null;
+  }
+
+  renderMiddleControls() {
+    const playPauseControl = !this.props.disablePlayPause
+      ? this.renderPlayPause()
+      : this.renderNullControl();
+    if (this.state.loading) {
+      return this.renderLoader();
+    }
+    return (
+      <Animated.View
+        style={[
+          {
+            opacity: this.animations.middleControl.opacity,
+            marginTop: this.animations.middleControl.marginTop,
+          },
+          styles.controls.middleControlGroup,
+        ]}>
+        {this.renderBackFifteen()}
+        {playPauseControl}
+        {this.renderForwardFifteen()}
+      </Animated.View>
+    );
     return null;
   }
 
@@ -1124,7 +1177,7 @@ export default class VideoPlayer extends Component {
             />
             {this.renderError()}
             {this.renderTopControls()}
-            {this.renderLoader()}
+            {this.renderMiddleControls()}
             {this.renderBottomControls()}
           </View>
         </TouchableWithoutFeedback>
@@ -1235,6 +1288,15 @@ const styles = {
       width: null,
       margin: 12,
       marginBottom: 18,
+    },
+    middleControlGroup: {
+      alignSelf: 'stretch',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      marginLeft: 12,
+      marginRight: 12,
+      marginBottom: 0,
+      flexDirection: 'row',
     },
     bottomControlGroup: {
       alignSelf: 'stretch',
