@@ -16,7 +16,12 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import {connectActionSheet} from '@expo/react-native-action-sheet';
-import {DEBUG_PREMIUM, offlineDownloadStatus, colors} from '../constants';
+import {
+  ENABLE_DOWNLOAD_VIDEO,
+  DEBUG_PREMIUM,
+  offlineDownloadStatus,
+  colors,
+} from '../constants';
 import {
   setValue,
   addFavorite,
@@ -115,8 +120,12 @@ class ThreeDotButton extends Component {
 
   deleteOfflineEpisode = (episode, type) => {
     if (
-      this.props.isPlaying &&
-      this.props.currentTrack.episode_id == episode.id
+      (type == 'audio' &&
+        this.props.isPlaying &&
+        this.props.currentTrack.episode_id == episode.id) ||
+      (type == 'video' &&
+        this.props.isPlayingVideo &&
+        this.props.currentVideo.episode_id == episode.id)
     ) {
       Alert.alert(
         'Forbidden',
@@ -156,7 +165,7 @@ class ThreeDotButton extends Component {
     this.props.addFavorite(this.props.user_id, episode.id, episode.id, episode);
   };
 
-  audioDownloaded = episode => {
+  audioDownloadState = episode => {
     let audioDownloadingState = offlineDownloadStatus.notDownloaded;
     if (
       !!this.props.offlineEpisodes[episode.id] &&
@@ -164,7 +173,39 @@ class ThreeDotButton extends Component {
     ) {
       audioDownloadingState = this.props.offlineEpisodes[episode.id].status;
     }
-    return audioDownloadingState == offlineDownloadStatus.downloaded;
+    return audioDownloadingState;
+  };
+
+  videoDownloadState = episode => {
+    let videoDownloadingState = offlineDownloadStatus.notDownloaded;
+    if (
+      !!this.props.offlineEpisodes[episode.id] &&
+      !!this.props.offlineEpisodes[episode.id].videoStatus
+    ) {
+      videoDownloadingState = this.props.offlineEpisodes[episode.id]
+        .videoStatus;
+    }
+    return videoDownloadingState;
+  };
+
+  audioDownloaded = episode => {
+    return this.audioDownloadState(episode) == offlineDownloadStatus.downloaded;
+  };
+
+  videoDownloaded = episode => {
+    return this.videoDownloadState(episode) == offlineDownloadStatus.downloaded;
+  };
+
+  audioDownloading = episode => {
+    return (
+      this.audioDownloadState(episode) == offlineDownloadStatus.downloading
+    );
+  };
+
+  videoDownloading = episode => {
+    return (
+      this.videoDownloadState(episode) == offlineDownloadStatus.downloading
+    );
   };
 
   episodeFavorited = episode => {
@@ -191,9 +232,22 @@ class ThreeDotButton extends Component {
     if (this.audioDownloaded(item)) {
       options.push('Remove Audio Download');
       actions.push(this.deleteOfflineAudio);
+    } else if (this.audioDownloading(item)) {
+      options.push('Cancel Audio Download');
+      actions.push(this.deleteOfflineAudio);
     } else {
       options.push('Download Audio');
       actions.push(this.downloadOfflineAudio);
+    }
+    if (ENABLE_DOWNLOAD_VIDEO && this.videoDownloaded(item)) {
+      options.push('Remove Video Download');
+      actions.push(this.deleteOfflineVideo);
+    } else if (ENABLE_DOWNLOAD_VIDEO && this.videoDownloading(item)) {
+      options.push('Cancel Video Download');
+      actions.push(this.deleteOfflineVideo);
+    } else if (ENABLE_DOWNLOAD_VIDEO) {
+      options.push('Download Video');
+      actions.push(this.downloadOfflineVideo);
     }
     if (this.episodeFavorited(item)) {
       options.push('Unfavorite');
@@ -257,6 +311,10 @@ function mapStateToProps(state) {
     favoriteEpisodes: state.data.favoriteEpisodes,
     isSettingFavorites: state.data.isSettingFavorites,
     playlist: state.data.playlist,
+    isPlaying: state.player.isPlaying,
+    isPlayingVideo: state.player.isPlayingVideo,
+    currentTrack: state.player.currentTrack,
+    currentVideo: state.player.currentVideo,
   };
 }
 

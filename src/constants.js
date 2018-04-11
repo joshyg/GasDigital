@@ -52,7 +52,7 @@ export const routeHeaders = {
 
 // export const BASE_URL = 'http://rss.gasdigitalnetwork.com/';
 export const BASE_URL = 'https://gasdigitalnetwork.com/';
-export const ENABLE_DOWNLOAD_VIDEO = false;
+export const ENABLE_DOWNLOAD_VIDEO = true;
 export const DEBUG_PREMIUM = false;
 export const DEBUG_CRASH = false;
 export const DEBUG_LIVE_VIEW = false;
