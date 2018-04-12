@@ -76,13 +76,21 @@ class Library extends React.Component {
       ) {
         offlineEps.push(this.props.episodes[offlineEpId]);
       }
+    }
+    return offlineEps;
+  };
 
-      // Add downloading video files
-      /*
-        if (this.props.offlineEpisodes[offlineEpId].videoStatus == offlineDownloadStatus.downloaded) {
-          offlineEps.push(this.props.episodes[offlineEpId]);
-        }
-        */
+  getOfflineVideos = () => {
+    let flatListItems = [];
+    let offlineEps = [];
+    for (offlineEpId in this.props.offlineEpisodes) {
+      // Add downloading audio files
+      if (
+        this.props.offlineEpisodes[offlineEpId].videoStatus ==
+        offlineDownloadStatus.downloaded
+      ) {
+        offlineEps.push(this.props.episodes[offlineEpId]);
+      }
     }
     return offlineEps;
   };
@@ -173,7 +181,12 @@ class Library extends React.Component {
     return (
       <Base hideBackButton={true} navigation={this.props.navigation}>
         <ScrollView>
-          {this.renderList('Offline', this.getOfflineEpisodes(), 'offline')}
+          {this.renderList(
+            'Offline Audio',
+            this.getOfflineEpisodes(),
+            'offline',
+          )}
+          {this.renderList('Offline Video', this.getOfflineVideos(), 'offline')}
           {this.renderList('Favorites', this.state.faves, 'favorites')}
           {this.renderList('Playlist', this.props.playlist, 'playlist')}
         </ScrollView>
