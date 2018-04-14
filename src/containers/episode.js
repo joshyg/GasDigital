@@ -714,7 +714,7 @@ class Episode extends React.Component {
       description = '';
     }
     return (
-      <View>
+      <View style={{marginTop: 10}}>
         {this.renderButtons()}
         <Text>{'\n'}</Text>
         <Text style={styles.title}>{episode.name}</Text>
@@ -826,6 +826,7 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     borderRadius: 10,
+    marginTop: 10,
   },
   description: {
     fontSize: 14,

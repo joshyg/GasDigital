@@ -304,7 +304,7 @@ export default class VideoPlayer extends Component {
       Animated.timing(this.animations.topControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: -100}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 0}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: -70}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: -60}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: -100,
@@ -323,7 +323,7 @@ export default class VideoPlayer extends Component {
       Animated.timing(this.animations.topControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: 0}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 1}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: 30}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: 40}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: 0,
@@ -1010,7 +1010,7 @@ export default class VideoPlayer extends Component {
 
   renderBackFifteen() {
     return this.renderControl(
-      <Icon name={'backward'} size={30} color={colors.white} />,
+      <Icon name={'backward'} size={50} color={colors.white} />,
       _ => {
         const time = this.calculateTimeFromSeekerPosition();
         this.seekTo(Math.max(time - 15, 0));
@@ -1022,7 +1022,7 @@ export default class VideoPlayer extends Component {
 
   renderForwardFifteen() {
     return this.renderControl(
-      <Icon name={'forward'} size={30} color={colors.white} />,
+      <Icon name={'forward'} size={50} color={colors.white} />,
       _ => {
         const time = this.calculateTimeFromSeekerPosition();
         this.seekTo(time + 15);
@@ -1104,7 +1104,7 @@ export default class VideoPlayer extends Component {
           {
             opacity: this.animations.middleControl.opacity,
             marginTop: this.animations.middleControl.marginTop,
-            marginHorizontal: this.isLandscape() ? 100 : 0,
+            marginHorizontal: this.isLandscape() ? 200 : 12,
           },
           styles.controls.middleControlGroup,
         ]}>
@@ -1220,6 +1220,7 @@ const styles = {
       flex: 1,
       alignSelf: 'stretch',
       justifyContent: 'space-between',
+      top: 0,
     },
     video: {
       overflow: 'hidden',
@@ -1315,9 +1316,6 @@ const styles = {
       alignSelf: 'stretch',
       alignItems: 'center',
       justifyContent: 'space-around',
-      marginLeft: 12,
-      marginRight: 12,
-      marginBottom: 0,
       flexDirection: 'row',
     },
     bottomControlGroup: {

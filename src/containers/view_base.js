@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: headerHeight,
-    marginBottom: 10,
+    marginBottom: 0,
     backgroundColor: colors.headerBackground,
   },
   backButtonContainer: {
