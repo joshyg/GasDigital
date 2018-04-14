@@ -120,11 +120,11 @@ export default class VideoPlayer extends Component {
         opacity: new Animated.Value(1),
       },
       middleControl: {
-        marginTop: new Animated.Value(0),
+        marginTop: new Animated.Value(30),
         opacity: new Animated.Value(1),
       },
       video: {
-        opacity: new Animated.Value(0),
+        opacity: new Animated.Value(1),
       },
       loader: {
         rotate: new Animated.Value(0),
@@ -304,7 +304,7 @@ export default class VideoPlayer extends Component {
       Animated.timing(this.animations.topControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: -100}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 0}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: -60}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: -70}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: -100,
@@ -323,7 +323,7 @@ export default class VideoPlayer extends Component {
       Animated.timing(this.animations.topControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: 0}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 1}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: 40}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: 30}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: 0,

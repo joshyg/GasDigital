@@ -826,7 +826,6 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     borderRadius: 10,
-    marginTop: 10,
   },
   description: {
     fontSize: 14,
