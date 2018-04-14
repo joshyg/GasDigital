@@ -239,15 +239,18 @@ class ThreeDotButton extends Component {
       options.push('Download Audio');
       actions.push(this.downloadOfflineAudio);
     }
-    if (ENABLE_DOWNLOAD_VIDEO && this.videoDownloaded(item)) {
-      options.push('Remove Video Download');
-      actions.push(this.deleteOfflineVideo);
-    } else if (ENABLE_DOWNLOAD_VIDEO && this.videoDownloading(item)) {
-      options.push('Cancel Video Download');
-      actions.push(this.deleteOfflineVideo);
-    } else if (ENABLE_DOWNLOAD_VIDEO) {
-      options.push('Download Video');
-      actions.push(this.downloadOfflineVideo);
+    // inly show video option is episode has video
+    if (item.mediaType == 1) {
+      if (ENABLE_DOWNLOAD_VIDEO && this.videoDownloaded(item)) {
+        options.push('Remove Video Download');
+        actions.push(this.deleteOfflineVideo);
+      } else if (ENABLE_DOWNLOAD_VIDEO && this.videoDownloading(item)) {
+        options.push('Cancel Video Download');
+        actions.push(this.deleteOfflineVideo);
+      } else if (ENABLE_DOWNLOAD_VIDEO) {
+        options.push('Download Video');
+        actions.push(this.downloadOfflineVideo);
+      }
     }
     if (this.episodeFavorited(item)) {
       options.push('Unfavorite');

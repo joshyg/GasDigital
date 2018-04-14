@@ -69,12 +69,27 @@ class Library extends React.Component {
     let flatListItems = [];
     let offlineEps = [];
     for (offlineEpId in this.props.offlineEpisodes) {
-      // Add downloading audio files
+      // Add downloaded audio files
       if (
         this.props.offlineEpisodes[offlineEpId].status ==
         offlineDownloadStatus.downloaded
       ) {
-        offlineEps.push(this.props.episodes[offlineEpId]);
+        offlineEps.push({
+          ...this.props.episodes[offlineEpId],
+          showFaded: false,
+        });
+      }
+      for (offlineEpId in this.props.offlineEpisodes) {
+        // Add downloading audio files
+        if (
+          this.props.offlineEpisodes[offlineEpId].status ==
+          offlineDownloadStatus.downloading
+        ) {
+          offlineEps.push({
+            ...this.props.episodes[offlineEpId],
+            showFaded: true,
+          });
+        }
       }
     }
     return offlineEps;
@@ -89,7 +104,22 @@ class Library extends React.Component {
         this.props.offlineEpisodes[offlineEpId].videoStatus ==
         offlineDownloadStatus.downloaded
       ) {
-        offlineEps.push(this.props.episodes[offlineEpId]);
+        offlineEps.push({
+          ...this.props.episodes[offlineEpId],
+          showFaded: false,
+        });
+      }
+    }
+    for (offlineEpId in this.props.offlineEpisodes) {
+      // Add downloading audio files
+      if (
+        this.props.offlineEpisodes[offlineEpId].videoStatus ==
+        offlineDownloadStatus.downloading
+      ) {
+        offlineEps.push({
+          ...this.props.episodes[offlineEpId],
+          showFaded: true,
+        });
       }
     }
     return offlineEps;
@@ -120,6 +150,7 @@ class Library extends React.Component {
   }
 
   renderEpisode({item, index}, title) {
+    let opacity = item.showFaded ? 0.25 : 1;
     return (
       <TouchableOpacity
         style={styles.episodeContainer}
@@ -129,7 +160,7 @@ class Library extends React.Component {
           this.goToEpisode(item);
         }}>
         <Image
-          style={styles.episodeImage}
+          style={[styles.episodeImage, {opacity}]}
           source={{uri: item && item.thumbnailUrl}}
         />
         <Text style={styles.episodeName}>{this.getEpisodeName(item)}</Text>
