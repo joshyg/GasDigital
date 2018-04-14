@@ -153,14 +153,14 @@ class Library extends React.Component {
     let opacity = item.showFaded ? 0.25 : 1;
     return (
       <TouchableOpacity
-        style={styles.episodeContainer}
+        style={[styles.episodeContainer, {opacity}]}
         onPress={() => {
           this.props.setValue('episodeContext', title.toLowerCase());
           this.props.setValue('episodeContextIndex', index);
           this.goToEpisode(item);
         }}>
         <Image
-          style={[styles.episodeImage, {opacity}]}
+          style={styles.episodeImage}
           source={{uri: item && item.thumbnailUrl}}
         />
         <Text style={styles.episodeName}>{this.getEpisodeName(item)}</Text>
