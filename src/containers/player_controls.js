@@ -83,6 +83,7 @@ class PlayerControlsContainer extends Component {
       series_id: episode.show_id,
       audioUrl: episode.audioUrl,
       episode: episode,
+      duration: episode.duration || 0,
     };
     this.props.setPlayerValue('isPlayingVideo', false);
     this.props.setPlayerValue('videoMode', false);
@@ -114,6 +115,7 @@ class PlayerControlsContainer extends Component {
       series_id: episode.show_id,
       audioUrl: episode.audioUrl,
       episode: episode,
+      duration: episode.duration || 0,
     };
     this.props.setPlayerValue('isPlayingVideo', false);
     this.props.setPlayerValue('videoMode', false);
