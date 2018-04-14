@@ -1108,9 +1108,9 @@ export default class VideoPlayer extends Component {
           },
           styles.controls.middleControlGroup,
         ]}>
-        {this.renderBackFifteen()}
+        {!this.props.live && this.renderBackFifteen()}
         {playPauseControl}
-        {this.renderForwardFifteen()}
+        {!this.props.live && this.renderForwardFifteen()}
       </Animated.View>
     );
     return null;
@@ -1195,6 +1195,7 @@ export default class VideoPlayer extends Component {
                   inputRange: [0, 1],
                   outputRange: ['transparent', 'rgba(0,0,0,0.25)'],
                 }),
+                marginTop: this.props.live ? 100 : 0,
               }}>
               {this.renderError()}
               {this.renderTopControls()}
