@@ -124,7 +124,7 @@ export default class VideoPlayer extends Component {
         opacity: new Animated.Value(1),
       },
       video: {
-        opacity: new Animated.Value(1),
+        opacity: new Animated.Value(0),
       },
       loader: {
         rotate: new Animated.Value(0),
@@ -300,10 +300,11 @@ export default class VideoPlayer extends Component {
    */
   hideControlAnimation() {
     Animated.parallel([
+      Animated.timing(this.animations.video.opacity, {toValue: 0}),
       Animated.timing(this.animations.topControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: -100}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 0}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: -100}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: -70}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: -100,
@@ -318,10 +319,11 @@ export default class VideoPlayer extends Component {
    */
   showControlAnimation() {
     Animated.parallel([
+      Animated.timing(this.animations.video.opacity, {toValue: 1}),
       Animated.timing(this.animations.topControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: 0}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 1}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: 0}),
+      Animated.timing(this.animations.middleControl.marginTop, {toValue: 30}),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: 0,
@@ -1102,6 +1104,7 @@ export default class VideoPlayer extends Component {
           {
             opacity: this.animations.middleControl.opacity,
             marginTop: this.animations.middleControl.marginTop,
+            marginHorizontal: this.isLandscape() ? 100 : 0,
           },
           styles.controls.middleControlGroup,
         ]}>
@@ -1154,7 +1157,13 @@ export default class VideoPlayer extends Component {
       outputRange: [fullHeight, width, fullHeight],
     });
     return (
-      <Animated.View style={[{height: videoHeight, width: videoWidth}]}>
+      <Animated.View
+        style={[
+          {
+            height: videoHeight,
+            width: videoWidth,
+          },
+        ]}>
         <TouchableWithoutFeedback
           onPress={this.events.onScreenTouch}
           style={[styles.player.container, this.styles.containerStyle]}>
@@ -1175,10 +1184,23 @@ export default class VideoPlayer extends Component {
               style={[styles.player.video, this.styles.videoStyle]}
               source={this.props.source}
             />
-            {this.renderError()}
-            {this.renderTopControls()}
-            {this.renderMiddleControls()}
-            {this.renderBottomControls()}
+            <Animated.View
+              style={{
+                position: 'absolute',
+                flex: 1,
+                width: '100%',
+                height: '100%',
+                justifyContent: 'space-around',
+                backgroundColor: this.animations.video.opacity.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ['transparent', 'rgba(0,0,0,0.25)'],
+                }),
+              }}>
+              {this.renderError()}
+              {this.renderTopControls()}
+              {this.renderMiddleControls()}
+              {this.renderBottomControls()}
+            </Animated.View>
           </View>
         </TouchableWithoutFeedback>
       </Animated.View>
