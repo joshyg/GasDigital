@@ -209,7 +209,6 @@ export default class VideoPlayer extends Component {
    */
   _onProgress(data = {}) {
     let state = this.state;
-    state.currentTime = data.currentTime;
 
     if (!state.seeking) {
       const position = this.calculateSeekerPosition();
@@ -220,7 +219,7 @@ export default class VideoPlayer extends Component {
       this.props.onProgress(...arguments);
     }
 
-    this.setState(state);
+    this.setState({currentTime: data.currentTime});
   }
 
   /**
@@ -488,17 +487,17 @@ export default class VideoPlayer extends Component {
    * @param {float} position position in px of seeker handle}
    */
   setSeekerPosition(position = 0) {
-    let state = this.state;
+    let stateUpdate = {};
     position = this.constrainToSeekerMinMax(position);
 
-    state.seekerFillWidth = position;
-    state.seekerPosition = position;
+    stateUpdate.seekerFillWidth = position;
+    stateUpdate.seekerPosition = position;
 
-    if (!state.seeking) {
-      state.seekerOffset = position;
+    if (!this.state.seeking) {
+      stateUpdate.seekerOffset = position;
     }
 
-    this.setState(state);
+    this.setState(stateUpdate);
   }
 
   /**
@@ -546,10 +545,8 @@ export default class VideoPlayer extends Component {
    * @param {float} time time to seek to in ms
    */
   seekTo(time = 0) {
-    let state = this.state;
-    state.currentTime = time;
     this.player.ref.seek(time);
-    this.setState(state);
+    this.setState({currentTime: time});
   }
 
   getTime() {
@@ -718,14 +715,13 @@ export default class VideoPlayer extends Component {
         const time = this.calculateTimeFromSeekerPosition();
         let state = this.state;
         if (time >= state.duration && !state.loading) {
-          state.paused = true;
+          this.setState({paused: true});
           this.events.onEnd();
         } else {
           this.seekTo(time);
           this.setControlTimeout();
-          state.seeking = false;
+          this.setState({seeking: false});
         }
-        this.setState(state);
       },
     });
   }
@@ -1127,7 +1123,10 @@ export default class VideoPlayer extends Component {
           {
             opacity: this.animations.middleControl.opacity,
             marginTop: this.animations.middleControl.marginTop,
-            marginHorizontal: this.isLandscape() ? 200 : 12,
+            marginHorizontal:
+              this.isLandscape() && height >= 667
+                ? 200
+                : this.isLandscape() ? 100 : 12,
           },
           styles.controls.middleControlGroup,
         ]}>
