@@ -147,9 +147,6 @@ class Episode extends React.Component {
     let toValue;
     let shouldRotate = false;
     if (orientation.includes('PORTRAIT')) {
-      if (this.state.isFullscreen) {
-        return;
-      }
       toValue = 0;
       shouldRotate = true;
       this.setImmersive(false);
