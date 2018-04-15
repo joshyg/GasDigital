@@ -25,6 +25,7 @@ class PlayerControlsContainer extends Component {
 
     this.state = {
       width: Dimensions.get('window').width,
+      currentTime: this.props.currentTime,
     };
 
     this.setCurrentTime = this.setCurrentTime.bind(this);
@@ -140,6 +141,7 @@ class PlayerControlsContainer extends Component {
   setCurrentTime = val => {
     if (!this.props.chromecastMode) {
       this.props.setPlayerValue('newTime', val);
+      this.setState({currentTime: val});
     } else if (!this.props.liveMode) {
       this.props.setVideoTimerValue({
         currentTime: val,
@@ -194,6 +196,17 @@ class PlayerControlsContainer extends Component {
       : this.props.timer;
   };
 
+  getCurrentTime = () => {
+    let timer =
+      this.props.chromecastMode && !this.props.liveMode
+        ? this.props.videoTimer
+        : this.props.timer;
+    if (!timer) {
+      return 0;
+    }
+    return timer.currentTime || 0;
+  };
+
   getProgress = () => {
     const {currentTime, playableDuration} = this.getTimer();
     return `${this.formatTime(currentTime)} / ${this.formatTime(
@@ -210,6 +223,14 @@ class PlayerControlsContainer extends Component {
   }
 
   componentDidMount() {}
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.newTime) {
+      this.setState({currentTime: nextProps.newTime});
+    } else if (this.props.currentTime != nextProps.currentTime) {
+      this.setState({currentTime: nextProps.currentTime});
+    }
+  }
 
   changeRate = () => {
     const rates = {
@@ -236,6 +257,7 @@ class PlayerControlsContainer extends Component {
         navigation={this.props.navigation}
         isLoading={!this.props.track || !this.props.track.id}
         timer={this.getTimer()}
+        currentTime={this.state.currentTime}
         progressTime={this.getProgress()}
         timer={this.props.timer}
         videoTimer={this.props.videoTimer}
@@ -264,6 +286,7 @@ class PlayerControlsContainer extends Component {
 function mapStateToProps(state) {
   return {
     timer: state.player.timer,
+    currentTime: (state.player.timer && state.player.timer.currentTime) || 0,
     videoTimer: state.player.videoTimer,
     isPlaying: state.player.isPlaying,
     isPlayingChromecast: state.player.isPlayingChromecast,
@@ -277,6 +300,7 @@ function mapStateToProps(state) {
     chromecastMode: state.player.chromecastMode,
     liveMode: state.player.liveMode,
     playerRate: state.player.playerRate,
+    newTime: state.player.newTime,
   };
 }
 

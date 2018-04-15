@@ -1015,7 +1015,7 @@ export default class VideoPlayer extends Component {
     return this.renderControl(
       <Icon
         name={this.state.paused ? 'play' : 'pause'}
-        size={60}
+        size={Platform.OS == 'ios' ? 60 : 40}
         color={colors.white}
       />,
       this.methods.togglePlayPause,
@@ -1025,7 +1025,11 @@ export default class VideoPlayer extends Component {
 
   renderBackFifteen() {
     return this.renderControl(
-      <Icon name={'backward'} size={50} color={colors.white} />,
+      <Icon
+        name={'backward'}
+        size={Platform.OS == 'ios' ? 50 : 30}
+        color={colors.white}
+      />,
       _ => {
         const time = this.calculateTimeFromSeekerPosition();
         this.seekTo(Math.max(time - 15, 0));
@@ -1037,7 +1041,11 @@ export default class VideoPlayer extends Component {
 
   renderForwardFifteen() {
     return this.renderControl(
-      <Icon name={'forward'} size={50} color={colors.white} />,
+      <Icon
+        name={'forward'}
+        size={Platform.OS == 'ios' ? 50 : 30}
+        color={colors.white}
+      />,
       _ => {
         const time = this.calculateTimeFromSeekerPosition();
         this.seekTo(time + 15);
@@ -1295,7 +1303,8 @@ const styles = {
       resizeMode: 'stretch',
     },
     control: {
-      padding: 16,
+      paddingVertical: Platform.OS == 'ios' ? 16 : 5,
+      paddingHorizontal: 16,
     },
     text: {
       backgroundColor: 'transparent',
@@ -1332,6 +1341,7 @@ const styles = {
       alignItems: 'center',
       justifyContent: 'space-around',
       flexDirection: 'row',
+      overflow: 'hidden',
     },
     bottomControlGroup: {
       alignSelf: 'stretch',
@@ -1427,8 +1437,8 @@ const styles = {
       position: 'relative',
       top: 8,
       left: 8,
-      height: 12,
-      width: 12,
+      height: Platform.OS == 'ios' ? 17 : 20,
+      width: Platform.OS == 'ios' ? 17 : 20,
     },
   }),
 };

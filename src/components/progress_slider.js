@@ -34,7 +34,7 @@ export default class ProgressSlider extends Component {
       <Slider
         min={0}
         max={Math.floor(props.timer.playableDuration)}
-        values={[Math.floor(props.timer.currentTime)]}
+        values={[Math.floor(props.currentTime)]}
         sliderLength={props.isFooter ? width : width - 60}
         selectedStyle={{backgroundColor: colors.yellow}}
         unselectedStyle={{backgroundColor: 'grey'}}

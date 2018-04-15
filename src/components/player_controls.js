@@ -44,11 +44,31 @@ export default function PlayerControlsComponent(props) {
     !props.hasPrevious && (!props.timer || props.timer.currentTime < 5);
   };
 
+  formatTime = time => {
+    if (!time) {
+      time = 0;
+    }
+    let mins = Math.floor(time / 60).toString();
+    let secs = Math.floor(time % 60).toString();
+
+    mins = mins.length === 1 ? `0${mins}` : mins;
+    secs = secs.length === 1 ? `0${secs}` : secs;
+
+    return `${mins}:${secs}`;
+  };
+
+  getProgress = () => {
+    const {playableDuration} = props.timer;
+    const currentTime = props.currentTime;
+    return `${formatTime(currentTime)} / ${formatTime(playableDuration)}`;
+  };
+
   return (
     <View>
       <ProgressSlider
         isPlaying={props.isPlaying}
         timer={props.timer}
+        currentTime={props.currentTime}
         liveMode={props.liveMode}
         setCurrentTime={props.setCurrentTime}
         isSettingTime={props.isSettingTime}
@@ -56,7 +76,7 @@ export default function PlayerControlsComponent(props) {
         canSet={true}
       />
       <View style={styles.dataProgress}>
-        <Text style={styles.timeText}>{props.progressTime}</Text>
+        <Text style={styles.timeText}>{getProgress()}</Text>
         <Text style={styles.timeText}>{track.length}</Text>
       </View>
       <TouchableOpacity
