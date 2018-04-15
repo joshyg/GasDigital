@@ -107,6 +107,17 @@ export default class VideoPlayer extends Component {
       ref: Video,
     };
 
+    this.getMidControlsTopMargin = () => {
+      if (this.props.live && !this.isLandscape()) {
+        if (height <= 667) {
+          return 130;
+        } else {
+          return 160;
+        }
+      }
+      return 30;
+    };
+
     /**
      * Various animations
      */
@@ -120,7 +131,7 @@ export default class VideoPlayer extends Component {
         opacity: new Animated.Value(1),
       },
       middleControl: {
-        marginTop: new Animated.Value(30),
+        marginTop: new Animated.Value(this.getMidControlsTopMargin()),
         opacity: new Animated.Value(1),
       },
       video: {
@@ -304,7 +315,9 @@ export default class VideoPlayer extends Component {
       Animated.timing(this.animations.topControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: -100}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 0}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: -70}),
+      Animated.timing(this.animations.middleControl.marginTop, {
+        toValue: this.getMidControlsTopMargin() - 100,
+      }),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 0}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: -100,
@@ -323,7 +336,9 @@ export default class VideoPlayer extends Component {
       Animated.timing(this.animations.topControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.topControl.marginTop, {toValue: 0}),
       Animated.timing(this.animations.middleControl.opacity, {toValue: 1}),
-      Animated.timing(this.animations.middleControl.marginTop, {toValue: 30}),
+      Animated.timing(this.animations.middleControl.marginTop, {
+        toValue: this.getMidControlsTopMargin(),
+      }),
       Animated.timing(this.animations.bottomControl.opacity, {toValue: 1}),
       Animated.timing(this.animations.bottomControl.marginBottom, {
         toValue: 0,
@@ -1195,7 +1210,6 @@ export default class VideoPlayer extends Component {
                   inputRange: [0, 1],
                   outputRange: ['transparent', 'rgba(0,0,0,0.25)'],
                 }),
-                marginTop: this.props.live ? 100 : 0,
               }}>
               {this.renderError()}
               {this.renderTopControls()}

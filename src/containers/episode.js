@@ -144,12 +144,12 @@ class Episode extends React.Component {
   orientationDidChange = orientation => {
     console.log('JG: episode setting orientation to ', orientation);
     this.setState({orientation});
-    if (this.state.isFullscreen) {
-      return;
-    }
     let toValue;
     let shouldRotate = false;
     if (orientation.includes('PORTRAIT')) {
+      if (this.state.isFullscreen) {
+        return;
+      }
       toValue = 0;
       shouldRotate = true;
       this.setImmersive(false);
