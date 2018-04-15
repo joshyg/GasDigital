@@ -1045,7 +1045,11 @@ export default class VideoPlayer extends Component {
       _ => {
         const time = this.calculateTimeFromSeekerPosition();
         this.seekTo(Math.max(time - 15, 0));
-        this.setControlTimeout();
+        this.setSeekerPosition(
+          this.state.seekerPosition -
+            15 * (this.player.seekerWidth / this.state.duration),
+        );
+        this.resetControlTimeout();
       },
       styles.controls.playPause,
     );
@@ -1061,7 +1065,11 @@ export default class VideoPlayer extends Component {
       _ => {
         const time = this.calculateTimeFromSeekerPosition();
         this.seekTo(time + 15);
-        this.setControlTimeout();
+        this.setSeekerPosition(
+          this.state.seekerPosition +
+            15 * (this.player.seekerWidth / this.state.duration),
+        );
+        this.resetControlTimeout();
       },
       styles.controls.playPause,
     );
