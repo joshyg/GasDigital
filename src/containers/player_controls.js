@@ -255,6 +255,7 @@ class PlayerControlsContainer extends Component {
         chromecastMode={this.props.chromecastMode}
         liveMode={this.props.liveMode}
         onPressPlayerRate={this.onPressPlayerRate}
+        isSettingTime={this.props.isSettingTime}
       />
     );
   }

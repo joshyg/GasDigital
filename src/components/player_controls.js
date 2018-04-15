@@ -51,7 +51,7 @@ export default function PlayerControlsComponent(props) {
         timer={props.timer}
         liveMode={props.liveMode}
         setCurrentTime={props.setCurrentTime}
-        isSettingTime={() => {}}
+        isSettingTime={props.isSettingTime}
         isEnabled={props.isSliderEnabled}
         canSet={true}
       />

@@ -8,6 +8,7 @@ import {
   StatusBar,
   Dimensions,
   Image,
+  Platform,
 } from 'react-native';
 import Slider from '@ptomasroos/react-native-multi-slider';
 import {colors, fonts} from '../constants';
@@ -21,7 +22,8 @@ export default class ProgressSlider extends Component {
     const props = this.props;
     const {height, width} = Dimensions.get('window');
 
-    const touchTarget = props.isFooter || !props.canSet ? 0 : 60;
+    const touchTarget =
+      props.isFooter || !props.canSet ? 0 : Platform.OS == 'ios' ? 60 : 120;
 
     if (props.liveMode || !props.timer.playableDuration) {
       // don't render the slider if no track - important
@@ -52,6 +54,7 @@ export default class ProgressSlider extends Component {
         onValuesChange={val => {}}
         onValuesChangeFinish={val => {
           props.setCurrentTime(val[0]);
+          props.isSettingTime(false);
         }}
         {...props}
       />
@@ -64,9 +67,9 @@ export default class ProgressSlider extends Component {
       top: 0,
     },
     marker: {
-      height: 11,
-      width: 11,
-      borderRadius: 5,
+      height: Platform.OS == 'ios' ? 14 : 22,
+      width: Platform.OS == 'ios' ? 14 : 22,
+      borderRadius: Platform.OS == 'ios' ? 7 : 10,
       backgroundColor: colors.blue,
     },
     none: {

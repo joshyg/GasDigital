@@ -29,7 +29,9 @@ class PlayerView extends Component {
   componentWillUnmount() {}
 
   //TODO
-  isSettingTime() {}
+  isSettingTime = val => {
+    this.props.setPlayerValue('isSettingTime', val);
+  };
 
   track = () => {
     let track;
