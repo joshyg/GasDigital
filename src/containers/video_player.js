@@ -213,13 +213,12 @@ export default class VideoPlayer extends Component {
     if (!state.seeking) {
       const position = this.calculateSeekerPosition();
       this.setSeekerPosition(position);
+      this.setState({currentTime: data.currentTime});
     }
 
     if (typeof this.props.onProgress === 'function') {
       this.props.onProgress(...arguments);
     }
-
-    this.setState({currentTime: data.currentTime});
   }
 
   /**
@@ -694,14 +693,14 @@ export default class VideoPlayer extends Component {
       onPanResponderGrant: (evt, gestureState) => {
         let state = this.state;
         this.clearControlTimeout();
-        state.seeking = true;
-        this.setState(state);
+        this.setState({seeking: true});
       },
 
       /**
        * When panning, update the seekbar position, duh.
        */
       onPanResponderMove: (evt, gestureState) => {
+        this.setState({seeking: true});
         const position = this.state.seekerOffset + gestureState.dx;
         this.setSeekerPosition(position);
       },
@@ -716,6 +715,23 @@ export default class VideoPlayer extends Component {
         let state = this.state;
         if (time >= state.duration && !state.loading) {
           this.setState({paused: true});
+          this.setState({seeking: false});
+          this.events.onEnd();
+        } else {
+          this.seekTo(time);
+          this.setControlTimeout();
+          this.setState({seeking: false});
+        }
+      },
+
+      onPanResponderTerminate: (evt, gestureState) => {
+        // Another component has become the responder, so this gesture
+        // should be cancelled
+        const time = this.calculateTimeFromSeekerPosition();
+        let state = this.state;
+        if (time >= state.duration && !state.loading) {
+          this.setState({paused: true});
+          this.setState({seeking: false});
           this.events.onEnd();
         } else {
           this.seekTo(time);
