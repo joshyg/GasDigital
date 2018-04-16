@@ -28,6 +28,7 @@ import {
   FETCH_FAVES_FROM_SERVER,
   offlineDownloadStatus,
 } from '../constants';
+const {height, width} = Dimensions.get('window');
 
 class Library extends React.Component {
   componentWillMount() {
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
     height: 250,
   },
   title: {
-    fontSize: 48,
+    fontSize: height <= 600 ? 36 : 48,
     fontFamily: 'Avenir',
     fontWeight: 'bold',
     color: colors.yellow,

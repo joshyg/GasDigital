@@ -34,6 +34,7 @@ import EpisodeList from './episode_list';
 import {EPISODES_PER_PAGE, offlineDownloadStatus, colors} from '../constants';
 import {connectActionSheet} from '@expo/react-native-action-sheet';
 import Base from './view_base';
+const {height, width} = Dimensions.get('window');
 
 @connectActionSheet
 class Series extends React.Component {
@@ -272,7 +273,6 @@ class Series extends React.Component {
   };
 
   render() {
-    const {height, width} = Dimensions.get('window');
     return (
       <Base header={this.state.channel} navigation={this.props.navigation}>
         <EpisodeList
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderRadius: 10,
     backgroundColor: colors.yellow,
-    width: 164,
+    width: height <= 600 ? 130 : 164,
     height: 40,
     justifyContent: 'center',
     padding: 12,
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderRadius: 10,
     backgroundColor: colors.buttonGrey,
-    width: 164,
+    width: height <= 600 ? 130 : 164,
     height: 40,
     justifyContent: 'center',
     padding: 12,
