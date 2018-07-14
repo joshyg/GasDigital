@@ -83,11 +83,14 @@ export default (reducer = (state = initialState, action) => {
       }
       channels = action.payload.resp_data.data;
       for (ch in channels) {
-        Image.prefetch(channels[ch].thumb)
-          .then(_ => {})
-          .catch(err => {
-            console.log('JG: error prefetching: ', err);
-          });
+        let thumb = channels[ch].thumb;
+        if (typeof thumb == 'string') {
+          Image.prefetch(channels[ch].thumb)
+            .then(_ => {})
+            .catch(err => {
+              console.log('JG: error prefetching: ', err);
+            });
+        }
       }
       channelsById = {};
       channelsByTitle = {};
